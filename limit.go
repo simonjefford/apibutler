@@ -33,7 +33,7 @@ func rateLimitHandler(res http.ResponseWriter, req *http.Request, ctx martini.Co
 	rw.Before(func(martini.ResponseWriter) {
 		h := rw.Header()
 		h.Add("X-Call-Count", strconv.Itoa(limiter.GetCount(path)))
-		h.Add("X-Endpoint", path)
+		h.Add("X-Call-Remaining", strconv.Itoa(limiter.GetRemaining(path)))
 	})
 
 	ctx.Next()

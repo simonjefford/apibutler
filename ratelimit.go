@@ -42,6 +42,12 @@ func (r *RateLimit) GetCount(path string) int {
 	return r.calls[path].Count
 }
 
+func (r *RateLimit) GetRemaining(path string) int {
+	r.rw.RLock()
+	defer r.rw.RUnlock()
+	return r.calls[path].Remaining()
+}
+
 func NewRateLimit() *RateLimit {
 	return &RateLimit{
 		calls: make(map[string]*CallInfo),

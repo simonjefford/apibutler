@@ -7,6 +7,10 @@ type CallInfo struct {
 	Start time.Time
 }
 
+func (c *CallInfo) Remaining() int {
+	return 5 - c.Count
+}
+
 func (c *CallInfo) timeSinceLastReset() time.Duration {
 	return time.Since(c.Start)
 }
