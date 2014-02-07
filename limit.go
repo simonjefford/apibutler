@@ -1,8 +1,10 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"github.com/codegangsta/martini"
+	"log"
 	"strconv"
 	"sync"
 	"time"
@@ -13,7 +15,8 @@ import (
 )
 
 var (
-	limiter = NewRateLimit()
+	limiter                = NewRateLimit()
+	RateLimitExceededError = errors.New("Rate limit exceeded")
 )
 
 func createMartini() *martini.Martini {
@@ -24,8 +27,32 @@ func createMartini() *martini.Martini {
 
 type CallInfo struct {
 	Count int
-	Time  time.Time
 	Start time.Time
+}
+
+func (c *CallInfo) timeSinceLastReset() time.Duration {
+	return time.Since(c.Start)
+}
+
+func (c *CallInfo) LimitExceeded() bool {
+	dur := c.timeSinceLastReset()
+	return dur < time.Second*20 && c.Count >= 5
+}
+
+func (c *CallInfo) ResetIfNeccesary() {
+	dur := c.timeSinceLastReset()
+	log.Println(dur)
+	if dur > time.Second*20 {
+		log.Println("Resetting")
+		c.Start = time.Now()
+		c.Count = 0
+	} else {
+		log.Println("Not resetting")
+	}
+}
+
+func NewCallInfo() *CallInfo {
+	return &CallInfo{Start: time.Now()}
 }
 
 type RateLimit struct {
@@ -33,14 +60,23 @@ type RateLimit struct {
 	calls map[string]*CallInfo
 }
 
-func (r *RateLimit) IncrementCount(path string) {
+func (r *RateLimit) IncrementCount(path string) error {
 	r.rw.Lock()
 	defer r.rw.Unlock()
+	call := r.calls[path]
 	if r.calls[path] == nil {
-		r.calls[path] = &CallInfo{Start: time.Now()}
+		call = NewCallInfo()
+		r.calls[path] = call
 	}
-	r.calls[path].Count++
-	r.calls[path].Time = time.Now()
+
+	call.ResetIfNeccesary()
+
+	if call.LimitExceeded() {
+		return RateLimitExceededError
+	}
+
+	call.Count++
+	return nil
 }
 
 func (r *RateLimit) GetCount(path string) int {
@@ -58,7 +94,11 @@ func NewRateLimit() *RateLimit {
 
 func rateLimitHandler(res http.ResponseWriter, req *http.Request) {
 	path := req.URL.Path
-	limiter.IncrementCount(path)
+	err := limiter.IncrementCount(path)
+	if err == RateLimitExceededError {
+		http.Error(res, err.Error(), http.StatusForbidden)
+		return
+	}
 	h := res.Header()
 	h.Add("X-Call-Count", strconv.Itoa(limiter.GetCount(path)))
 	h.Add("X-Endpoint", path)
