@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"github.com/codegangsta/martini"
+	"log"
 	"strconv"
 
 	"net/http"
@@ -21,16 +22,29 @@ func createMartini() *martini.Martini {
 	return m
 }
 
-func rateLimitHandler(res http.ResponseWriter, req *http.Request) {
+func rateLimitHandler(res http.ResponseWriter, req *http.Request, ctx martini.Context) {
 	path := req.URL.Path
 	err := limiter.IncrementCount(path)
 	if err == RateLimitExceededError {
 		http.Error(res, err.Error(), http.StatusForbidden)
 		return
 	}
-	h := res.Header()
-	h.Add("X-Call-Count", strconv.Itoa(limiter.GetCount(path)))
-	h.Add("X-Endpoint", path)
+
+	rw := res.(martini.ResponseWriter)
+	rw.Before(func(martini.ResponseWriter) {
+		if rw.Status() != 404 {
+			log.Println(rw.Status())
+			h := rw.Header()
+			h.Add("X-Call-Count", strconv.Itoa(limiter.GetCount(path)))
+			h.Add("X-Endpoint", path)
+		}
+	})
+
+	ctx.Next()
+
+	if rw.Status() == 404 {
+		limiter.Forget(path)
+	}
 }
 
 func main() {

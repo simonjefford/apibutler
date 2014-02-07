@@ -1,6 +1,9 @@
 package main
 
-import "sync"
+import (
+	"log"
+	"sync"
+)
 
 type RateLimit struct {
 	rw    sync.RWMutex
@@ -24,6 +27,13 @@ func (r *RateLimit) IncrementCount(path string) error {
 
 	call.Count++
 	return nil
+}
+
+func (r *RateLimit) Forget(path string) {
+	log.Println("Now forgetting")
+	r.rw.Lock()
+	defer r.rw.Unlock()
+	delete(r.calls, path)
 }
 
 func (r *RateLimit) GetCount(path string) int {
