@@ -21,6 +21,8 @@ var (
 func createMartini() *martini.Martini {
 	m := martini.New()
 	m.Use(martini.Logger())
+	l := log.New(os.Stdout, "[martini ratelimiter] ", 0)
+	m.Map(l)
 	return m
 }
 
