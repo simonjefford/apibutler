@@ -1,9 +1,6 @@
 package main
 
-import (
-	"log"
-	"time"
-)
+import "time"
 
 type CallInfo struct {
 	Count int
@@ -21,13 +18,9 @@ func (c *CallInfo) LimitExceeded() bool {
 
 func (c *CallInfo) ResetIfNeccesary() {
 	dur := c.timeSinceLastReset()
-	log.Println(dur)
 	if dur > time.Second*20 {
-		log.Println("Resetting")
 		c.Start = time.Now()
 		c.Count = 0
-	} else {
-		log.Println("Not resetting")
 	}
 }
 
