@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"github.com/codegangsta/martini"
-	"log"
 	"strconv"
 
 	"net/http"
@@ -32,12 +31,9 @@ func rateLimitHandler(res http.ResponseWriter, req *http.Request, ctx martini.Co
 
 	rw := res.(martini.ResponseWriter)
 	rw.Before(func(martini.ResponseWriter) {
-		if rw.Status() != 404 {
-			log.Println(rw.Status())
-			h := rw.Header()
-			h.Add("X-Call-Count", strconv.Itoa(limiter.GetCount(path)))
-			h.Add("X-Endpoint", path)
-		}
+		h := rw.Header()
+		h.Add("X-Call-Count", strconv.Itoa(limiter.GetCount(path)))
+		h.Add("X-Endpoint", path)
 	})
 
 	ctx.Next()
