@@ -1,8 +1,13 @@
 package main
 
 import (
+	"errors"
 	"log"
 	"sync"
+)
+
+var (
+	PathNotKnown = errors.New("Path not known")
 )
 
 type RateLimit struct {
@@ -10,13 +15,22 @@ type RateLimit struct {
 	calls map[string]*CallInfo
 }
 
+func (r *RateLimit) AddPath(path string) {
+	r.rw.Lock()
+	defer r.rw.Unlock()
+
+	if r.calls[path] == nil {
+		r.calls[path] = NewCallInfo()
+	}
+}
+
 func (r *RateLimit) IncrementCount(path string) error {
 	r.rw.Lock()
 	defer r.rw.Unlock()
 	call := r.calls[path]
+
 	if r.calls[path] == nil {
-		call = NewCallInfo()
-		r.calls[path] = call
+		return nil
 	}
 
 	call.ResetIfNeccesary()
@@ -36,16 +50,26 @@ func (r *RateLimit) Forget(path string) {
 	delete(r.calls, path)
 }
 
-func (r *RateLimit) GetCount(path string) int {
+func (r *RateLimit) GetCount(path string) (int, error) {
 	r.rw.RLock()
 	defer r.rw.RUnlock()
-	return r.calls[path].Count
+
+	if r.calls[path] == nil {
+		return 0, PathNotKnown
+	}
+
+	return r.calls[path].Count, nil
 }
 
-func (r *RateLimit) GetRemaining(path string) int {
+func (r *RateLimit) GetRemaining(path string) (int, error) {
 	r.rw.RLock()
 	defer r.rw.RUnlock()
-	return r.calls[path].Remaining()
+
+	if r.calls[path] == nil {
+		return 0, PathNotKnown
+	}
+
+	return r.calls[path].Remaining(), nil
 }
 
 func NewRateLimit() *RateLimit {
