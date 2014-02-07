@@ -3,6 +3,9 @@ package main
 import (
 	"errors"
 	"github.com/codegangsta/martini"
+	"log"
+	"os"
+	"os/signal"
 	"strconv"
 
 	"net/http"
@@ -43,11 +46,26 @@ func rateLimitHandler(res http.ResponseWriter, req *http.Request, ctx martini.Co
 	}
 }
 
-func main() {
+func startLimitServer() {
 	martini := createMartini()
 	url, _ := url.Parse("http://localhost:3000")
 	proxy := httputil.NewSingleHostReverseProxy(url)
 	martini.Action(proxy.ServeHTTP)
 	martini.Use(rateLimitHandler)
+
 	martini.Run()
+}
+
+func startDashboardServer() {
+	m := martini.Classic()
+	log.Fatalln(http.ListenAndServe(":8080", m))
+}
+
+func main() {
+	go startLimitServer()
+	go startDashboardServer()
+
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+	<-c
 }
