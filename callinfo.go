@@ -15,7 +15,7 @@ func (c *CallInfo) timeSinceLastReset() time.Duration {
 	return time.Since(c.Start)
 }
 
-func (c *CallInfo) LimitExceeded() bool {
+func (c *CallInfo) IsLimitExceeded() bool {
 	dur := c.timeSinceLastReset()
 	return dur < time.Second*20 && c.Count >= 5
 }

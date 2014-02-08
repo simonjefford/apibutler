@@ -35,7 +35,7 @@ func (r *RateLimit) IncrementCount(path string) error {
 
 	call.ResetIfNeccesary()
 
-	if call.LimitExceeded() {
+	if call.IsLimitExceeded() {
 		return RateLimitExceededError
 	}
 
