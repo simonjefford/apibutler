@@ -4,13 +4,12 @@ import (
 	"errors"
 	"github.com/codegangsta/martini"
 	"log"
-	"os"
-	"os/signal"
-	"strconv"
-
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"os"
+	"os/signal"
+	"strconv"
 )
 
 var (
