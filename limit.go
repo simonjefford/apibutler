@@ -50,9 +50,13 @@ func rateLimitHandler(res http.ResponseWriter, req *http.Request, ctx martini.Co
 
 	ctx.Next()
 
-	if rw.Status() == 404 {
+	if statusCodeIsSuccessful(rw.Status()) {
 		limiter.Forget(path)
 	}
+}
+
+func statusCodeIsSuccessful(status int) {
+	return status >= 200 && status <= 299
 }
 
 func startLimitServer() {
