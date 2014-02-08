@@ -54,7 +54,7 @@ func rateLimitHandler(res http.ResponseWriter, req *http.Request, ctx martini.Co
 	}
 }
 
-func statusCodeIsSuccessful(status int) {
+func statusCodeIsSuccessful(status int) bool {
 	return status >= 200 && status <= 299
 }
 
