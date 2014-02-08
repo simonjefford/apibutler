@@ -49,7 +49,7 @@ func rateLimitHandler(res http.ResponseWriter, req *http.Request, ctx martini.Co
 
 	ctx.Next()
 
-	if statusCodeIsSuccessful(rw.Status()) {
+	if !statusCodeIsSuccessful(rw.Status()) {
 		limiter.Forget(path)
 	}
 }
