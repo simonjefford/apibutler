@@ -66,6 +66,8 @@ func startLimitServer() {
 
 type Path struct {
 	Fragment string
+	Limit    int
+	Seconds  int
 }
 
 func startDashboardServer() {
@@ -79,7 +81,7 @@ func startDashboardServer() {
 			http.Error(res, err.Error(), http.StatusBadRequest)
 		} else {
 			log.Println(p)
-			rateLimiter.AddPath(p.Fragment)
+			rateLimiter.AddPath(p.Fragment, p.Limit, p.Seconds)
 			res.WriteHeader(http.StatusCreated)
 		}
 

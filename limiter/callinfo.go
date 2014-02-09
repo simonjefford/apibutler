@@ -3,12 +3,14 @@ package limiter
 import "time"
 
 type CallInfo struct {
-	Count int
-	Start time.Time
+	Count   int
+	Start   time.Time
+	Limit   int
+	Seconds time.Duration
 }
 
 func (c *CallInfo) Remaining() int {
-	return 5 - c.Count
+	return c.Limit - c.Count
 }
 
 func (c *CallInfo) timeSinceLastReset() time.Duration {
@@ -17,17 +19,21 @@ func (c *CallInfo) timeSinceLastReset() time.Duration {
 
 func (c *CallInfo) IsLimitExceeded() bool {
 	dur := c.timeSinceLastReset()
-	return dur < time.Second*20 && c.Count >= 5
+	return dur < c.Seconds && c.Count >= c.Limit
 }
 
 func (c *CallInfo) ResetIfNeccesary() {
 	dur := c.timeSinceLastReset()
-	if dur > time.Second*20 {
+	if dur > c.Seconds {
 		c.Start = time.Now()
 		c.Count = 0
 	}
 }
 
-func NewCallInfo() *CallInfo {
-	return &CallInfo{Start: time.Now()}
+func NewCallInfo(limit int, seconds int) *CallInfo {
+	return &CallInfo{
+		Start:   time.Now(),
+		Limit:   limit,
+		Seconds: time.Duration(seconds) * time.Second,
+	}
 }

@@ -16,12 +16,12 @@ type RateLimit struct {
 	calls map[string]*CallInfo
 }
 
-func (r *RateLimit) AddPath(path string) {
+func (r *RateLimit) AddPath(path string, limit int, seconds int) {
 	r.rw.Lock()
 	defer r.rw.Unlock()
 
 	if r.calls[path] == nil {
-		r.calls[path] = NewCallInfo()
+		r.calls[path] = NewCallInfo(limit, seconds)
 	}
 }
 
