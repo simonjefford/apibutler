@@ -34,15 +34,13 @@ func (r *RateLimit) Paths() []Path {
 	r.rw.RLock()
 	defer r.rw.RUnlock()
 
-	ps := make([]Path, len(r.calls))
-	idx := 0
+	ps := make([]Path, 0, len(r.calls))
 	for path, c := range r.calls {
-		ps[idx] = Path{
+		ps = append(ps, Path{
 			Fragment: path,
 			Limit:    c.Limit,
 			Seconds:  int(c.Seconds / time.Second),
-		}
-		idx++
+		})
 	}
 
 	return ps
