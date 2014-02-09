@@ -80,6 +80,7 @@ func startDashboardServer() {
 			rateLimiter.AddPath(p.Fragment, p.Limit, p.Seconds)
 			res.WriteHeader(http.StatusCreated)
 		}
+	})
 
 	m.Get("/paths", func(r render.Render) {
 		r.JSON(200, rateLimiter.Paths())
