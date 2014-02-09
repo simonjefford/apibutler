@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"github.com/codegangsta/martini"
 	"log"
@@ -68,8 +69,27 @@ func startLimitServer() {
 	martini.Run()
 }
 
+type Path struct {
+	Fragment string
+}
+
 func startDashboardServer() {
 	m := martini.Classic()
+
+	m.Post("/paths", func(res http.ResponseWriter, req *http.Request) {
+		decoder := json.NewDecoder(req.Body)
+		var p Path
+		err := decoder.Decode(&p)
+		if err != nil {
+			http.Error(res, err.Error(), http.StatusBadRequest)
+		} else {
+			log.Println(p)
+			limiter.AddPath(p.Fragment)
+			res.WriteHeader(http.StatusCreated)
+		}
+
+	})
+
 	log.Fatalln(http.ListenAndServe(":8080", m))
 }
 
