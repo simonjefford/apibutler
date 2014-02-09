@@ -27,9 +27,7 @@ func (r *RateLimit) AddPath(path string, limit int, seconds int) {
 	r.rw.Lock()
 	defer r.rw.Unlock()
 
-	if r.calls[path] == nil {
-		r.calls[path] = NewCallInfo(limit, seconds)
-	}
+	r.calls[path] = NewCallInfo(limit, seconds)
 }
 
 func (r *RateLimit) Paths() []Path {
