@@ -51,10 +51,6 @@ func rateLimitHandler(res http.ResponseWriter, req *http.Request, ctx martini.Co
 	ctx.Next()
 }
 
-func statusCodeIsSuccessful(status int) bool {
-	return status >= 200 && status <= 299
-}
-
 func startLimitServer() {
 	martini := createMartini()
 	url, _ := url.Parse("http://localhost:3000")
