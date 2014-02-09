@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
+	"fourth.com/ratelimit/limiter"
 	"github.com/codegangsta/martini"
 	"log"
 	"net/http"
@@ -14,8 +14,7 @@ import (
 )
 
 var (
-	limiter                = NewRateLimit()
-	RateLimitExceededError = errors.New("Rate limit exceeded")
+	rateLimiter = limiter.NewRateLimit()
 )
 
 func createMartini() *martini.Martini {
@@ -28,8 +27,8 @@ func createMartini() *martini.Martini {
 
 func rateLimitHandler(res http.ResponseWriter, req *http.Request, ctx martini.Context) {
 	path := req.URL.Path
-	err := limiter.IncrementCount(path)
-	if err == RateLimitExceededError {
+	err := rateLimiter.IncrementCount(path)
+	if err == limiter.RateLimitExceededError {
 		http.Error(res, err.Error(), http.StatusForbidden)
 		return
 	}
@@ -37,12 +36,12 @@ func rateLimitHandler(res http.ResponseWriter, req *http.Request, ctx martini.Co
 	rw := res.(martini.ResponseWriter)
 	rw.Before(func(martini.ResponseWriter) {
 		h := rw.Header()
-		count, err := limiter.GetCount(path)
+		count, err := rateLimiter.GetCount(path)
 		if err == nil {
 			h.Add("X-Call-Count", strconv.Itoa(count))
 		}
 
-		remaining, err := limiter.GetRemaining(path)
+		remaining, err := rateLimiter.GetRemaining(path)
 		if err == nil {
 			h.Add("X-Call-Remaining", strconv.Itoa(remaining))
 		}
@@ -80,7 +79,7 @@ func startDashboardServer() {
 			http.Error(res, err.Error(), http.StatusBadRequest)
 		} else {
 			log.Println(p)
-			limiter.AddPath(p.Fragment)
+			rateLimiter.AddPath(p.Fragment)
 			res.WriteHeader(http.StatusCreated)
 		}
 

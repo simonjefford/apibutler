@@ -1,4 +1,4 @@
-package main
+package limiter
 
 import (
 	"errors"
@@ -7,7 +7,8 @@ import (
 )
 
 var (
-	PathNotKnown = errors.New("Path not known")
+	PathNotKnown           = errors.New("Path not known")
+	RateLimitExceededError = errors.New("Rate limit exceeded")
 )
 
 type RateLimit struct {
