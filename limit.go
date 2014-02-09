@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fourth.com/ratelimit/limiter"
 	"github.com/codegangsta/martini"
+	"github.com/martini-contrib/render"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -64,18 +65,13 @@ func startLimitServer() {
 	martini.Run()
 }
 
-type Path struct {
-	Fragment string
-	Limit    int
-	Seconds  int
-}
-
 func startDashboardServer() {
 	m := martini.Classic()
+	m.Use(render.Renderer())
 
 	m.Post("/paths", func(res http.ResponseWriter, req *http.Request) {
 		decoder := json.NewDecoder(req.Body)
-		var p Path
+		var p limiter.Path
 		err := decoder.Decode(&p)
 		if err != nil {
 			http.Error(res, err.Error(), http.StatusBadRequest)
@@ -85,6 +81,8 @@ func startDashboardServer() {
 			res.WriteHeader(http.StatusCreated)
 		}
 
+	m.Get("/paths", func(r render.Render) {
+		r.JSON(200, rateLimiter.Paths())
 	})
 
 	log.Fatalln(http.ListenAndServe(":8080", m))

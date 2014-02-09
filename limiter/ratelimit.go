@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log"
 	"sync"
+	"time"
 )
 
 var (
@@ -16,6 +17,12 @@ type RateLimit struct {
 	calls map[string]*CallInfo
 }
 
+type Path struct {
+	Fragment string
+	Limit    int
+	Seconds  int
+}
+
 func (r *RateLimit) AddPath(path string, limit int, seconds int) {
 	r.rw.Lock()
 	defer r.rw.Unlock()
@@ -23,6 +30,24 @@ func (r *RateLimit) AddPath(path string, limit int, seconds int) {
 	if r.calls[path] == nil {
 		r.calls[path] = NewCallInfo(limit, seconds)
 	}
+}
+
+func (r *RateLimit) Paths() []Path {
+	r.rw.RLock()
+	defer r.rw.RUnlock()
+
+	ps := make([]Path, len(r.calls))
+	idx := 0
+	for path, c := range r.calls {
+		ps[idx] = Path{
+			Fragment: path,
+			Limit:    c.Limit,
+			Seconds:  int(c.Seconds / time.Second),
+		}
+		idx++
+	}
+
+	return ps
 }
 
 func (r *RateLimit) IncrementCount(path string) error {
