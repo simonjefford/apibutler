@@ -73,7 +73,7 @@ func startDashboardServer() {
 			http.Error(res, err.Error(), http.StatusBadRequest)
 		} else {
 			log.Println(p)
-			rateLimiter.AddPath(p.Fragment, p.Limit, p.Seconds)
+			rateLimiter.AddPath(p)
 			res.WriteHeader(http.StatusCreated)
 		}
 	})

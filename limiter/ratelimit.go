@@ -23,11 +23,11 @@ type Path struct {
 	Seconds  int
 }
 
-func (r *RateLimit) AddPath(path string, limit int, seconds int) {
+func (r *RateLimit) AddPath(p Path) {
 	r.rw.Lock()
 	defer r.rw.Unlock()
 
-	r.calls[path] = NewCallInfo(limit, seconds)
+	r.calls[p.Fragment] = NewCallInfo(p.Limit, p.Seconds)
 }
 
 func (r *RateLimit) Paths() []Path {
