@@ -1,3 +1,5 @@
+var ajax = ic.ajax;
+
 App = Ember.Application.create({
     LOG_TRANSITIONS: true
 });
@@ -10,6 +12,6 @@ App.Router.map(function() {
 
 App.PathsIndexRoute = Ember.Route.extend({
     model: function() {
-        return { page: "paths "};
+        return ajax('/paths');
     }
 });
