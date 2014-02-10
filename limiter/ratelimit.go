@@ -18,9 +18,9 @@ type RateLimit struct {
 }
 
 type Path struct {
-	Fragment string
-	Limit    int
-	Seconds  int
+	Fragment string `json:"fragment"`
+	Limit    int    `json:"limit"`
+	Seconds  int    `json:"seconds"`
 }
 
 func (r *RateLimit) AddPath(p Path) {
