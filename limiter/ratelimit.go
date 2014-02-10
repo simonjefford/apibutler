@@ -51,7 +51,7 @@ func (r *RateLimit) IncrementCount(path string) error {
 	defer r.rw.Unlock()
 	call := r.calls[path]
 
-	if r.calls[path] == nil {
+	if call == nil {
 		return nil
 	}
 
