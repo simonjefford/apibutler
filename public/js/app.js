@@ -2,13 +2,14 @@ App = Ember.Application.create({
     LOG_TRANSITIONS: true
 });
 
-
 App.Router.map(function() {
-    // put your routes here
+    this.resource("paths", function() {
+        this.route('new');
+    });
 });
 
-App.IndexRoute = Ember.Route.extend({
+App.PathsIndexRoute = Ember.Route.extend({
     model: function() {
-        return ['red', 'yellow', 'blue'];
+        return { page: "paths "};
     }
 });
