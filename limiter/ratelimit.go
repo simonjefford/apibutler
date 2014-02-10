@@ -2,6 +2,7 @@ package limiter
 
 import (
 	"errors"
+	"github.com/garyburd/redigo/redis"
 	"log"
 	"sync"
 	"time"
@@ -15,6 +16,7 @@ var (
 type RateLimit struct {
 	rw    sync.RWMutex
 	calls map[string]*CallInfo
+	rdb   redis.Conn
 }
 
 type Path struct {
@@ -94,8 +96,13 @@ func (r *RateLimit) GetRemaining(path string) (int, error) {
 	return r.calls[path].Remaining(), nil
 }
 
-func NewRateLimit() *RateLimit {
+func NewRateLimit() (*RateLimit, error) {
+	conn, err := redis.Dial("tcp", ":6379")
+	if err != nil {
+		return nil, err
+	}
 	return &RateLimit{
 		calls: make(map[string]*CallInfo),
-	}
+		rdb:   conn,
+	}, nil
 }
