@@ -10,7 +10,7 @@ App.Router.map(function() {
     });
 });
 
-App.PathsIndexRoute = Ember.Route.extend({
+App.PathsRoute = Ember.Route.extend({
     model: function() {
         return ajax('/paths');
     }

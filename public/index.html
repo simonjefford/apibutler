@@ -17,13 +17,12 @@
     {{#link-to 'paths.index'}}Paths{{/link-to}}
   </script>
 
-  <script type="text/x-handlebars" id="paths">
-    <h3>Paths</h3>
-    {{outlet}}
+  <script type="text/x-handlebars" id="paths/index">
+    {{#link-to 'paths.new'}}Add{{/link-to}}
   </script>
 
 
-  <script type="text/x-handlebars" id="paths/index">
+  <script type="text/x-handlebars" id="paths">
     <table>
       <thead>
         <tr>
@@ -42,6 +41,15 @@
         {{/each}}
       </tbody>
     </table>
+
+    <div id="pathsOutlet">
+      {{outlet}}
+    </div>
+  </script>
+
+  <script type="text/x-handlebars" id="paths/new">
+    Now adding a new path
+    <p>{{#link-to "paths.index"}}Cancel{{/link-to}}</p>
   </script>
 
   <script type="text/x-handlebars" id="loading">
