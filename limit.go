@@ -61,11 +61,15 @@ func startLimitServer() {
 	martini.Run()
 }
 
+type StatusResponse struct {
+	Message string `json:message`
+}
+
 func startDashboardServer() {
 	m := martini.Classic()
 	m.Use(render.Renderer())
 
-	m.Post("/paths", func(res http.ResponseWriter, req *http.Request) {
+	m.Post("/paths", func(res http.ResponseWriter, req *http.Request, r render.Render) {
 		decoder := json.NewDecoder(req.Body)
 		var p limiter.Path
 		err := decoder.Decode(&p)
@@ -74,7 +78,7 @@ func startDashboardServer() {
 		} else {
 			log.Println(p)
 			rateLimiter.AddPath(p)
-			res.WriteHeader(http.StatusCreated)
+			r.JSON(http.StatusCreated, StatusResponse{"Created"})
 		}
 	})
 
