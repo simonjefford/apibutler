@@ -2,6 +2,8 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
+	"fmt"
 	"fourth.com/ratelimit/limiter"
 	"github.com/codegangsta/martini"
 	"github.com/martini-contrib/render"
@@ -13,6 +15,31 @@ import (
 	"os/signal"
 	"strconv"
 )
+
+type options struct {
+	proxyPort     int
+	dashboardPort int
+	publicPath    string
+}
+
+var (
+	opts options
+)
+
+func (o options) proxyPortString() string {
+	return fmt.Sprintf(":%d", o.proxyPort)
+}
+
+func (o options) dashboardPortString() string {
+	return fmt.Sprintf(":%d", o.dashboardPort)
+}
+
+func init() {
+	flag.IntVar(&opts.proxyPort, "proxyPort", 4000, "Port on which to run the rate limiting proxy")
+	flag.IntVar(&opts.dashboardPort, "dashboardPort", 8080, "Port on which to run the dashboard webapp")
+	flag.StringVar(&opts.publicPath, "publicPath", "public", "Folder containing the webapp static assets")
+	flag.Parse()
+}
 
 func createMartini(r *limiter.RateLimit) *martini.Martini {
 	m := martini.New()
@@ -55,7 +82,8 @@ func startLimitServer(r *limiter.RateLimit) {
 	martini.Action(proxy.ServeHTTP)
 	martini.Use(rateLimitHandler)
 
-	martini.Run()
+	log.Println("Running proxy on", opts.proxyPortString())
+	log.Fatalln(http.ListenAndServe(opts.proxyPortString(), martini))
 }
 
 type StatusResponse struct {
@@ -83,7 +111,8 @@ func startDashboardServer(r *limiter.RateLimit) {
 		rdr.JSON(200, r.Paths())
 	})
 
-	log.Fatalln(http.ListenAndServe(":8080", m))
+	log.Println("Running dashboard on", opts.dashboardPortString())
+	log.Fatalln(http.ListenAndServe(opts.dashboardPortString(), m))
 }
 
 func main() {
