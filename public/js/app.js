@@ -12,7 +12,11 @@ App.Router.map(function() {
 
 App.PathsRoute = Ember.Route.extend({
     model: function() {
-        return ajax('/paths');
+        return ajax('/paths').then(function(paths) {
+            return paths.map(function(path) {
+                return App.Path.create(path);
+            });
+        });
     }
 });
 
