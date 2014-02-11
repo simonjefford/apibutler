@@ -22,5 +22,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.provision "docker"
-  config.vm.provision "shell", inline: "su vagrant -c 'if [ ! -f /home/vagrant/.ssh/id_rsa.pub ]; then ssh-keygen -t rsa -f /home/vagrant/.ssh/id_rsa; fi'"
+  config.vm.provision "shell", path: "provision.sh"
 end
