@@ -1,7 +1,9 @@
 package limiter
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/garyburd/redigo/redis"
 	"log"
 	"sync"
@@ -25,11 +27,22 @@ type Path struct {
 	Seconds  int    `json:"seconds"`
 }
 
+func redisConfigKeyForPath(p string) string {
+	return fmt.Sprintf("%s:config", p)
+}
+
 func (r *RateLimit) AddPath(p Path) {
 	r.rw.Lock()
 	defer r.rw.Unlock()
 
 	r.calls[p.Fragment] = NewCallInfo(p.Limit, p.Seconds)
+
+	r.rdb.Do("RPUSH", "knownPaths", p.Fragment)
+
+	enc, _ := json.Marshal(p)
+
+	err, ret := r.rdb.Do("SET", redisConfigKeyForPath(p.Fragment), string(enc))
+	fmt.Println(err, ret)
 }
 
 func (r *RateLimit) Paths() []Path {
@@ -96,13 +109,62 @@ func (r *RateLimit) GetRemaining(path string) (int, error) {
 	return r.calls[path].Remaining(), nil
 }
 
+func (r *RateLimit) loadPaths() error {
+	n, err := redis.Int(r.rdb.Do("LLEN", "knownPaths"))
+	if err != nil {
+		return err
+	}
+
+	log.Println(n, "known paths")
+
+	if n == 0 {
+		return nil
+	}
+
+	paths, err := redis.Strings(r.rdb.Do("LRANGE", "knownPaths", 0, n))
+
+	if err != nil {
+		return err
+	}
+
+	for idx := range paths {
+		err = r.rdb.Send("GET", redisConfigKeyForPath(paths[idx]))
+		if err != nil {
+			return err
+		}
+	}
+
+	r.rdb.Flush()
+
+	for _ = range paths {
+		config, err := redis.String(r.rdb.Receive())
+		if err != nil {
+			return err
+		}
+		var p Path
+		json.Unmarshal([]byte(config), &p)
+		r.calls[p.Fragment] = NewCallInfo(p.Limit, p.Seconds)
+	}
+
+	return nil
+}
+
 func NewRateLimit() (*RateLimit, error) {
 	conn, err := redis.Dial("tcp", ":6379")
 	if err != nil {
 		return nil, err
 	}
-	return &RateLimit{
+
+	r := &RateLimit{
 		calls: make(map[string]*CallInfo),
 		rdb:   conn,
-	}, nil
+	}
+
+	err = r.loadPaths()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return r, nil
 }
