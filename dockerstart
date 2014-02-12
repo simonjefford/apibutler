@@ -1,2 +1,2 @@
 /etc/init.d/redis-server start
-PORT=4000 /usr/local/bin/ratelimit
+/srv/ratelimit -publicPath="/srv/public"

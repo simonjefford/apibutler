@@ -91,7 +91,15 @@ type StatusResponse struct {
 }
 
 func startDashboardServer(r *limiter.RateLimit) {
-	m := martini.Classic()
+	rtr := martini.NewRouter()
+	mt := martini.New()
+	mt.Use(martini.Logger())
+	mt.Use(martini.Recovery())
+	mt.Use(martini.Static(opts.publicPath))
+	mt.Action(rtr.Handle)
+
+	m := &martini.ClassicMartini{mt, rtr}
+
 	m.Use(render.Renderer())
 
 	m.Post("/paths", func(res http.ResponseWriter, req *http.Request, rdr render.Render) {
