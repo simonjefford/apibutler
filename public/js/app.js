@@ -1,11 +1,11 @@
 var ajax = ic.ajax;
 
-App = Ember.Application.create({
+var App = Ember.Application.create({
     LOG_TRANSITIONS: true
 });
 
 App.Router.map(function() {
-    this.resource("paths", function() {
+    this.resource('paths', function() {
         this.route('new');
     });
 });
@@ -38,7 +38,7 @@ App.PathsNewRoute = Ember.Route.extend({
     actions: {
         save: function(model) {
             var self = this;
-            console.log("Now saving %o", JSON.stringify(model));
+            console.log('Now saving %o', JSON.stringify(model));
             ajax('/paths', {
                 data: JSON.stringify(model.get('objectForSaving')),
                 type: 'POST',

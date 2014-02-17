@@ -1,0 +1,17 @@
+{
+  "name": "ratelimit",
+  "version": "0.0.0",
+  "description": "POC ratelimit server",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-contrib-jshint": "~0.8.0"
+  }
+}
