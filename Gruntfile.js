@@ -11,5 +11,5 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.loadNpmTasks('grunt-contrib-jshint')
+    require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 };
