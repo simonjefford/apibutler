@@ -2,3 +2,5 @@
 .gopath
 testbackend/node_modules
 node_modules
+/public/js/app.min.js
+/public/js/app.min.map
