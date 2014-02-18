@@ -7,7 +7,7 @@ RUN cp -R node-v0.10.25-linux-x64/* /usr/local
 ADD redis.conf /etc/redis/redis.conf
 ADD ratelimit /srv/ratelimit
 ADD dockerstart /srv/dockerstart
-ADD public /srv/public
+ADD public/dist /srv/public
 ADD testbackend /srv/testbackend
 RUN cd /srv/testbackend && npm install
 ENTRYPOINT /srv/dockerstart
