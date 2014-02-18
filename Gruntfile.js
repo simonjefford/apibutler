@@ -8,24 +8,33 @@ module.exports = function(grunt) {
                 jshintrc: true
             }
         },
-        uglify: {
+        useminPrepare: {
+            html: 'public/index.html',
+            options: {
+                dest: 'public/dist'
+            }
+        },
+        usemin: {
+            html: 'public/dist/index.html',
+            options: {
+                dirs: ['public/dist']
+            }
+        },
+        copy: {
             dist: {
-                options: {
-                    sourceMap: true
-                },
-                files: {
-                    'public/js/app.min.js': [
-                        'public/js/libs/jquery-2.0.0.js',
-                        'public/js/libs/handlebars-1.1.2.js',
-                        'public/js/libs/ember-1.3.1.js',
-                        'public/js/libs/ic-ajax.js',
-                        'public/js/libs/ember-easyform.js',
-                        'public/js/app.js'
-                    ]
-                }
+                src: 'public/index.html',
+                dest: 'public/dist/index.html'
             }
         }
     });
 
     require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
+
+    grunt.registerTask('build', [
+        'useminPrepare',
+        'concat',
+        'uglify',
+        'copy',
+        'usemin'
+    ]);
 };
