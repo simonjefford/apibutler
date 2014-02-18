@@ -35,7 +35,7 @@ module.exports = function(grunt) {
             },
             dist: {
                 files: {
-                    '.tmp/scripts/compiled-templates.js': 'public/templates/{,*/}*.hbs'
+                    '.tmp/compiled-templates.js': 'public/templates/{,*/}*.hbs'
                 }
             }
         }
@@ -45,6 +45,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('build', [
         'useminPrepare',
+        'emberTemplates',
         'concat',
         'uglify',
         'cssmin',

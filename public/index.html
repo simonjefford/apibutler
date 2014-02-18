@@ -9,57 +9,6 @@
   <!-- endbuild -->
 </head>
 <body>
-  <script type="text/x-handlebars">
-    <h2>{{#link-to "index"}}Fourth Api Management{{/link-to}}</h2>
-
-    {{outlet}}
-  </script>
-
-  <script type="text/x-handlebars" id="index">
-    {{#link-to 'paths.index'}}Paths{{/link-to}}
-  </script>
-
-  <script type="text/x-handlebars" id="paths/index">
-    {{#link-to 'paths.new'}}Add{{/link-to}}
-  </script>
-
-
-  <script type="text/x-handlebars" id="paths">
-    <table>
-      <thead>
-        <tr>
-          <th>Path</th>
-          <th>Limit</th>
-          <th>Duration</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{#each item in model}}
-        <tr class="path">
-          <td>{{item.fragment}}</td>
-          <td>{{item.limit}}</td>
-          <td>{{item.seconds}}s</td>
-        </tr>
-        {{/each}}
-      </tbody>
-    </table>
-
-    <div id="pathsOutlet">
-      {{outlet}}
-    </div>
-  </script>
-
-  <script type="text/x-handlebars" id="paths/new">
-    {{#form-for model}}
-      {{input fragment label="Path"}}
-      {{input limit}}
-      {{input seconds}}
-    {{/form-for}}
-
-    <p><button id="save" {{action "save" model}}>Save</button></p>
-    <p>{{#link-to 'paths'}}Cancel{{/link-to}}</p>
-  </script>
-
   <script type="text/x-handlebars" id="loading">
     Loading
   </script>
@@ -72,7 +21,8 @@
   <script src="js/libs/ember-easyform.js"></script>
   <script src="js/app.js"></script>
   <!-- endbuild -->
-  <!-- to activate the test runner, add the "?test" query string parameter -->
-  <script src="tests/runner.js"></script>
+  <!-- build:js(.tmp) compiled-templates.js -->
+  <script src="compiled-templates.js"></script>
+  <!-- endbuild -->
 </body>
 </html>
