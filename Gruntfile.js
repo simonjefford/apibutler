@@ -38,6 +38,22 @@ module.exports = function(grunt) {
                     '.tmp/compiled-templates.js': 'public/templates/{,*/}*.hbs'
                 }
             }
+        },
+        compass: {
+            options: {
+                sassDir: 'public/css',
+                cssDir: '.tmp/css',
+                generatedImagesDir: '.tmp/images/generated',
+                imagesDir: 'public/images',
+                javascriptsDir: 'public/js',
+                fontsDir: 'public/css/fonts',
+                importPath: 'bower_components',
+                // httpImagesPath: '/images',
+                // httpGeneratedImagesPath: '/images/generated',
+                // httpFontsPath: '/styles/fonts',
+                relativeAssets: false
+            },
+            dist: {}
         }
     });
 
@@ -46,6 +62,7 @@ module.exports = function(grunt) {
     grunt.registerTask('build', [
         'useminPrepare',
         'emberTemplates',
+        'compass',
         'concat',
         'uglify',
         'cssmin',
