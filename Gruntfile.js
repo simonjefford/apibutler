@@ -54,12 +54,23 @@ module.exports = function(grunt) {
                 relativeAssets: false
             },
             dist: {}
+        },
+        clean: {
+            dist: {
+                files: [{
+                    src: [
+                        '.tmp',
+                        'public/dist'
+                    ]
+                }]
+            },
         }
     });
 
     require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
     grunt.registerTask('build', [
+        'clean:dist',
         'useminPrepare',
         'emberTemplates',
         'compass',
