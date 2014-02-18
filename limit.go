@@ -13,6 +13,7 @@ import (
 	"net/url"
 	"os"
 	"os/signal"
+	"runtime"
 	"strconv"
 )
 
@@ -124,6 +125,8 @@ func startDashboardServer(r *limiter.RateLimit) {
 }
 
 func main() {
+	// use all available cores
+	runtime.GOMAXPROCS(runtime.NumCPU())
 	r, err := limiter.NewRateLimit()
 	if err != nil {
 		log.Fatalln(err)
