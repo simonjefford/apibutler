@@ -38,4 +38,9 @@ module.exports = function(grunt) {
         'copy',
         'usemin'
     ]);
+
+    grunt.registerTask('default', [
+        'jshint',
+        'build'
+    ]);
 };
