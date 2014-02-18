@@ -6,6 +6,9 @@ build:
 run: build
 	./ratelimit
 
-container: build
+web:
+	npm install
 	grunt
+
+container: build web
 	docker build -t simonj/ratelimit .
