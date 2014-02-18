@@ -1,0 +1,23 @@
+<table>
+  <thead>
+    <tr>
+      <th>Path</th>
+      <th>Limit</th>
+      <th>Duration</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each item in model}}
+      <tr class="path">
+        <td>{{item.fragment}}</td>
+        <td>{{item.limit}}</td>
+        <td>{{item.seconds}}s</td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
+
+<div id="pathsOutlet">
+  {{outlet}}
+</div>
+

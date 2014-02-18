@@ -25,6 +25,19 @@ module.exports = function(grunt) {
                 src: 'public/index.html',
                 dest: 'public/dist/index.html'
             }
+        },
+        emberTemplates: {
+            options: {
+                templateName: function (sourceFile) {
+                    var templatePath = 'public/templates/';
+                    return sourceFile.replace(templatePath, '');
+                }
+            },
+            dist: {
+                files: {
+                    '.tmp/scripts/compiled-templates.js': 'public/templates/{,*/}*.hbs'
+                }
+            }
         }
     });
 
