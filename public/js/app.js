@@ -30,6 +30,10 @@ App.Path = Ember.Object.extend({
     }.property('fragment', 'limit', 'seconds')
 });
 
+App.NavbarLinkComponent = Ember.Component.extend({
+    tagName: ''
+});
+
 App.PathsNewRoute = Ember.Route.extend({
     model: function() {
         return App.Path.create();
