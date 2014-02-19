@@ -24,6 +24,16 @@ module.exports = function(grunt) {
             dist: {
                 src: 'public/index.html',
                 dest: 'public/dist/index.html'
+            },
+            server: {
+                files: [
+                    {
+                        dest: '.tmp/',
+                        expand: true,
+                        cwd: 'public',
+                        src: ['js/**', 'index.html']
+                    }
+                ]
             }
         },
         emberTemplates: {
@@ -64,6 +74,7 @@ module.exports = function(grunt) {
                     ]
                 }]
             },
+            server: '.tmp'
         }
     });
 
@@ -77,8 +88,15 @@ module.exports = function(grunt) {
         'concat',
         'uglify',
         'cssmin',
-        'copy',
+        'copy:dist',
         'usemin'
+    ]);
+
+    grunt.registerTask('serve', [
+        'clean:server',
+        'copy:server',
+        'emberTemplates',
+        'compass',
     ]);
 
     grunt.registerTask('default', [
