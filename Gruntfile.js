@@ -97,6 +97,23 @@ module.exports = function(grunt) {
                     '.tmp/css/*.css'
                 ]
             }
+        },
+        spawn: {
+            ratelimit: {
+                command: './rateLimit',
+                commandArgs: ['-publicPath=.tmp']
+            }
+        },
+        concurrent: {
+            server: {
+                tasks: [
+                    'spawn:ratelimit',
+                    'watch'
+                ],
+                options: {
+                    logConcurrentOutput: true,
+                }
+            }
         }
     });
 
@@ -119,6 +136,7 @@ module.exports = function(grunt) {
         'copy:server',
         'emberTemplates',
         'compass',
+        'concurrent:server'
     ]);
 
     grunt.registerTask('default', [
