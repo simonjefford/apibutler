@@ -1,3 +1,5 @@
+var LIVERELOAD_PORT = 35729;
+
 module.exports = function(grunt) {
     grunt.initConfig({
         jshint: {
@@ -75,6 +77,26 @@ module.exports = function(grunt) {
                 }]
             },
             server: '.tmp'
+        },
+        watch: {
+            emberTemplates: {
+                files: 'public/templates/**/*.hbs',
+                tasks: ['emberTemplates']
+            },
+            compass: {
+                files: ['public/css/{,*/}*.{scss,sass}'],
+                tasks: ['compass']
+            },
+            livereload: {
+                options: {
+                    livereload: LIVERELOAD_PORT
+                },
+                files: [
+                    '.tmp/**/*.js',
+                    '.tmp/*.html',
+                    '.tmp/css/*.css'
+                ]
+            }
         }
     });
 
