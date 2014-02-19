@@ -58,6 +58,3 @@ App.PathsNewRoute = Ember.Route.extend({
         }
     }
 });
-
-App.PathsNewController = Ember.ObjectController.extend({
-});
