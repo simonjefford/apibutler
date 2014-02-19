@@ -10,13 +10,17 @@ App.Router.map(function() {
     });
 });
 
+var ajaxWithWrapperObject = function(path, klass) {
+    return ajax(path).then(function(array) {
+        return array.map(function(item) {
+            return klass.create(item);
+        });
+    });
+};
+
 App.PathsRoute = Ember.Route.extend({
     model: function() {
-        return ajax('/paths').then(function(paths) {
-            return paths.map(function(path) {
-                return App.Path.create(path);
-            });
-        });
+        return ajaxWithWrapperObject('/paths', App.Path);
     }
 });
 
