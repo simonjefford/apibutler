@@ -87,6 +87,12 @@ module.exports = function(grunt) {
                 files: ['public/css/{,*/}*.{scss,sass}'],
                 tasks: ['compass']
             },
+            copy: {
+                files: [
+                    'public/js/**/*.js'
+                ],
+                tasks: ['copy:server']
+            },
             livereload: {
                 options: {
                     livereload: LIVERELOAD_PORT
