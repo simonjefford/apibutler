@@ -60,9 +60,6 @@ module.exports = function(grunt) {
                 javascriptsDir: 'public/js',
                 fontsDir: 'public/css/fonts',
                 importPath: 'bower_components',
-                // httpImagesPath: '/images',
-                // httpGeneratedImagesPath: '/images/generated',
-                // httpFontsPath: '/styles/fonts',
                 relativeAssets: false
             },
             dist: {}
