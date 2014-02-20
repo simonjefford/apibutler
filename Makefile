@@ -1,14 +1,16 @@
 default: build
 
-build:
+buildbin:
 	./make.sh
 
-run: build
-	./ratelimit
+run: buildbin npm
+	grunt serve
 
-web:
+npm:
 	npm install
+
+buildweb: npm
 	grunt
 
-container: build web
+container: buildbin buildweb
 	docker build -t simonj/ratelimit .
