@@ -89,6 +89,7 @@ module.exports = function(grunt) {
             },
             copy: {
                 files: [
+                    'public/index.html',
                     'public/js/**/*.js'
                 ],
                 tasks: ['copy:server']
