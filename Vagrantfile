@@ -7,20 +7,14 @@ Vagrant.require_version ">= 1.4"
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "precise64-phusion "
+  config.vm.box = "ratelimit "
 
   config.vm.network :forwarded_port, guest: 8080, host: 8081
   config.vm.network :forwarded_port, guest: 4000, host: 4001
+  config.vm.network :forwarded_port, guest: 35729, host: 35729
 
   config.vm.provider :virtualbox do |v, override|
-    override.vm.box_url = "https://oss-binaries.phusionpassenger.com/vagrant/boxes/ubuntu-12.04.3-amd64-vbox.box"
+    override.vm.box_url = "http://sjjvagrantboxes.s3.amazonaws.com/ratelimit.box"
     v.customize ["modifyvm", :id, "--memory", "1024"]
   end
-
-  config.vm.provider :vmware_fusion do |v, override|
-    override.vm.box_url = "https://oss-binaries.phusionpassenger.com/vagrant/boxes/ubuntu-12.04.3-amd64-vmwarefusion.box"
-  end
-
-  config.vm.provision "docker"
-  config.vm.provision "shell", path: "provision.sh"
 end
