@@ -142,7 +142,10 @@ func (r *RateLimit) loadPaths() error {
 			return err
 		}
 		var p Path
-		json.Unmarshal([]byte(config), &p)
+		err = json.Unmarshal([]byte(config), &p)
+		if err != nil {
+			return err
+		}
 		r.calls[p.Fragment] = NewCallInfo(p.Limit, p.Seconds)
 	}
 
