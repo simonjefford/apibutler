@@ -91,19 +91,23 @@ type StatusResponse struct {
 	Message string `json:message`
 }
 
+func newDashboardServer() *martini.ClassicMartini {
+	r := martini.NewRouter()
+	m := martini.New()
+	m.Use(martini.Logger())
+	m.Use(martini.Recovery())
+	m.Use(martini.Static(opts.publicPath))
+	m.Action(r.Handle)
+
+	return &martini.ClassicMartini{m, r}
+}
+
 func startDashboardServer(r *limiter.RateLimit) {
-	rtr := martini.NewRouter()
-	mt := martini.New()
-	mt.Use(martini.Logger())
-	mt.Use(martini.Recovery())
-	mt.Use(martini.Static(opts.publicPath))
-	mt.Action(rtr.Handle)
+	srv := newDashboardServer()
 
-	m := &martini.ClassicMartini{mt, rtr}
+	srv.Use(render.Renderer())
 
-	m.Use(render.Renderer())
-
-	m.Post("/paths", func(res http.ResponseWriter, req *http.Request, rdr render.Render) {
+	srv.Post("/paths", func(res http.ResponseWriter, req *http.Request, rdr render.Render) {
 		decoder := json.NewDecoder(req.Body)
 		var p limiter.Path
 		err := decoder.Decode(&p)
@@ -116,12 +120,12 @@ func startDashboardServer(r *limiter.RateLimit) {
 		}
 	})
 
-	m.Get("/paths", func(rdr render.Render) {
+	srv.Get("/paths", func(rdr render.Render) {
 		rdr.JSON(200, r.Paths())
 	})
 
 	log.Println("Running dashboard on", opts.dashboardPortString())
-	log.Fatalln(http.ListenAndServe(opts.dashboardPortString(), m))
+	log.Fatalln(http.ListenAndServe(opts.dashboardPortString(), srv))
 }
 
 func main() {
