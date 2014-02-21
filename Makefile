@@ -1,4 +1,4 @@
-default: build
+default: buildbin
 
 buildbin:
 	./make.sh
