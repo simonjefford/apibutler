@@ -23,7 +23,7 @@ var ajaxWithWrapperObject = function(path, klass) {
 
 App.PathsRoute = Ember.Route.extend({
     model: function() {
-        return ajaxWithWrapperObject('/paths', App.Path);
+        return App.Path.findAll();
     }
 });
 
@@ -34,7 +34,21 @@ App.Path = Ember.Object.extend({
             limit: parseInt(this.get('limit'), 10),
             seconds:  parseInt(this.get('seconds'), 10)
         };
-    }.property('fragment', 'limit', 'seconds')
+    }.property('fragment', 'limit', 'seconds'),
+
+    save: function() {
+        return ajax('paths', {
+            data: JSON.stringify(this.get('objectForSaving')),
+            type: 'POST',
+            dataType: 'json'
+        });
+    }
+});
+
+App.Path.reopenClass({
+    findAll: function() {
+        return ajaxWithWrapperObject('/paths', App.Path);
+    }
 });
 
 App.NavbarLinkComponent = Ember.Component.extend({
@@ -50,12 +64,7 @@ App.PathsNewRoute = Ember.Route.extend({
         save: function(model) {
             var self = this;
             console.log('Now saving %o', JSON.stringify(model));
-            ajax('/paths', {
-                data: JSON.stringify(model.get('objectForSaving')),
-                type: 'POST',
-                dataType: 'json'
-            }).then(function(result) {
-                console.log('in then');
+            model.save().then(function(result) {
                 self.controllerFor('paths').addObject(model);
                 self.transitionTo('paths.index');
                 return result;
