@@ -112,12 +112,13 @@ func startDashboardServer(r *limiter.RateLimit) {
 		var p limiter.Path
 		err := decoder.Decode(&p)
 		if err != nil {
-			http.Error(res, err.Error(), http.StatusBadRequest)
-		} else {
-			log.Println(p)
-			r.AddPath(p)
-			rdr.JSON(http.StatusCreated, StatusResponse{"Created"})
+			rdr.JSON(http.StatusBadRequest, StatusResponse{err.Error()})
+			return
 		}
+		log.Println(p)
+		r.AddPath(p)
+		rdr.JSON(http.StatusCreated, StatusResponse{"Created"})
+
 	})
 
 	srv.Get("/paths", func(rdr render.Render) {
