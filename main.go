@@ -118,7 +118,6 @@ func startDashboardServer(r *limiter.RateLimit) {
 		log.Println(p)
 		r.AddPath(p)
 		rdr.JSON(http.StatusCreated, StatusResponse{"Created"})
-
 	})
 
 	srv.Get("/paths", func(rdr render.Render) {
