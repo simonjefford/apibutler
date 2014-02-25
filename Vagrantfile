@@ -15,6 +15,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provider :virtualbox do |v, override|
     override.vm.box_url = "http://sjjvagrantboxes.s3.amazonaws.com/ratelimit.box"
-    v.customize ["modifyvm", :id, "--memory", "1024"]
+    v.customize ["modifyvm", :id, "--memory", "2048"]
   end
 end
