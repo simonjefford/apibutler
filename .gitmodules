@@ -1,0 +1,6 @@
+[submodule "vendor/src/github.com/nickstenning/router"]
+	path = vendor/src/github.com/nickstenning/router
+	url = https://github.com/nickstenning/router/
+[submodule "vendor/src/github.com/nickstenning/trie"]
+	path = vendor/src/github.com/nickstenning/trie
+	url = https://github.com/nickstenning/trie
