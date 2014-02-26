@@ -1,20 +1,16 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
+	"fourth.com/ratelimit/apiproxyserver"
+	"fourth.com/ratelimit/dashboard"
 	"fourth.com/ratelimit/limiter"
-	"github.com/codegangsta/martini"
-	"github.com/martini-contrib/render"
 	"log"
 	"net/http"
-	"net/http/httputil"
-	"net/url"
 	"os"
 	"os/signal"
 	"runtime"
-	"strconv"
 )
 
 type options struct {
@@ -42,90 +38,16 @@ func init() {
 	flag.Parse()
 }
 
-func createMartini(r *limiter.RateLimit) *martini.Martini {
-	m := martini.New()
-	m.Use(martini.Logger())
-	l := log.New(os.Stdout, "[martini ratelimiter] ", 0)
-	m.Map(l)
-	m.Map(r)
-	return m
-}
-
-func rateLimitHandler(res http.ResponseWriter, req *http.Request, ctx martini.Context, r *limiter.RateLimit) {
-	path := req.URL.Path
-	err := r.IncrementCount(path)
-	if err == limiter.RateLimitExceededError {
-		http.Error(res, err.Error(), http.StatusForbidden)
-		return
-	}
-
-	rw := res.(martini.ResponseWriter)
-	rw.Before(func(martini.ResponseWriter) {
-		h := rw.Header()
-		count, err := r.GetCount(path)
-		if err == nil {
-			h.Add("X-Call-Count", strconv.Itoa(count))
-		}
-
-		remaining, err := r.GetRemaining(path)
-		if err == nil {
-			h.Add("X-Call-Remaining", strconv.Itoa(remaining))
-		}
-	})
-
-	ctx.Next()
-}
-
 func startLimitServer(r *limiter.RateLimit) {
-	martini := createMartini(r)
-	url, _ := url.Parse("http://localhost:3000")
-	proxy := httputil.NewSingleHostReverseProxy(url)
-	martini.Action(proxy.ServeHTTP)
-	martini.Use(rateLimitHandler)
-
+	server := apiproxyserver.NewProxyServer(r)
 	log.Println("Running proxy on", opts.proxyPortString())
-	log.Fatalln(http.ListenAndServe(opts.proxyPortString(), martini))
-}
-
-type StatusResponse struct {
-	Message string `json:message`
-}
-
-func newDashboardServer() *martini.ClassicMartini {
-	r := martini.NewRouter()
-	m := martini.New()
-	m.Use(martini.Logger())
-	m.Use(martini.Recovery())
-	m.Use(martini.Static(opts.publicPath))
-	m.Action(r.Handle)
-
-	return &martini.ClassicMartini{m, r}
+	log.Fatalln(http.ListenAndServe(opts.proxyPortString(), server))
 }
 
 func startDashboardServer(r *limiter.RateLimit) {
-	srv := newDashboardServer()
-
-	srv.Use(render.Renderer())
-
-	srv.Post("/paths", func(res http.ResponseWriter, req *http.Request, rdr render.Render) {
-		decoder := json.NewDecoder(req.Body)
-		var p limiter.Path
-		err := decoder.Decode(&p)
-		if err != nil {
-			rdr.JSON(http.StatusBadRequest, StatusResponse{err.Error()})
-			return
-		}
-		log.Println(p)
-		r.AddPath(p)
-		rdr.JSON(http.StatusCreated, StatusResponse{"Created"})
-	})
-
-	srv.Get("/paths", func(rdr render.Render) {
-		rdr.JSON(200, r.Paths())
-	})
-
+	server := dashboard.NewDashboardServer(r, opts.publicPath)
 	log.Println("Running dashboard on", opts.dashboardPortString())
-	log.Fatalln(http.ListenAndServe(opts.dashboardPortString(), srv))
+	log.Fatalln(http.ListenAndServe(opts.dashboardPortString(), server))
 }
 
 func main() {
