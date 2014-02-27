@@ -1,23 +1,31 @@
 package apiproxyserver
 
 import (
+	"fourth.com/ratelimit/applications"
 	"fourth.com/ratelimit/limiter"
+	"fourth.com/ratelimit/routes"
 	"github.com/codegangsta/martini"
+	"github.com/nickstenning/router/triemux"
 	"log"
 	"net/http"
-	"net/http/httputil"
-	"net/url"
 	"os"
 	"strconv"
 )
 
 func NewProxyServer(r *limiter.RateLimit) http.Handler {
 	m := createMartini(r)
-	url, _ := url.Parse("http://localhost:3000")
-	proxy := httputil.NewSingleHostReverseProxy(url)
-	m.Action(proxy.ServeHTTP)
-	m.Use(rateLimitHandler)
+	apps := applications.Get()
+	mux := triemux.NewMux()
 
+	for _, route := range routes.Get() {
+		app, ok := apps[route.ApplicationName]
+		if ok {
+			mux.Handle(route.Path, route.IsPrefix, app.ProxyServer())
+		}
+	}
+
+	m.Action(mux.ServeHTTP)
+	m.Use(rateLimitHandler)
 	return m
 }
 
