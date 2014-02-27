@@ -3,13 +3,16 @@ default: buildbin
 buildbin:
 	./make.sh
 
-run: buildbin npm
+run: buildbin npm bower
 	grunt serve
 
 npm:
 	npm install
 
-buildweb: npm
+bower:
+	bower install
+
+buildweb: npm bower
 	grunt
 
 container: buildbin buildweb
