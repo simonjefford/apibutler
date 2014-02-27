@@ -4,3 +4,16 @@
 [submodule "vendor/src/github.com/nickstenning/trie"]
 	path = vendor/src/github.com/nickstenning/trie
 	url = https://github.com/nickstenning/trie
+[submodule "vendor/src/github.com/codegangsta/inject"]
+	path = vendor/src/github.com/codegangsta/inject
+	url = https://github.com/codegangsta/inject
+[submodule "vendor/src/github.com/codegangsta/martini"]
+	path = vendor/src/github.com/codegangsta/martini
+	url = https://github.com/codegangsta/martini
+[submodule "vendor/src/github.com/garyburd/redigo"]
+	path = vendor/src/github.com/garyburd/redigo
+	url = https://github.com/garyburd/redigo
+[submodule "vendor/src/github.com/martini-contrib/render"]
+	path = vendor/src/github.com/martini-contrib/render
+	url = https://github.com/martini-contrib/render
+
