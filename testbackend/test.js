@@ -43,6 +43,14 @@ anotherapp.get('/recipes/other', function(req, res) {
     });
 });
 
+anotherapp.get('/stock/*|/stock', function(req, res) {
+    res.send({
+        response: {
+            backend: 'stock'
+        }
+    });
+});
+
 anotherapp.listen(3001);
 
 console.log('running');

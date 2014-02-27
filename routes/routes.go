@@ -18,5 +18,10 @@ func Get() []Route {
 			ApplicationName: "Another test node backend",
 			IsPrefix:        true,
 		},
+		Route{
+			Path:            "/stock",
+			ApplicationName: "Another test node backend",
+			IsPrefix:        true,
+		},
 	}
 }
