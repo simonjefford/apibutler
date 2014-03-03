@@ -63,7 +63,7 @@ module.exports = function(grunt) {
                 imagesDir: 'frontend/images',
                 javascriptsDir: 'frontend/js',
                 fontsDir: 'frontend/css/fonts',
-                importPath: 'bower_components',
+                importPath: 'frontend/bower_components',
                 relativeAssets: false
             },
             dist: {}
