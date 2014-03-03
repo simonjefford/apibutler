@@ -2,6 +2,7 @@ package dashboard
 
 import (
 	"encoding/json"
+	"fourth.com/ratelimit/applications"
 	"fourth.com/ratelimit/limiter"
 	"github.com/codegangsta/martini"
 	"github.com/martini-contrib/render"
@@ -31,11 +32,16 @@ func setupRouter(m *martini.Martini) {
 	r := martini.NewRouter()
 	r.Post("/paths", pathsPostHandler)
 	r.Get("/paths", pathsGetHandler)
+	r.Get("/apps", appsGetHandler)
 	m.Action(r.Handle)
 }
 
 func pathsGetHandler(rdr render.Render) {
 	rdr.JSON(200, ratelimiter.Paths())
+}
+
+func appsGetHandler(rdr render.Render) {
+	rdr.JSON(200, applications.Get())
 }
 
 type statusResponse struct {

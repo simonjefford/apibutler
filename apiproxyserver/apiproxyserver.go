@@ -20,7 +20,7 @@ func NewProxyServer(r *limiter.RateLimit) http.Handler {
 	for _, route := range routes.Get() {
 		app, ok := apps[route.ApplicationName]
 		if ok {
-			mux.Handle(route.Path, route.IsPrefix, app.ProxyServer())
+			mux.Handle(route.Path, route.IsPrefix, app)
 		}
 	}
 

@@ -6,35 +6,37 @@ import (
 	"net/url"
 )
 
-type Application struct {
-	Name       string
-	BackendURL *url.URL
-	handler    http.Handler
+var (
+	apps ApplicationTable
+)
+
+type application struct {
+	Name             string `json:"name"`
+	backendURL       *url.URL
+	BackendURLString string `json:"backendURL"`
+	http.Handler     `json:"-"`
 }
 
-type ApplicationTable map[string]*Application
+type ApplicationTable map[string]http.Handler
 
-func (a *Application) ProxyServer() http.Handler {
-	if a.handler == nil {
-		a.handler = httputil.NewSingleHostReverseProxy(a.BackendURL)
+func newApp(name, urlString string) *application {
+	parsed, _ := url.Parse(urlString)
+	return &application{
+		Name:             name,
+		BackendURLString: urlString,
+		backendURL:       parsed,
+		Handler:          httputil.NewSingleHostReverseProxy(parsed),
 	}
+}
 
-	return a.handler
+func init() {
+	m := make(map[string]http.Handler)
+	m["Test node backend"] = newApp("Test node backend", "http://localhost:3000")
+	m["Another test node backend"] = newApp("Another test node backend", "http://localhost:3001")
+
+	apps = ApplicationTable(m)
 }
 
 func Get() ApplicationTable {
-	m := make(map[string]*Application)
-	backend, _ := url.Parse("http://localhost:3000")
-	m["Test node backend"] = &Application{
-		Name:       "Test node backend",
-		BackendURL: backend,
-	}
-
-	backend, _ = url.Parse("http://localhost:3001")
-	m["Another test node backend"] = &Application{
-		Name:       "Another test node backend",
-		BackendURL: backend,
-	}
-
-	return ApplicationTable(m)
+	return apps
 }
