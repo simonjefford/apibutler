@@ -4,35 +4,35 @@ module.exports = function(grunt) {
     grunt.initConfig({
         jshint: {
             all: {
-                src: ['public/js/app.js']
+                src: ['frontend/js/app.js']
             },
             options: {
                 jshintrc: true
             }
         },
         useminPrepare: {
-            html: 'public/index.html',
+            html: 'frontend/index.html',
             options: {
-                dest: 'public/dist'
+                dest: 'frontend/dist'
             }
         },
         usemin: {
-            html: 'public/dist/index.html',
+            html: 'frontend/dist/index.html',
             options: {
-                dirs: ['public/dist']
+                dirs: ['frontend/dist']
             }
         },
         copy: {
             dist: {
-                src: 'public/index.html',
-                dest: 'public/dist/index.html'
+                src: 'frontend/index.html',
+                dest: 'frontend/dist/index.html'
             },
             server: {
                 files: [
                     {
                         dest: '.tmp/',
                         expand: true,
-                        cwd: 'public',
+                        cwd: 'frontend',
                         src: ['js/**', 'index.html']
                     },
                     {
@@ -45,24 +45,24 @@ module.exports = function(grunt) {
         emberTemplates: {
             options: {
                 templateName: function (sourceFile) {
-                    var templatePath = 'public/templates/';
+                    var templatePath = 'frontend/templates/';
                     return sourceFile.replace(templatePath, '');
                 }
             },
             dist: {
                 files: {
-                    '.tmp/compiled-templates.js': 'public/templates/{,*/}*.hbs'
+                    '.tmp/compiled-templates.js': 'frontend/templates/{,*/}*.hbs'
                 }
             }
         },
         compass: {
             options: {
-                sassDir: 'public/css',
+                sassDir: 'frontend/css',
                 cssDir: '.tmp/css',
                 generatedImagesDir: '.tmp/images/generated',
-                imagesDir: 'public/images',
-                javascriptsDir: 'public/js',
-                fontsDir: 'public/css/fonts',
+                imagesDir: 'frontend/images',
+                javascriptsDir: 'frontend/js',
+                fontsDir: 'frontend/css/fonts',
                 importPath: 'bower_components',
                 relativeAssets: false
             },
@@ -73,7 +73,7 @@ module.exports = function(grunt) {
                 files: [{
                     src: [
                         '.tmp',
-                        'public/dist'
+                        'frontend/dist'
                     ]
                 }]
             },
@@ -81,17 +81,17 @@ module.exports = function(grunt) {
         },
         watch: {
             emberTemplates: {
-                files: 'public/templates/**/*.hbs',
+                files: 'frontend/templates/**/*.hbs',
                 tasks: ['emberTemplates']
             },
             compass: {
-                files: ['public/css/{,*/}*.{scss,sass}'],
+                files: ['frontend/css/{,*/}*.{scss,sass}'],
                 tasks: ['compass']
             },
             copy: {
                 files: [
-                    'public/index.html',
-                    'public/js/**/*.js'
+                    'frontend/index.html',
+                    'frontend/js/**/*.js'
                 ],
                 tasks: ['copy:server']
             },
