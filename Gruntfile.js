@@ -34,6 +34,10 @@ module.exports = function(grunt) {
                         expand: true,
                         cwd: 'public',
                         src: ['js/**', 'index.html']
+                    },
+                    {
+                        dest: '.tmp/',
+                        src: ['bower_components/bootstrap-sass/js/**']
                     }
                 ]
             }
