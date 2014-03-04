@@ -33,16 +33,12 @@ module.exports = function(grunt) {
                         dest: '.tmp/',
                         expand: true,
                         cwd: 'frontend',
-                        src: ['js/**', 'index.html']
-                    },
-                    {
-                        dest: '.tmp/',
-                        expand: true,
-                        cwd: 'frontend',
                         src: ['bower_components/bootstrap-sass/js/**',
                               'bower_components/jquery/jquery.js',
                               'bower_components/handlebars/**',
-                              'bower_components/ember/**']
+                              'bower_components/ember/**',
+                              'index.html',
+                              'js/**']
                     }
                 ]
             }
