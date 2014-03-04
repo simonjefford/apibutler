@@ -16,7 +16,7 @@ import (
 type options struct {
 	proxyPort     int
 	dashboardPort int
-	publicPath    string
+	frontendPath  string
 }
 
 var (
@@ -34,7 +34,7 @@ func (o options) dashboardPortString() string {
 func init() {
 	flag.IntVar(&opts.proxyPort, "proxyPort", 4000, "Port on which to run the rate limiting proxy")
 	flag.IntVar(&opts.dashboardPort, "dashboardPort", 8080, "Port on which to run the dashboard webapp")
-	flag.StringVar(&opts.publicPath, "publicPath", "public", "Folder containing the webapp static assets")
+	flag.StringVar(&opts.frontendPath, "frontendPath", "public", "Folder containing the webapp static assets")
 	flag.Parse()
 }
 
@@ -45,7 +45,7 @@ func startLimitServer(r *limiter.RateLimit) {
 }
 
 func startDashboardServer(r *limiter.RateLimit) {
-	server := dashboard.NewDashboardServer(r, opts.publicPath)
+	server := dashboard.NewDashboardServer(r, opts.frontendPath)
 	log.Println("Running dashboard on", opts.dashboardPortString())
 	log.Fatalln(http.ListenAndServe(opts.dashboardPortString(), server))
 }

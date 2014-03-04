@@ -110,7 +110,7 @@ module.exports = function(grunt) {
         spawn: {
             ratelimit: {
                 command: './rateLimit',
-                commandArgs: ['-publicPath=.tmp']
+                commandArgs: ['-frontendPath=.tmp']
             }
         },
         concurrent: {
