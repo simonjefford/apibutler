@@ -11,6 +11,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.network :forwarded_port, guest: 8080, host: 8081
   config.vm.network :forwarded_port, guest: 4000, host: 4001
+  config.vm.network :forwarded_port, guest: 8087, host: 8087
+  config.vm.network :forwarded_port, guest: 8088, host: 8088
+  config.vm.network :forwarded_port, guest: 8098, host: 8098
   config.vm.network :forwarded_port, guest: 35729, host: 35729
 
   config.vm.provider :virtualbox do |v, override|
