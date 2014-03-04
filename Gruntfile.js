@@ -41,7 +41,8 @@ module.exports = function(grunt) {
                         cwd: 'frontend',
                         src: ['bower_components/bootstrap-sass/js/**',
                               'bower_components/jquery/jquery.js',
-                              'bower_components/handlebars/**']
+                              'bower_components/handlebars/**',
+                              'bower_components/ember/**']
                     }
                 ]
             }
