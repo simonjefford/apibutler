@@ -17,3 +17,6 @@
 	path = vendor/src/github.com/martini-contrib/render
 	url = https://github.com/martini-contrib/render
 
+[submodule "vendor/src/github.com/tpjg/goriakpbc"]
+	path = vendor/src/github.com/tpjg/goriakpbc
+	url = https://github.com/tpjg/goriakpbc

@@ -1,6 +1,7 @@
 package applications
 
 import (
+	riak "github.com/tpjg/goriakpbc"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -36,5 +37,11 @@ func init() {
 }
 
 func Get() ApplicationTable {
+	err := riak.ConnectClient("127.0.0.1:8087")
+	bucket, err := riak.NewBucket("apps")
+	obj := bucket.NewObject("list")
+	if err != nil {
+		panic("can't connect to riak")
+	}
 	return apps
 }
