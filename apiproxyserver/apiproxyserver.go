@@ -3,6 +3,7 @@ package apiproxyserver
 import (
 	"fourth.com/ratelimit/applications"
 	"fourth.com/ratelimit/limiter"
+	"fourth.com/ratelimit/oauth"
 	"fourth.com/ratelimit/routes"
 	"github.com/codegangsta/martini"
 	"github.com/nickstenning/router/triemux"
@@ -26,7 +27,13 @@ func NewProxyServer(r *limiter.RateLimit) http.Handler {
 
 	m.Action(mux.ServeHTTP)
 	m.Use(rateLimitHandler)
+	m.Use(oauth.GetIdFromRequest)
+	m.Use(logToken)
 	return m
+}
+
+func logToken(t oauth.AccessToken, l *log.Logger) {
+	l.Println(t.AccessToken())
 }
 
 func createMartini(r *limiter.RateLimit) *martini.Martini {
