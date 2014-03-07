@@ -16,7 +16,6 @@ var (
 
 func NewDashboardServer(r *limiter.RateLimit, path string) http.Handler {
 	ratelimiter = r
-	rtr := martini.NewRouter()
 	m := martini.New()
 	m.Use(martini.Logger())
 	l := log.New(os.Stdout, "[dashboard server] ", 0)
@@ -24,10 +23,15 @@ func NewDashboardServer(r *limiter.RateLimit, path string) http.Handler {
 	m.Use(martini.Recovery())
 	m.Use(martini.Static(path))
 	m.Use(render.Renderer())
-	rtr.Post("/paths", pathsPostHandler)
-	rtr.Get("/paths", pathsGetHandler)
-	m.Action(rtr.Handle)
-	return &martini.ClassicMartini{m, rtr}
+	setupRouter(m)
+	return m
+}
+
+func setupRouter(m *martini.Martini) {
+	r := martini.NewRouter()
+	r.Post("/paths", pathsPostHandler)
+	r.Get("/paths", pathsGetHandler)
+	m.Action(r.Handle)
 }
 
 func pathsGetHandler(rdr render.Render) {
