@@ -4,7 +4,7 @@ var app = express();
 
 var logger = function(prefix) {
     return express.logger({
-        format: '[' + prefix + '] [:date] ":method :url :status" :res[content-length]'
+        format: '[' + prefix + '] [:date] ":method :url :status" :res[content-length], :req[Authorization]'
     });
 };
 
