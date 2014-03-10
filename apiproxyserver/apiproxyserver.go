@@ -33,7 +33,7 @@ func NewProxyServer(r *limiter.RateLimit) http.Handler {
 }
 
 func logToken(t oauth.AccessToken, l *log.Logger) {
-	l.Println(t.AccessToken())
+	l.Println(t)
 }
 
 func createMartini(r *limiter.RateLimit) *martini.Martini {

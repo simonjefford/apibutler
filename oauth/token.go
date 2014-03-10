@@ -8,10 +8,15 @@ import (
 
 type AccessToken interface {
 	AccessToken() string
+	String() string
 }
 
 type accessToken struct {
 	bearerToken string
+}
+
+func (a *accessToken) String() string {
+	return a.AccessToken()
 }
 
 func (a *accessToken) AccessToken() string {
