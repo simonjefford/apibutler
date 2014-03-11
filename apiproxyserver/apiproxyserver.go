@@ -28,7 +28,6 @@ func NewProxyServer(r *limiter.RateLimit) http.Handler {
 	m.Action(mux.ServeHTTP)
 	m.Use(oauth.GetIdFromRequest)
 	m.Use(logToken)
-	m.Use(rateLimitHandler)
 	return m
 }
 
