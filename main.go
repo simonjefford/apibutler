@@ -38,8 +38,13 @@ func init() {
 	flag.Parse()
 }
 
-func startLimitServer(r limiter.RateLimit) {
-	server := apiproxyserver.NewProxyServer(r)
+func startLimitServer() {
+	server, err := apiproxyserver.NewProxyServer()
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 	log.Println("Running proxy on", opts.proxyPortString())
 	log.Fatalln(http.ListenAndServe(opts.proxyPortString(), server))
 }
@@ -53,12 +58,12 @@ func startDashboardServer(r limiter.RateLimit) {
 func main() {
 	// use all available cores
 	runtime.GOMAXPROCS(runtime.NumCPU())
-	r, err := limiter.NewRateLimit()
-	if err != nil {
-		log.Fatalln(err)
-	}
-	go startLimitServer(r)
-	go startDashboardServer(r)
+
+	go startLimitServer()
+
+	// temporary measure
+	l, _ := limiter.NewRateLimit()
+	go startDashboardServer(l)
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)

@@ -14,26 +14,34 @@ import (
 )
 
 type proxyserver struct {
-	apps   applications.ApplicationTable
-	routes []routes.Route
-	logger *log.Logger
+	apps    applications.ApplicationTable
+	routes  []routes.Route
+	logger  *log.Logger
+	limiter limiter.RateLimit
 	http.Handler
 }
 
-func NewProxyServer(r limiter.RateLimit) http.Handler {
-	s := proxyserver{
-		apps:   applications.Get(),
-		routes: routes.Get(),
-		logger: log.New(os.Stdout, "[proxy server] ", 0),
+func NewProxyServer() (http.Handler, error) {
+	l, err := limiter.NewRateLimit()
+
+	if err != nil {
+		return nil, err
 	}
 
-	s.configure(r)
+	s := proxyserver{
+		apps:    applications.Get(),
+		routes:  routes.Get(),
+		logger:  log.New(os.Stdout, "[proxy server] ", 0),
+		limiter: l,
+	}
 
-	return s
+	s.configure()
+
+	return s, nil
 }
 
-func (s *proxyserver) configure(r limiter.RateLimit) {
-	m := createMartini(r, s.logger)
+func (s *proxyserver) configure() {
+	m := createMartini(s.limiter, s.logger)
 
 	mux := triemux.NewMux()
 
@@ -50,6 +58,7 @@ func (s *proxyserver) configure(r limiter.RateLimit) {
 	m.Action(mux.ServeHTTP)
 	m.Use(oauth.GetIdFromRequest)
 	m.Use(logToken)
+	m.Use(rateLimitHandler)
 	s.Handler = m
 }
 
@@ -61,7 +70,7 @@ func createMartini(r limiter.RateLimit, l *log.Logger) *martini.Martini {
 	m := martini.New()
 	m.Use(martini.Logger())
 	m.Map(l)
-	m.Map(r)
+	m.MapTo(r, (*limiter.RateLimit)(nil))
 	return m
 }
 

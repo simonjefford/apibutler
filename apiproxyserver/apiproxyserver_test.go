@@ -2,8 +2,11 @@ package apiproxyserver
 
 import (
 	"fmt"
+
 	"fourth.com/ratelimit/applications"
+	"fourth.com/ratelimit/limiter"
 	"fourth.com/ratelimit/routes"
+
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -17,6 +20,31 @@ type testendpoint struct {
 
 func (t *testendpoint) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, t.outputString)
+}
+
+type fakeLimiter struct {
+}
+
+func (f *fakeLimiter) AddPath(p limiter.Path) {
+}
+
+func (f *fakeLimiter) Paths() []limiter.Path {
+	return nil
+}
+
+func (f *fakeLimiter) IncrementCount(path string) error {
+	return nil
+}
+
+func (f *fakeLimiter) Forget(path string) {
+}
+
+func (f *fakeLimiter) GetCount(path string) (int, error) {
+	return 0, nil
+}
+
+func (f *fakeLimiter) GetRemaining(path string) (int, error) {
+	return 1, nil
 }
 
 func TestEndpointRouting(t *testing.T) {
@@ -82,12 +110,13 @@ func configureProxyServer() *proxyserver {
 		},
 	}
 	s := &proxyserver{
-		apps:   m,
-		routes: r,
-		logger: log.New(os.Stderr, "[TESTS] ", 0),
+		apps:    m,
+		routes:  r,
+		logger:  log.New(os.Stderr, "[TESTS] ", 0),
+		limiter: &fakeLimiter{},
 	}
 
-	s.configure(nil)
+	s.configure()
 	return s
 }
 
