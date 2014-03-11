@@ -13,22 +13,42 @@ import (
 	"strconv"
 )
 
+type proxyserver struct {
+	apps   applications.ApplicationTable
+	routes []routes.Route
+	http.Handler
+}
+
 func NewProxyServer(r *limiter.RateLimit) http.Handler {
+	s := proxyserver{
+		apps:   applications.Get(),
+		routes: routes.Get(),
+	}
+
+	s.configure(r)
+
+	return s
+}
+
+func (s *proxyserver) configure(r *limiter.RateLimit) {
 	m := createMartini(r)
-	apps := applications.Get()
+
 	mux := triemux.NewMux()
 
-	for _, route := range routes.Get() {
-		app, ok := apps[route.ApplicationName]
+	for _, route := range s.routes {
+		app, ok := s.apps[route.ApplicationName]
 		if ok {
+			log.Printf("Handling %s with %v", route.Path, app)
 			mux.Handle(route.Path, route.IsPrefix, app)
+		} else {
+			log.Printf("app not found")
 		}
 	}
 
 	m.Action(mux.ServeHTTP)
 	m.Use(oauth.GetIdFromRequest)
 	m.Use(logToken)
-	return m
+	s.Handler = m
 }
 
 func logToken(t oauth.AccessToken, l *log.Logger) {
