@@ -41,8 +41,6 @@ func NewProxyServer() (http.Handler, error) {
 }
 
 func (s *proxyserver) configure() {
-	m := createMartini(s.limiter, s.logger)
-
 	mux := triemux.NewMux()
 
 	for _, route := range s.routes {
@@ -55,22 +53,22 @@ func (s *proxyserver) configure() {
 		}
 	}
 
-	m.Action(mux.ServeHTTP)
-	m.Use(oauth.GetIdFromRequest)
-	m.Use(logToken)
-	m.Use(rateLimitHandler)
-	s.Handler = m
+	s.Handler = createHost(s.limiter, s.logger, mux)
 }
 
 func logToken(t oauth.AccessToken, l *log.Logger) {
 	l.Println(t)
 }
 
-func createMartini(r limiter.RateLimit, l *log.Logger) *martini.Martini {
+func createHost(r limiter.RateLimit, l *log.Logger, mux *triemux.Mux) http.Handler {
 	m := martini.New()
-	m.Use(martini.Logger())
 	m.Map(l)
 	m.MapTo(r, (*limiter.RateLimit)(nil))
+	m.Action(mux.ServeHTTP)
+	m.Use(martini.Logger())
+	m.Use(oauth.GetIdFromRequest)
+	m.Use(logToken)
+	m.Use(rateLimitHandler)
 	return m
 }
 
