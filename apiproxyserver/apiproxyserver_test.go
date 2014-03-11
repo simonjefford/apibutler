@@ -19,7 +19,7 @@ func (t *testendpoint) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func TestEndpointRouting(t *testing.T) {
 	srv := configureProxyServer()
-	res, err := makeRequest("GET", "/endpoint1", srv)
+	res, err := makeRequest("GET", "/endpoint1", "Bearer some.bearer.token", srv)
 
 	if err != nil {
 		t.Fatalf(err.Error())
@@ -27,9 +27,7 @@ func TestEndpointRouting(t *testing.T) {
 
 	body := res.Body.String()
 
-	if res.Code != http.StatusOK {
-		t.Fatalf("Response was not %d, was %d", http.StatusOK, res.Code)
-	}
+	checkResponse(http.StatusOK, res, t)
 
 	if body != "endpoint1" {
 		t.Fatalf("Unexpected response, \"%s\". Was the wrong endpoint hit?", body)
@@ -38,21 +36,36 @@ func TestEndpointRouting(t *testing.T) {
 
 func TestUnknownEndpoint(t *testing.T) {
 	srv := configureProxyServer()
-	res, err := makeRequest("GET", "/not.present", srv)
+	res, err := makeRequest("GET", "/not.present", "Bearer some.bearer.token", srv)
 
 	if err != nil {
 		t.Fatalf(err.Error())
 	}
 
-	if res.Code != http.StatusNotFound {
-		t.Fatalf("Response was not %d, was %d", http.StatusNotFound, res.Code)
+	checkResponse(http.StatusNotFound, res, t)
+}
+
+func TestNoAuthHeader(t *testing.T) {
+	srv := configureProxyServer()
+	res, err := makeRequest("GET", "/not.present", "", srv)
+
+	if err != nil {
+		t.Fatalf(err.Error())
 	}
+
+	checkResponse(http.StatusUnauthorized, res, t)
 }
 
 func BenchmarkProxyRequests(b *testing.B) {
 	srv := configureProxyServer()
 	for i := 0; i < b.N; i++ {
-		makeRequest("GET", "/endpoint1", srv)
+		makeRequest("GET", "/endpoint1", "Bearer some.bearer.token", srv)
+	}
+}
+
+func checkResponse(expected int, res *httptest.ResponseRecorder, t *testing.T) {
+	if expected != res.Code {
+		t.Fatalf("Response was not %d, was %d", expected, res.Code)
 	}
 }
 
@@ -75,12 +88,14 @@ func configureProxyServer() *proxyserver {
 	return s
 }
 
-func makeRequest(method, path string, handler http.Handler) (*httptest.ResponseRecorder, error) {
+func makeRequest(method, path, auth string, handler http.Handler) (*httptest.ResponseRecorder, error) {
 	req, err := http.NewRequest(method, path, nil)
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Add("Authorization", "Bearer some.bearer.token")
+	if auth != "" {
+		req.Header.Add("Authorization", auth)
+	}
 	res := httptest.NewRecorder()
 	handler.ServeHTTP(res, req)
 	return res, nil
