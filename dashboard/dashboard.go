@@ -12,10 +12,10 @@ import (
 )
 
 var (
-	ratelimiter *limiter.RateLimit
+	ratelimiter limiter.RateLimit
 )
 
-func NewDashboardServer(r *limiter.RateLimit, path string) http.Handler {
+func NewDashboardServer(r limiter.RateLimit, path string) http.Handler {
 	ratelimiter = r
 	m := martini.New()
 	m.Use(martini.Logger())

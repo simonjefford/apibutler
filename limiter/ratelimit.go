@@ -15,7 +15,16 @@ var (
 	RateLimitExceededError = errors.New("Rate limit exceeded")
 )
 
-type RateLimit struct {
+type RateLimit interface {
+	AddPath(p Path)
+	Paths() []Path
+	IncrementCount(path string) error
+	Forget(path string)
+	GetCount(path string) (int, error)
+	GetRemaining(path string) (int, error)
+}
+
+type rateLimit struct {
 	rw    sync.RWMutex
 	calls map[string]*CallInfo
 	rdb   redis.Conn
@@ -31,7 +40,7 @@ func redisConfigKeyForPath(p string) string {
 	return fmt.Sprintf("%s:config", p)
 }
 
-func (r *RateLimit) AddPath(p Path) {
+func (r *rateLimit) AddPath(p Path) {
 	r.rw.Lock()
 	defer r.rw.Unlock()
 
@@ -45,7 +54,7 @@ func (r *RateLimit) AddPath(p Path) {
 	fmt.Println(err, ret)
 }
 
-func (r *RateLimit) Paths() []Path {
+func (r *rateLimit) Paths() []Path {
 	r.rw.RLock()
 	defer r.rw.RUnlock()
 
@@ -61,7 +70,7 @@ func (r *RateLimit) Paths() []Path {
 	return ps
 }
 
-func (r *RateLimit) IncrementCount(path string) error {
+func (r *rateLimit) IncrementCount(path string) error {
 	r.rw.Lock()
 	defer r.rw.Unlock()
 	call := r.calls[path]
@@ -80,14 +89,14 @@ func (r *RateLimit) IncrementCount(path string) error {
 	return nil
 }
 
-func (r *RateLimit) Forget(path string) {
+func (r *rateLimit) Forget(path string) {
 	log.Println("Now forgetting")
 	r.rw.Lock()
 	defer r.rw.Unlock()
 	delete(r.calls, path)
 }
 
-func (r *RateLimit) GetCount(path string) (int, error) {
+func (r *rateLimit) GetCount(path string) (int, error) {
 	r.rw.RLock()
 	defer r.rw.RUnlock()
 
@@ -98,7 +107,7 @@ func (r *RateLimit) GetCount(path string) (int, error) {
 	return r.calls[path].Count, nil
 }
 
-func (r *RateLimit) GetRemaining(path string) (int, error) {
+func (r *rateLimit) GetRemaining(path string) (int, error) {
 	r.rw.RLock()
 	defer r.rw.RUnlock()
 
@@ -109,7 +118,7 @@ func (r *RateLimit) GetRemaining(path string) (int, error) {
 	return r.calls[path].Remaining(), nil
 }
 
-func (r *RateLimit) loadPaths() error {
+func (r *rateLimit) loadPaths() error {
 	n, err := redis.Int(r.rdb.Do("LLEN", "knownPaths"))
 	if err != nil {
 		return err
@@ -152,13 +161,13 @@ func (r *RateLimit) loadPaths() error {
 	return nil
 }
 
-func NewRateLimit() (*RateLimit, error) {
+func NewRateLimit() (RateLimit, error) {
 	conn, err := redis.Dial("tcp", ":6379")
 	if err != nil {
 		return nil, err
 	}
 
-	r := &RateLimit{
+	r := &rateLimit{
 		calls: make(map[string]*CallInfo),
 		rdb:   conn,
 	}

@@ -20,7 +20,7 @@ type proxyserver struct {
 	http.Handler
 }
 
-func NewProxyServer(r *limiter.RateLimit) http.Handler {
+func NewProxyServer(r limiter.RateLimit) http.Handler {
 	s := proxyserver{
 		apps:   applications.Get(),
 		routes: routes.Get(),
@@ -32,7 +32,7 @@ func NewProxyServer(r *limiter.RateLimit) http.Handler {
 	return s
 }
 
-func (s *proxyserver) configure(r *limiter.RateLimit) {
+func (s *proxyserver) configure(r limiter.RateLimit) {
 	m := createMartini(r, s.logger)
 
 	mux := triemux.NewMux()
@@ -57,7 +57,7 @@ func logToken(t oauth.AccessToken, l *log.Logger) {
 	l.Println(t)
 }
 
-func createMartini(r *limiter.RateLimit, l *log.Logger) *martini.Martini {
+func createMartini(r limiter.RateLimit, l *log.Logger) *martini.Martini {
 	m := martini.New()
 	m.Use(martini.Logger())
 	m.Map(l)
@@ -65,7 +65,7 @@ func createMartini(r *limiter.RateLimit, l *log.Logger) *martini.Martini {
 	return m
 }
 
-func rateLimitHandler(res http.ResponseWriter, req *http.Request, ctx martini.Context, r *limiter.RateLimit) {
+func rateLimitHandler(res http.ResponseWriter, req *http.Request, ctx martini.Context, r limiter.RateLimit) {
 	path := req.URL.Path
 	err := r.IncrementCount(path)
 	if err == limiter.RateLimitExceededError {

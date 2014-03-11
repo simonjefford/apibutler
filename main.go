@@ -38,13 +38,13 @@ func init() {
 	flag.Parse()
 }
 
-func startLimitServer(r *limiter.RateLimit) {
+func startLimitServer(r limiter.RateLimit) {
 	server := apiproxyserver.NewProxyServer(r)
 	log.Println("Running proxy on", opts.proxyPortString())
 	log.Fatalln(http.ListenAndServe(opts.proxyPortString(), server))
 }
 
-func startDashboardServer(r *limiter.RateLimit) {
+func startDashboardServer(r limiter.RateLimit) {
 	server := dashboard.NewDashboardServer(r, opts.frontendPath)
 	log.Println("Running dashboard on", opts.dashboardPortString())
 	log.Fatalln(http.ListenAndServe(opts.dashboardPortString(), server))
