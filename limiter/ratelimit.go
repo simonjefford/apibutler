@@ -25,7 +25,7 @@ type RateLimit interface {
 }
 
 type rateLimit struct {
-	rw    sync.RWMutex
+	sync.RWMutex
 	calls map[string]*CallInfo
 	rdb   redis.Conn
 }
@@ -41,8 +41,8 @@ func redisConfigKeyForPath(p string) string {
 }
 
 func (r *rateLimit) AddPath(p Path) {
-	r.rw.Lock()
-	defer r.rw.Unlock()
+	r.Lock()
+	defer r.Unlock()
 
 	r.calls[p.Fragment] = NewCallInfo(p.Limit, p.Seconds)
 
@@ -55,8 +55,8 @@ func (r *rateLimit) AddPath(p Path) {
 }
 
 func (r *rateLimit) Paths() []Path {
-	r.rw.RLock()
-	defer r.rw.RUnlock()
+	r.RLock()
+	defer r.RUnlock()
 
 	ps := make([]Path, 0, len(r.calls))
 	for path, c := range r.calls {
@@ -71,8 +71,8 @@ func (r *rateLimit) Paths() []Path {
 }
 
 func (r *rateLimit) IncrementCount(path string) error {
-	r.rw.Lock()
-	defer r.rw.Unlock()
+	r.Lock()
+	defer r.Unlock()
 	call := r.calls[path]
 
 	if call == nil {
@@ -91,14 +91,14 @@ func (r *rateLimit) IncrementCount(path string) error {
 
 func (r *rateLimit) Forget(path string) {
 	log.Println("Now forgetting")
-	r.rw.Lock()
-	defer r.rw.Unlock()
+	r.Lock()
+	defer r.Unlock()
 	delete(r.calls, path)
 }
 
 func (r *rateLimit) GetCount(path string) (int, error) {
-	r.rw.RLock()
-	defer r.rw.RUnlock()
+	r.RLock()
+	defer r.RUnlock()
 
 	if r.calls[path] == nil {
 		return 0, PathNotKnown
@@ -108,8 +108,8 @@ func (r *rateLimit) GetCount(path string) (int, error) {
 }
 
 func (r *rateLimit) GetRemaining(path string) (int, error) {
-	r.rw.RLock()
-	defer r.rw.RUnlock()
+	r.RLock()
+	defer r.RUnlock()
 
 	if r.calls[path] == nil {
 		return 0, PathNotKnown
