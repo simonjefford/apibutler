@@ -4,8 +4,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/codegangsta/martini"
 	"github.com/garyburd/redigo/redis"
 	"log"
+	"net/http"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -159,6 +162,31 @@ func (r *rateLimit) loadPaths() error {
 	}
 
 	return nil
+}
+
+func (r *rateLimit) Handler(res http.ResponseWriter, req *http.Request, ctx martini.Context) {
+	path := req.URL.Path
+	err := r.IncrementCount(path)
+	if err == RateLimitExceededError {
+		http.Error(res, err.Error(), http.StatusForbidden)
+		return
+	}
+
+	rw := res.(martini.ResponseWriter)
+	rw.Before(func(martini.ResponseWriter) {
+		h := rw.Header()
+		count, err := r.GetCount(path)
+		if err == nil {
+			h.Add("X-Call-Count", strconv.Itoa(count))
+		}
+
+		remaining, err := r.GetRemaining(path)
+		if err == nil {
+			h.Add("X-Call-Remaining", strconv.Itoa(remaining))
+		}
+	})
+
+	ctx.Next()
 }
 
 func NewRateLimit() (RateLimit, error) {
