@@ -1,6 +1,7 @@
 package apiproxyserver
 
 import (
+	"fmt"
 	"fourth.com/ratelimit/applications"
 	"fourth.com/ratelimit/oauth"
 	"fourth.com/ratelimit/routes"
@@ -18,6 +19,11 @@ type proxyserver struct {
 	http.Handler
 }
 
+type destinationApp struct {
+	original http.Handler
+	*martini.Martini
+}
+
 func NewProxyServer() (http.Handler, error) {
 	s := proxyserver{
 		apps:   applications.Get(),
@@ -30,6 +36,18 @@ func NewProxyServer() (http.Handler, error) {
 	return s, nil
 }
 
+func wrapApp(app http.Handler, route routes.Route) *destinationApp {
+	m := martini.New()
+	m.Action(app.ServeHTTP)
+	l := log.New(os.Stdout, fmt.Sprintf("[%s (%s)] ", route.Path, route.ApplicationName), 0)
+	m.Map(l)
+	if route.NeedsAuth {
+		m.Use(oauth.GetIdFromRequest)
+		m.Use(logToken)
+	}
+	return &destinationApp{app, m}
+}
+
 func (s *proxyserver) configure() {
 	mux := triemux.NewMux()
 
@@ -37,7 +55,8 @@ func (s *proxyserver) configure() {
 		app, ok := s.apps[route.ApplicationName]
 		if ok {
 			log.Printf("Handling %s with %v", route.Path, app)
-			mux.Handle(route.Path, route.IsPrefix, app)
+			wrapped := wrapApp(app, route)
+			mux.Handle(route.Path, route.IsPrefix, wrapped)
 		} else {
 			log.Printf("app not found")
 		}
@@ -55,7 +74,5 @@ func createHost(l *log.Logger, mux *triemux.Mux) http.Handler {
 	m.Map(l)
 	m.Action(mux.ServeHTTP)
 	m.Use(martini.Logger())
-	m.Use(oauth.GetIdFromRequest)
-	m.Use(logToken)
 	return m
 }

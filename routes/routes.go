@@ -4,24 +4,29 @@ type Route struct {
 	Path            string
 	ApplicationName string
 	IsPrefix        bool
+	NeedsAuth       bool
+}
+
+func NewRoute(path, applicationName string) Route {
+	return Route{
+		Path:            path,
+		ApplicationName: applicationName,
+		IsPrefix:        true,
+		NeedsAuth:       true,
+	}
+}
+
+func NewPublicRoute(path, applicationName string) Route {
+	r := NewRoute(path, applicationName)
+	r.NeedsAuth = false
+	return r
 }
 
 func Get() []Route {
 	return []Route{
-		Route{
-			Path:            "/recipes",
-			ApplicationName: "Test node backend",
-			IsPrefix:        true,
-		},
-		Route{
-			Path:            "/recipes/other",
-			ApplicationName: "Another test node backend",
-			IsPrefix:        true,
-		},
-		Route{
-			Path:            "/stock",
-			ApplicationName: "Another test node backend",
-			IsPrefix:        true,
-		},
+		NewRoute("/recipes", "Test node backend"),
+		NewRoute("/recipes/other", "Another test node backend"),
+		NewRoute("/stock", "Another test node backend"),
+		NewPublicRoute("/stock/public", "Another test node backend"),
 	}
 }

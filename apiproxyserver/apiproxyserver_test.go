@@ -51,13 +51,24 @@ func TestUnknownEndpoint(t *testing.T) {
 
 func TestNoAuthHeader(t *testing.T) {
 	srv := configureProxyServer()
-	res, err := makeRequest("GET", "/not.present", "", srv)
+	res, err := makeRequest("GET", "/endpoint1", "", srv)
 
 	if err != nil {
 		t.Fatalf(err.Error())
 	}
 
 	checkResponse(http.StatusUnauthorized, res, t)
+}
+
+func TestNoAuthHeaderOnPublicRoute(t *testing.T) {
+	srv := configureProxyServer()
+	res, err := makeRequest("GET", "/public", "", srv)
+
+	if err != nil {
+		t.Fatalf(err.Error())
+	}
+
+	checkResponse(http.StatusOK, res, t)
 }
 
 func BenchmarkProxyRequests(b *testing.B) {
@@ -76,12 +87,10 @@ func checkResponse(expected int, res *httptest.ResponseRecorder, t *testing.T) {
 func configureProxyServer() *proxyserver {
 	m := applications.ApplicationTable(make(map[string]http.Handler))
 	m["endpoint1"] = &testendpoint{"endpoint1"}
+	m["public"] = &testendpoint{"public"}
 	r := []routes.Route{
-		routes.Route{
-			Path:            "/endpoint1",
-			ApplicationName: "endpoint1",
-			IsPrefix:        true,
-		},
+		routes.NewRoute("/endpoint1", "endpoint1"),
+		routes.NewPublicRoute("/public", "public"),
 	}
 	s := &proxyserver{
 		apps:   m,
