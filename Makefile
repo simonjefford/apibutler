@@ -1,10 +1,20 @@
+export GOPATH = $(shell pwd)/.gopath:$(shell pwd)/vendor
+
 default: buildbin
 
-buildbin:
-	./make.sh
+configureenv:
+	rm -rf .gopath
+	mkdir -p .gopath/src/fourth.com/
+	ln -sf ../../.. .gopath/src/fourth.com/ratelimit
+
+buildbin: configureenv
+	go build -o ratelimit
 
 run: buildbin npm bower
 	grunt serve
+
+test: configureenv
+	cd apiproxyserver; go test
 
 npm:
 	npm install
