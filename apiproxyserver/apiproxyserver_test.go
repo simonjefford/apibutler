@@ -49,6 +49,13 @@ func TestUnknownEndpoint(t *testing.T) {
 	}
 }
 
+func BenchmarkProxyRequests(b *testing.B) {
+	srv := configureProxyServer()
+	for i := 0; i < b.N; i++ {
+		makeRequest("GET", "/endpoint1", srv)
+	}
+}
+
 func configureProxyServer() *proxyserver {
 	m := applications.ApplicationTable(make(map[string]http.Handler))
 	m["endpoint1"] = &testendpoint{"endpoint1"}

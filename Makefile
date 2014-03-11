@@ -16,6 +16,9 @@ run: buildbin npm bower
 test: configureenv
 	cd apiproxyserver; go test
 
+bench: configureenv
+	cd apiproxyserver; go test -bench .
+
 npm:
 	npm install
 
