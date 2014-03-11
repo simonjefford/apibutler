@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"fourth.com/ratelimit/applications"
 	"fourth.com/ratelimit/routes"
+	"log"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 )
 
@@ -82,6 +84,7 @@ func configureProxyServer() *proxyserver {
 	s := &proxyserver{
 		apps:   m,
 		routes: r,
+		logger: log.New(os.Stderr, "[TESTS] ", 0),
 	}
 
 	s.configure(nil)

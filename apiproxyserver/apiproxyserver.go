@@ -16,6 +16,7 @@ import (
 type proxyserver struct {
 	apps   applications.ApplicationTable
 	routes []routes.Route
+	logger *log.Logger
 	http.Handler
 }
 
@@ -23,6 +24,7 @@ func NewProxyServer(r *limiter.RateLimit) http.Handler {
 	s := proxyserver{
 		apps:   applications.Get(),
 		routes: routes.Get(),
+		logger: log.New(os.Stdout, "[proxy server] ", 0),
 	}
 
 	s.configure(r)
@@ -31,7 +33,7 @@ func NewProxyServer(r *limiter.RateLimit) http.Handler {
 }
 
 func (s *proxyserver) configure(r *limiter.RateLimit) {
-	m := createMartini(r)
+	m := createMartini(r, s.logger)
 
 	mux := triemux.NewMux()
 
@@ -55,10 +57,9 @@ func logToken(t oauth.AccessToken, l *log.Logger) {
 	l.Println(t)
 }
 
-func createMartini(r *limiter.RateLimit) *martini.Martini {
+func createMartini(r *limiter.RateLimit, l *log.Logger) *martini.Martini {
 	m := martini.New()
 	m.Use(martini.Logger())
-	l := log.New(os.Stdout, "[proxy server] ", 0)
 	m.Map(l)
 	m.Map(r)
 	return m

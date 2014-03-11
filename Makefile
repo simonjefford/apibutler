@@ -14,10 +14,10 @@ run: buildbin npm bower
 	grunt serve
 
 test: configureenv
-	cd apiproxyserver; go test
+	cd apiproxyserver; go test -v 2> /dev/null
 
 bench: configureenv
-	cd apiproxyserver; go test -bench .
+	cd apiproxyserver; go test -bench . 2> /dev/null
 
 npm:
 	npm install
