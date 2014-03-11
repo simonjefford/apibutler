@@ -2,10 +2,8 @@ package apiproxyserver
 
 import (
 	"fmt"
-
 	"fourth.com/ratelimit/applications"
 	"fourth.com/ratelimit/routes"
-
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -35,6 +33,19 @@ func TestEndpointRouting(t *testing.T) {
 
 	if body != "endpoint1" {
 		t.Fatalf("Unexpected response, \"%s\". Was the wrong endpoint hit?", body)
+	}
+}
+
+func TestUnknownEndpoint(t *testing.T) {
+	srv := configureProxyServer()
+	res, err := makeRequest("GET", "/not.present", srv)
+
+	if err != nil {
+		t.Fatalf(err.Error())
+	}
+
+	if res.Code != http.StatusNotFound {
+		t.Fatalf("Response was not %d, was %d", http.StatusNotFound, res.Code)
 	}
 }
 
