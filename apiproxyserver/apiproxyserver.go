@@ -22,11 +22,6 @@ type proxyserver struct {
 	sync.RWMutex
 }
 
-type destinationApp struct {
-	original http.Handler
-	*martini.Martini
-}
-
 type APIProxyServer interface {
 	Update(applications.ApplicationTable, []routes.Route)
 	ServeHTTP(http.ResponseWriter, *http.Request)
@@ -44,7 +39,7 @@ func NewAPIProxyServer() (APIProxyServer, error) {
 	return s, nil
 }
 
-func wrapApp(app http.Handler, route routes.Route) *destinationApp {
+func wrapApp(app http.Handler, route routes.Route) http.Handler {
 	m := martini.New()
 	m.Action(app.ServeHTTP)
 	l := log.New(os.Stdout, fmt.Sprintf("[%s (%s)] ", route.Path, route.ApplicationName), 0)
@@ -53,7 +48,7 @@ func wrapApp(app http.Handler, route routes.Route) *destinationApp {
 		m.Use(oauth.GetIdFromRequest)
 		m.Use(logToken)
 	}
-	return &destinationApp{app, m}
+	return m
 }
 
 func (s *proxyserver) ServeHTTP(res http.ResponseWriter, r *http.Request) {
