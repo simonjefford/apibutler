@@ -37,6 +37,7 @@ module.exports = function(grunt) {
                               'bower_components/jquery/jquery.js',
                               'bower_components/handlebars/**',
                               'bower_components/ember/**',
+                              'bower_components/ember-easyForm/**',
                               'index.html',
                               'js/**']
                     }
