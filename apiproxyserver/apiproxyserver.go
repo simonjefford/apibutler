@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sync"
 
 	"fourth.com/ratelimit/applications"
 	"fourth.com/ratelimit/oauth"
@@ -14,10 +15,11 @@ import (
 )
 
 type proxyserver struct {
-	apps   applications.ApplicationTable
-	routes []routes.Route
-	logger *log.Logger
-	http.Handler
+	apps    applications.ApplicationTable
+	routes  []routes.Route
+	logger  *log.Logger
+	handler http.Handler
+	sync.RWMutex
 }
 
 type destinationApp struct {
@@ -25,8 +27,13 @@ type destinationApp struct {
 	*martini.Martini
 }
 
-func NewProxyServer() (http.Handler, error) {
-	s := proxyserver{
+type APIProxyServer interface {
+	Update(applications.ApplicationTable, []routes.Route)
+	ServeHTTP(http.ResponseWriter, *http.Request)
+}
+
+func NewAPIProxyServer() (APIProxyServer, error) {
+	s := &proxyserver{
 		apps:   applications.Get(),
 		routes: routes.Get(),
 		logger: log.New(os.Stdout, "[proxy server] ", 0),
@@ -49,6 +56,20 @@ func wrapApp(app http.Handler, route routes.Route) *destinationApp {
 	return &destinationApp{app, m}
 }
 
+func (s *proxyserver) ServeHTTP(res http.ResponseWriter, r *http.Request) {
+	s.RLock()
+	defer s.RUnlock()
+	s.handler.ServeHTTP(res, r)
+}
+
+func (s *proxyserver) Update(apps applications.ApplicationTable, routes []routes.Route) {
+	s.Lock()
+	defer s.Unlock()
+	s.apps = apps
+	s.routes = routes
+	s.configure()
+}
+
 func (s *proxyserver) configure() {
 	mux := triemux.NewMux()
 
@@ -63,7 +84,7 @@ func (s *proxyserver) configure() {
 		}
 	}
 
-	s.Handler = createHost(s.logger, mux)
+	s.handler = createHost(s.logger, mux)
 }
 
 func logToken(t oauth.AccessToken, l *log.Logger) {

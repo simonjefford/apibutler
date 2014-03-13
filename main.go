@@ -40,7 +40,7 @@ func init() {
 }
 
 func startLimitServer() {
-	server, err := apiproxyserver.NewProxyServer()
+	server, err := apiproxyserver.NewAPIProxyServer()
 
 	if err != nil {
 		log.Fatalln(err)

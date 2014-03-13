@@ -77,14 +77,33 @@ func BenchmarkProxyRequests(b *testing.B) {
 	}
 }
 
+func TestUpdateServer(t *testing.T) {
+	m := make(applications.ApplicationTable)
+	m["endpoint1"] = &testendpoint{"endpoint1"}
+	r := []routes.Route{
+		routes.NewRoute("/endpoint1", "endpoint1"),
+		routes.NewPublicRoute("/newendpoint", "endpoint1"),
+	}
+
+	srv := configureProxyServer()
+	srv.Update(m, r)
+	res, err := makeRequest("GET", "/newendpoint", "Bearer some.bearer.token", srv)
+
+	if err != nil {
+		t.Fatalf(err.Error())
+	}
+
+	checkResponse(http.StatusOK, res, t)
+}
+
 func checkResponse(expected int, res *httptest.ResponseRecorder, t *testing.T) {
 	if expected != res.Code {
 		t.Fatalf("Response was not %d, was %d", expected, res.Code)
 	}
 }
 
-func configureProxyServer() *proxyserver {
-	m := applications.ApplicationTable(make(map[string]http.Handler))
+func configureProxyServer() APIProxyServer {
+	m := make(applications.ApplicationTable)
 	m["endpoint1"] = &testendpoint{"endpoint1"}
 	m["public"] = &testendpoint{"public"}
 	r := []routes.Route{
