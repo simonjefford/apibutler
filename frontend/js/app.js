@@ -14,7 +14,7 @@ App.Router.map(function() {
 });
 
 var ajaxWithWrapperObject = function(path, klass) {
-    return ajax(path).then(function(array) {
+    return ajax.request(path).then(function(array) {
         return array.map(function(item) {
             return klass.create(item);
         });
@@ -37,7 +37,7 @@ App.Path = Ember.Object.extend({
     }.property('fragment', 'limit', 'seconds'),
 
     save: function() {
-        return ajax('paths', {
+        return ajax.request('paths', {
             data: JSON.stringify(this.get('objectForSaving')),
             type: 'POST',
             dataType: 'json'

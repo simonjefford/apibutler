@@ -38,6 +38,7 @@ module.exports = function(grunt) {
                               'bower_components/handlebars/**',
                               'bower_components/ember/**',
                               'bower_components/ember-easyForm/**',
+                              'bower_components/ic-ajax/**',
                               'index.html',
                               'js/**']
                     }
