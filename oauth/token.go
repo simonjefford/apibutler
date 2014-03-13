@@ -1,9 +1,10 @@
 package oauth
 
 import (
-	"github.com/codegangsta/martini"
 	"net/http"
 	"strings"
+
+	"github.com/codegangsta/martini"
 )
 
 type AccessToken interface {

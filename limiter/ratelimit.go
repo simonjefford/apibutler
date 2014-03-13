@@ -4,13 +4,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/codegangsta/martini"
-	"github.com/garyburd/redigo/redis"
 	"log"
 	"net/http"
 	"strconv"
 	"sync"
 	"time"
+
+	"github.com/codegangsta/martini"
+	"github.com/garyburd/redigo/redis"
 )
 
 var (

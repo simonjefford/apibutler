@@ -3,14 +3,15 @@ package main
 import (
 	"flag"
 	"fmt"
-	"fourth.com/ratelimit/apiproxyserver"
-	"fourth.com/ratelimit/dashboard"
-	"fourth.com/ratelimit/limiter"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"runtime"
+
+	"fourth.com/ratelimit/apiproxyserver"
+	"fourth.com/ratelimit/dashboard"
+	"fourth.com/ratelimit/limiter"
 )
 
 type options struct {

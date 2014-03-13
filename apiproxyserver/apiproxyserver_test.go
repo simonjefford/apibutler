@@ -2,15 +2,14 @@ package apiproxyserver
 
 import (
 	"fmt"
-
-	"fourth.com/ratelimit/applications"
-	"fourth.com/ratelimit/routes"
-
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"testing"
+
+	"fourth.com/ratelimit/applications"
+	"fourth.com/ratelimit/routes"
 )
 
 type testendpoint struct {

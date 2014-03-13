@@ -2,14 +2,15 @@ package apiproxyserver
 
 import (
 	"fmt"
+	"log"
+	"net/http"
+	"os"
+
 	"fourth.com/ratelimit/applications"
 	"fourth.com/ratelimit/oauth"
 	"fourth.com/ratelimit/routes"
 	"github.com/codegangsta/martini"
 	"github.com/nickstenning/router/triemux"
-	"log"
-	"net/http"
-	"os"
 )
 
 type proxyserver struct {
