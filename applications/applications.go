@@ -30,11 +30,9 @@ func newApp(name, urlString string) *application {
 }
 
 func init() {
-	m := make(map[string]http.Handler)
-	m["Test node backend"] = newApp("Test node backend", "http://localhost:3000")
-	m["Another test node backend"] = newApp("Another test node backend", "http://localhost:3001")
-
-	apps = ApplicationTable(m)
+	apps = make(ApplicationTable)
+	apps["Test node backend"] = newApp("Test node backend", "http://localhost:3000")
+	apps["Another test node backend"] = newApp("Another test node backend", "http://localhost:3001")
 }
 
 func Get() ApplicationTable {
