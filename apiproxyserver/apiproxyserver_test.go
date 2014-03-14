@@ -20,6 +20,23 @@ func (t *testendpoint) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, t.outputString)
 }
 
+type checkableResponse struct {
+	*httptest.ResponseRecorder
+}
+
+func (r *checkableResponse) CheckStatus(expected int, t *testing.T) {
+	if expected != r.Code {
+		t.Fatalf("Response was not %d, was %d", expected, r.Code)
+	}
+}
+
+func (r *checkableResponse) CheckBody(expected string, t *testing.T) {
+	body := r.Body.String()
+	if body != expected {
+		t.Fatalf("Unexpected response, \"%s\". Was the wrong endpoint hit?", body)
+	}
+}
+
 func TestEndpointRouting(t *testing.T) {
 	srv := configureProxyServer()
 	res, err := makeRequest("GET", "/endpoint1", "Bearer some.bearer.token", srv)
@@ -28,13 +45,8 @@ func TestEndpointRouting(t *testing.T) {
 		t.Fatalf(err.Error())
 	}
 
-	body := res.Body.String()
-
-	checkResponse(http.StatusOK, res, t)
-
-	if body != "endpoint1" {
-		t.Fatalf("Unexpected response, \"%s\". Was the wrong endpoint hit?", body)
-	}
+	res.CheckStatus(http.StatusOK, t)
+	res.CheckBody("endpoint1", t)
 }
 
 func TestUnknownEndpoint(t *testing.T) {
@@ -45,7 +57,7 @@ func TestUnknownEndpoint(t *testing.T) {
 		t.Fatalf(err.Error())
 	}
 
-	checkResponse(http.StatusNotFound, res, t)
+	res.CheckStatus(http.StatusNotFound, t)
 }
 
 func TestNoAuthHeader(t *testing.T) {
@@ -56,7 +68,7 @@ func TestNoAuthHeader(t *testing.T) {
 		t.Fatalf(err.Error())
 	}
 
-	checkResponse(http.StatusUnauthorized, res, t)
+	res.CheckStatus(http.StatusUnauthorized, t)
 }
 
 func TestNoAuthHeaderOnPublicRoute(t *testing.T) {
@@ -67,7 +79,7 @@ func TestNoAuthHeaderOnPublicRoute(t *testing.T) {
 		t.Fatalf(err.Error())
 	}
 
-	checkResponse(http.StatusOK, res, t)
+	res.CheckStatus(http.StatusOK, t)
 }
 
 func BenchmarkProxyRequests(b *testing.B) {
@@ -93,13 +105,7 @@ func TestUpdateServer(t *testing.T) {
 		t.Fatalf(err.Error())
 	}
 
-	checkResponse(http.StatusOK, res, t)
-}
-
-func checkResponse(expected int, res *httptest.ResponseRecorder, t *testing.T) {
-	if expected != res.Code {
-		t.Fatalf("Response was not %d, was %d", expected, res.Code)
-	}
+	res.CheckStatus(http.StatusOK, t)
 }
 
 func configureProxyServer() APIProxyServer {
@@ -120,7 +126,7 @@ func configureProxyServer() APIProxyServer {
 	return s
 }
 
-func makeRequest(method, path, auth string, handler http.Handler) (*httptest.ResponseRecorder, error) {
+func makeRequest(method, path, auth string, handler http.Handler) (*checkableResponse, error) {
 	req, err := http.NewRequest(method, path, nil)
 	if err != nil {
 		return nil, err
@@ -130,5 +136,5 @@ func makeRequest(method, path, auth string, handler http.Handler) (*httptest.Res
 	}
 	res := httptest.NewRecorder()
 	handler.ServeHTTP(res, req)
-	return res, nil
+	return &checkableResponse{res}, nil
 }
