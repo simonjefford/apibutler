@@ -1,5 +1,6 @@
-/* global App */
-test('App.path objectForSaving', function() {
+/* global App, ajax */
+
+test('App.Path objectForSaving', function() {
     var path = App.Path.create({
         fragment: '/foo',
         limit: '10',
@@ -11,4 +12,21 @@ test('App.path objectForSaving', function() {
     strictEqual(output.fragment, '/foo');
     strictEqual(output.limit, 10);
     strictEqual(output.seconds, 5);
+});
+
+asyncTest('App.Path findAll', function() {
+    ajax.defineFixture('/paths', {
+        response: [{
+            fragment: '/foo',
+            limit: 10,
+            seconds: 5
+        }],
+        jqXHR: {},
+        textStatus: 'success'
+    });
+
+    App.Path.findAll().then(function(result) {
+        start();
+        equal(result.length, 1);
+    });
 });
