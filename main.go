@@ -40,11 +40,7 @@ func init() {
 }
 
 func startLimitServer() {
-	server, err := apiproxyserver.NewAPIProxyServer()
-
-	if err != nil {
-		log.Fatalln(err)
-	}
+	server := apiproxyserver.NewAPIProxyServer()
 
 	log.Println("Running proxy on", opts.proxyPortString())
 	log.Fatalln(http.ListenAndServe(opts.proxyPortString(), server))

@@ -27,7 +27,7 @@ type APIProxyServer interface {
 	ServeHTTP(http.ResponseWriter, *http.Request)
 }
 
-func NewAPIProxyServer() (APIProxyServer, error) {
+func NewAPIProxyServer() APIProxyServer {
 	s := &proxyserver{
 		apps:   applications.Get(),
 		routes: routes.Get(),
@@ -36,7 +36,7 @@ func NewAPIProxyServer() (APIProxyServer, error) {
 
 	s.configure()
 
-	return s, nil
+	return s
 }
 
 func wrapApp(app http.Handler, route routes.Route) http.Handler {
