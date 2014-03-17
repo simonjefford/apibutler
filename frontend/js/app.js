@@ -1,3 +1,4 @@
+/* global Spinner */
 var ajax = ic.ajax;
 
 var App = Ember.Application.create({
@@ -52,7 +53,21 @@ App.Path.reopenClass({
 });
 
 App.NavbarLinkComponent = Ember.Component.extend({
-    tagName: ''
+    tagName: '',
+});
+
+App.LoadingSpinnerComponent = Ember.Component.extend({
+    showSpinner: function() {
+        var target = this.get('element');
+        this.spinner = new Spinner();
+        this.spinner.spin(target);
+    }.on('didInsertElement'),
+
+    teardown: function() {
+        if (this.spinner) {
+            this.spinner.stop();
+        }
+    }.on('willDestroyElement')
 });
 
 App.PathsNewRoute = Ember.Route.extend({

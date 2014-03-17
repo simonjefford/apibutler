@@ -40,6 +40,7 @@ module.exports = function(grunt) {
                               'bower_components/ember/**',
                               'bower_components/ember-easyForm/**',
                               'bower_components/ic-ajax/**',
+                              'bower_components/spin/**',
                               'index.html',
                               'js/**']
                     }
