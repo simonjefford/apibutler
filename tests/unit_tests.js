@@ -27,6 +27,7 @@ asyncTest('App.Path findAll', function() {
 
     App.Path.findAll().then(function(result) {
         start();
-        equal(result.length, 1);
+        strictEqual(result.length, 1);
+        strictEqual(result[0].constructor, App.Path);
     });
 });
