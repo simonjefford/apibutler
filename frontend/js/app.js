@@ -54,6 +54,13 @@ App.ApplicationsRoute = Ember.Route.extend({
         ];
     }
 });
+
+App.ApplicationsController = Ember.ArrayController.extend({
+    renderer: 'line',
+
+    renderers: ['area', 'line', 'bar', 'scatterplot']
+});
+
 App.Path = Ember.Object.extend({
     objectForSaving: function() {
         return {
