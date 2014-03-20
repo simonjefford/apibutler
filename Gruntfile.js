@@ -28,7 +28,8 @@ module.exports = function(grunt) {
                 options: {
                     filepathTransform: function(filepath) {
                         return 'frontend/' + filepath;
-                    }
+                    },
+                    includeSourceMap: true
                 },
                 src: 'frontend/js/app.js',
                 dest: '.tmp/combined-app.js'
@@ -54,6 +55,10 @@ module.exports = function(grunt) {
                               'bower_components/spin/**',
                               'bower_components/rickshaw/**',
                               'index.html']
+                    },
+                    {
+                        dest: '.tmp/',
+                        src: ['frontend/js/**/*.js']
                     }
                 ]
             },
@@ -64,6 +69,10 @@ module.exports = function(grunt) {
                         expand: true,
                         cwd: 'frontend',
                         src: ['index.html']
+                    },
+                    {
+                        dest: '.tmp/',
+                        src: ['frontend/js/**/*.js']
                     }
                 ]
             }
@@ -117,6 +126,7 @@ module.exports = function(grunt) {
             copy: {
                 files: [
                     'frontend/index.html',
+                    'frontend/js/**/*.js'
                 ],
                 tasks: ['copy:justTheAppPlease']
             },
