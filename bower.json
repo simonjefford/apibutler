@@ -8,7 +8,7 @@
     "ember": "~1.4.0",
     "qunit": "~1.14.0",
     "ember-easyForm": "http://builds.dockyard.com/ember-easyForm/latest/ember-easyForm.js",
-    "ic-ajax": "=1.0.1",
+    "ic-ajax": "~1.0.1",
     "spin": "http://fgnass.github.io/spin.js/spin.min.js",
     "rickshaw": "~1.4.6"
   }
