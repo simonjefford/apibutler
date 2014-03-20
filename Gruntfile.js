@@ -46,6 +46,17 @@ module.exports = function(grunt) {
                               'js/**']
                     }
                 ]
+            },
+            justTheAppPlease: {
+                files: [
+                    {
+                        dest: '.tmp/',
+                        expand: true,
+                        cwd: 'frontend',
+                        src: ['index.html',
+                              'js/**']
+                    }
+                ]
             }
         },
         emberTemplates: {
@@ -99,7 +110,7 @@ module.exports = function(grunt) {
                     'frontend/index.html',
                     'frontend/js/**/*.js'
                 ],
-                tasks: ['copy:server']
+                tasks: ['copy:justTheAppPlease']
             },
             livereload: {
                 options: {
