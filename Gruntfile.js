@@ -4,7 +4,7 @@ module.exports = function(grunt) {
     grunt.initConfig({
         jshint: {
             all: {
-                src: ['frontend/js/app.js',
+                src: ['frontend/js/**/*.js',
                       'tests/**/*.js']
             },
             options: {
@@ -21,6 +21,17 @@ module.exports = function(grunt) {
             html: 'frontend/dist/index.html',
             options: {
                 dirs: ['frontend/dist']
+            }
+        },
+        neuter: {
+            app: {
+                options: {
+                    filepathTransform: function(filepath) {
+                        return 'frontend/' + filepath;
+                    }
+                },
+                src: 'frontend/js/app.js',
+                dest: '.tmp/combined-app.js'
             }
         },
         copy: {
@@ -42,8 +53,7 @@ module.exports = function(grunt) {
                               'bower_components/ic-ajax/**',
                               'bower_components/spin/**',
                               'bower_components/rickshaw/**',
-                              'index.html',
-                              'js/**']
+                              'index.html']
                     }
                 ]
             },
@@ -53,8 +63,7 @@ module.exports = function(grunt) {
                         dest: '.tmp/',
                         expand: true,
                         cwd: 'frontend',
-                        src: ['index.html',
-                              'js/**']
+                        src: ['index.html']
                     }
                 ]
             }
@@ -112,6 +121,12 @@ module.exports = function(grunt) {
                 ],
                 tasks: ['copy:justTheAppPlease']
             },
+            neuter: {
+                files: [
+                    'frontend/js/**/*.js'
+                ],
+                tasks: ['neuter']
+            },
             livereload: {
                 options: {
                     livereload: LIVERELOAD_PORT
@@ -149,6 +164,7 @@ module.exports = function(grunt) {
         'useminPrepare',
         'emberTemplates',
         'compass',
+        'neuter',
         'concat',
         'uglify',
         'cssmin',
@@ -161,6 +177,7 @@ module.exports = function(grunt) {
         'copy:server',
         'emberTemplates',
         'compass',
+        'neuter',
         'concurrent:server'
     ]);
 
