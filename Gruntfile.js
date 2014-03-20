@@ -41,6 +41,7 @@ module.exports = function(grunt) {
                               'bower_components/ember-easyForm/**',
                               'bower_components/ic-ajax/**',
                               'bower_components/spin/**',
+                              'bower_components/rickshaw/**',
                               'index.html',
                               'js/**']
                     }
