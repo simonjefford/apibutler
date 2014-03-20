@@ -1,4 +1,4 @@
-/* global Spinner */
+/* global Spinner, Rickshaw */
 var ajax = ic.ajax;
 
 var App = Ember.Application.create({
@@ -30,28 +30,16 @@ App.PathsRoute = Ember.Route.extend({
 
 App.ApplicationsRoute = Ember.Route.extend({
     model: function() {
-        return [
-            {
-                x: 1,
-                y: 10
-            },
-            {
-                x: 2,
-                y: 5
-            },
-            {
-                x: 3,
-                y: 32
-            },
-            {
-                x: 4,
-                y: 10
-            },
-            {
-                x: 5,
-                y: 10
-            }
-        ];
+        return new Ember.RSVP.Promise(function(resolve) {
+            window.setTimeout(function(){
+                var random = new Rickshaw.Fixtures.RandomData(2000);
+                var data = [[]];
+                for (var i=0; i<2000; i++) {
+                    random.addData(data);
+                }
+                resolve(data[0]);
+            }, 1);
+        });
     }
 });
 
@@ -125,6 +113,22 @@ App.DataChartComponent = Ember.Component.extend({
 
     color: 'steelBlue',
 
+    xAxisShowsTime: true,
+
+    xAxisTimeUnit: 'day',
+
+    xAxis: function(graph) {
+        if (this.get('xAxisShowsTime')) {
+            return new Rickshaw.Graph.Axis.Time({
+                graph: graph
+            });
+        } else {
+            return new Rickshaw.Graph.Axis.X({
+                graph: graph
+            });
+        }
+    },
+
     showGraph: function() {
         var element = this.get('element');
         element.innerHTML = '';
@@ -135,6 +139,10 @@ App.DataChartComponent = Ember.Component.extend({
             series: [{data: this.data, color: this.get('color')}],
             renderer: this.get('renderer')
         });
+
+        var xAxis = this.xAxis(graph);
+
+        xAxis.render();
 
         graph.render();
     }.on('didInsertElement').observes('data', 'renderer')

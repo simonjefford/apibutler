@@ -9,3 +9,10 @@ html, body {
 .spinner {
     padding-top: 150px;
 }
+
+.rickshaw_graph .x_tick .title {
+  opacity: 1 !important;
+  position: relative !important;
+  color: #646464;
+  margin-top: 10px;
+}
