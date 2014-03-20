@@ -28,6 +28,32 @@ App.PathsRoute = Ember.Route.extend({
     }
 });
 
+App.ApplicationsRoute = Ember.Route.extend({
+    model: function() {
+        return [
+            {
+                x: 1,
+                y: 10
+            },
+            {
+                x: 2,
+                y: 5
+            },
+            {
+                x: 3,
+                y: 32
+            },
+            {
+                x: 4,
+                y: 10
+            },
+            {
+                x: 5,
+                y: 10
+            }
+        ];
+    }
+});
 App.Path = Ember.Object.extend({
     objectForSaving: function() {
         return {
@@ -79,6 +105,32 @@ App.LoadingSpinnerComponent = Ember.Component.extend({
             this.spinner.stop();
         }
     }.on('willDestroyElement')
+});
+
+App.DataChartComponent = Ember.Component.extend({
+    data: [],
+
+    renderer: 'bar',
+
+    width: 750,
+
+    height: 500,
+
+    color: 'steelBlue',
+
+    showGraph: function() {
+        var element = this.get('element');
+        element.innerHTML = '';
+        var graph = new Rickshaw.Graph({
+            element: element,
+            width: this.get('width'),
+            height: this.get('height'),
+            series: [{data: this.data, color: this.get('color')}],
+            renderer: this.get('renderer')
+        });
+
+        graph.render();
+    }.on('didInsertElement').observes('data', 'renderer')
 });
 
 App.PathsNewRoute = Ember.Route.extend({
