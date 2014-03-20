@@ -117,7 +117,6 @@ module.exports = function(grunt) {
             copy: {
                 files: [
                     'frontend/index.html',
-                    'frontend/js/**/*.js'
                 ],
                 tasks: ['copy:justTheAppPlease']
             },
