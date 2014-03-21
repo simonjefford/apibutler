@@ -38,8 +38,20 @@ module.exports = function(grunt) {
         },
         copy: {
             dist: {
-                src: 'frontend/index.html',
-                dest: 'frontend/dist/index.html'
+                files: [
+                    {
+                        src: 'frontend/index.html',
+                        dest: 'frontend/dist/index.html'
+                    },
+                    {
+                        src: 'frontend/bower_components/rickshaw/vendor/d3.v3.js',
+                        dest: 'frontend/dist/d3.v3.js'
+                    },
+                    {
+                        src: 'frontend/bower_components/rickshaw/rickshaw.js',
+                        dest: 'frontend/dist/rickshaw.js'
+                    }
+                ]
             },
             server: {
                 files: [
