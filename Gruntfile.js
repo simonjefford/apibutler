@@ -1,6 +1,7 @@
 var LIVERELOAD_PORT = 35729;
 
 module.exports = function(grunt) {
+    require('time-grunt')(grunt);
     grunt.initConfig({
         jshint: {
             all: {
