@@ -1,0 +1,6 @@
+- more separation of persistence concerns
+- storing of metrics
+- POC, fetching user info from IDP
+- put rate limiting back
+- deploy somewhere permanent (digital ocean?)
+- API docs
