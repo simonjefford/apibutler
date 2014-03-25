@@ -42,7 +42,7 @@ func pathsGetHandler(rdr render.Render) {
 }
 
 func appsGetHandler(rdr render.Render) {
-	rdr.JSON(200, applications.Get())
+	rdr.JSON(200, applications.GetList())
 }
 
 type statusResponse struct {

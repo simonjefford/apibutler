@@ -38,3 +38,11 @@ func init() {
 func Get() ApplicationTable {
 	return apps
 }
+
+func GetList() []*application {
+	t := make([]*application, 0, len(apps))
+	for _, val := range apps {
+		t = append(t, val.(*application))
+	}
+	return t
+}
