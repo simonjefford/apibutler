@@ -6,6 +6,13 @@ App.PathsNewRoute = Ember.Route.extend({
     },
 
     actions: {
+        willTransition: function() {
+            var controller = this.controllerFor('paths.new');
+            if(controller.get('isNew')) {
+                controller.content.deleteRecord();
+            }
+        },
+
         save: function(model) {
             var self = this;
             console.log('Now saving %o', JSON.stringify(model));
