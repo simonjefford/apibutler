@@ -37,8 +37,13 @@ func setupRouter(m *martini.Martini) {
 	m.Action(r.Handle)
 }
 
+type PathPayload struct {
+	Paths []limiter.Path `json:"paths"`
+}
+
 func pathsGetHandler(rdr render.Render) {
-	rdr.JSON(200, ratelimiter.Paths())
+	p := PathPayload{ratelimiter.Paths()}
+	rdr.JSON(200, p)
 }
 
 func appsGetHandler(rdr render.Render) {

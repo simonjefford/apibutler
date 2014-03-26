@@ -38,6 +38,7 @@ type Path struct {
 	Fragment string `json:"fragment"`
 	Limit    int    `json:"limit"`
 	Seconds  int    `json:"seconds"`
+	ID       int    `json:"id"`
 }
 
 func redisConfigKeyForPath(p string) string {
@@ -63,11 +64,14 @@ func (r *rateLimit) Paths() []Path {
 	defer r.RUnlock()
 
 	ps := make([]Path, 0, len(r.calls))
+	id := 0
 	for path, c := range r.calls {
+		id = id + 1
 		ps = append(ps, Path{
 			Fragment: path,
 			Limit:    c.Limit,
 			Seconds:  int(c.Seconds / time.Second),
+			ID:       id,
 		})
 	}
 
