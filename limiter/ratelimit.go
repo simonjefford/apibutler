@@ -38,7 +38,7 @@ type Path struct {
 	Fragment string `json:"fragment"`
 	Limit    int    `json:"limit"`
 	Seconds  int    `json:"seconds"`
-	ID       int    `json:"id"`
+	ID       int64  `json:"id"`
 }
 
 func redisConfigKeyForPath(p string) string {
@@ -51,11 +51,12 @@ func (r *rateLimit) AddPath(p Path) {
 
 	r.calls[p.Fragment] = NewCallInfo(p.Limit, p.Seconds)
 
-	r.rdb.Do("RPUSH", "knownPaths", p.Fragment)
+	ret, err := r.rdb.Do("RPUSH", "knownPaths", p.Fragment)
+	p.ID = ret.(int64)
 
 	enc, _ := json.Marshal(p)
 
-	err, ret := r.rdb.Do("SET", redisConfigKeyForPath(p.Fragment), string(enc))
+	ret, err = r.rdb.Do("SET", redisConfigKeyForPath(p.Fragment), string(enc))
 	fmt.Println(err, ret)
 }
 
@@ -64,7 +65,7 @@ func (r *rateLimit) Paths() []Path {
 	defer r.RUnlock()
 
 	ps := make([]Path, 0, len(r.calls))
-	id := 0
+	id := int64(0)
 	for path, c := range r.calls {
 		id = id + 1
 		ps = append(ps, Path{

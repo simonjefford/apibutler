@@ -59,7 +59,10 @@ func main() {
 	go startLimitServer()
 
 	// temporary measure
-	l, _ := limiter.NewRateLimit()
+	l, err := limiter.NewRateLimit()
+	if err != nil {
+		log.Fatalln(err)
+	}
 	go startDashboardServer(l)
 
 	c := make(chan os.Signal, 1)
