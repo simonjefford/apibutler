@@ -18,7 +18,7 @@ require('js/models/*');
 require('js/routes/*');
 
 App.Router.map(function() {
-    this.resource('paths', function() {
+    this.resource('apis', function() {
         this.route('new');
     });
     this.resource('applications', function() {

@@ -1,13 +1,13 @@
 /* global App */
 
-App.PathsNewRoute = Ember.Route.extend({
+App.ApisNewRoute = Ember.Route.extend({
     model: function() {
         return this.store.createRecord('path');
     },
 
     actions: {
         willTransition: function() {
-            var controller = this.controllerFor('paths.new');
+            var controller = this.controllerFor('apis.new');
             if(controller.get('isNew')) {
                 controller.content.deleteRecord();
             }
@@ -17,7 +17,7 @@ App.PathsNewRoute = Ember.Route.extend({
             var self = this;
             console.log('Now saving %o', JSON.stringify(model));
             model.save().then(function() {
-                self.transitionTo('paths.index');
+                self.transitionTo('apis.index');
             }, function(arg) {
                 console.log(arg);
             });
