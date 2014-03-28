@@ -5,10 +5,10 @@ default: buildbin
 configureenv:
 	rm -rf .gopath
 	mkdir -p .gopath/src/fourth.com/
-	ln -sf ../../.. .gopath/src/fourth.com/ratelimit
+	ln -sf ../../.. .gopath/src/fourth.com/apibutler
 
 buildbin: configureenv
-	go build -o ratelimit
+	go build -o apibutler
 
 run: buildbin npm bower
 	grunt serve
@@ -30,4 +30,4 @@ buildweb: npm bower
 	grunt
 
 container: buildbin buildweb
-	docker build -t simonj/ratelimit .
+	docker build -t simonj/apibutler .

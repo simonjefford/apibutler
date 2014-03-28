@@ -7,7 +7,7 @@ RUN cp -R node-v0.10.25-linux-x64/* /usr/local
 ADD testbackend /srv/testbackend
 RUN cd /srv/testbackend && npm install
 ADD redis.conf /etc/redis/redis.conf
-ADD ratelimit /srv/ratelimit
+ADD apibutler /srv/ratelimit
 ADD dockerstart /srv/dockerstart
 ADD frontend/dist /srv/public
 ENTRYPOINT /srv/dockerstart

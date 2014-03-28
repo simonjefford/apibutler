@@ -150,15 +150,15 @@ module.exports = function(grunt) {
             }
         },
         spawn: {
-            ratelimit: {
-                command: './rateLimit',
+            apibutler: {
+                command: './apibutler',
                 commandArgs: ['-frontendPath=.tmp']
             }
         },
         concurrent: {
             server: {
                 tasks: [
-                    'spawn:ratelimit',
+                    'spawn:apibutler',
                     'watch'
                 ],
                 options: {

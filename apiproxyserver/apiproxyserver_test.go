@@ -8,8 +8,8 @@ import (
 	"os"
 	"testing"
 
-	"fourth.com/ratelimit/applications"
-	"fourth.com/ratelimit/routes"
+	"fourth.com/apibutler/applications"
+	"fourth.com/apibutler/routes"
 )
 
 type testendpoint struct {

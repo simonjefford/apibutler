@@ -9,9 +9,9 @@ import (
 	"os/signal"
 	"runtime"
 
-	"fourth.com/ratelimit/apiproxyserver"
-	"fourth.com/ratelimit/dashboard"
-	"fourth.com/ratelimit/limiter"
+	"fourth.com/apibutler/apiproxyserver"
+	"fourth.com/apibutler/dashboard"
+	"fourth.com/apibutler/limiter"
 )
 
 type options struct {

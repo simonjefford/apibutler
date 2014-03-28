@@ -7,9 +7,9 @@ import (
 	"os"
 	"sync"
 
-	"fourth.com/ratelimit/applications"
-	"fourth.com/ratelimit/oauth"
-	"fourth.com/ratelimit/routes"
+	"fourth.com/apibutler/applications"
+	"fourth.com/apibutler/oauth"
+	"fourth.com/apibutler/routes"
 	"github.com/codegangsta/martini"
 	"github.com/nickstenning/router/triemux"
 )

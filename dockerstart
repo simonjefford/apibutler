@@ -1,3 +1,3 @@
 /etc/init.d/redis-server start
 node /srv/testbackend/test.js &
-/srv/ratelimit -frontendPath="/srv/public"
+/srv/apibutler -frontendPath="/srv/public"

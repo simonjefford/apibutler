@@ -7,8 +7,8 @@ import (
 	"os"
 	"strconv"
 
-	"fourth.com/ratelimit/applications"
-	"fourth.com/ratelimit/limiter"
+	"fourth.com/apibutler/applications"
+	"fourth.com/apibutler/limiter"
 	"github.com/codegangsta/martini"
 	"github.com/martini-contrib/render"
 )
