@@ -47,7 +47,7 @@ func startLimitServer() {
 }
 
 func startDashboardServer(r limiter.RateLimit) {
-	server := dashboard.NewDashboardServer(r, opts.frontendPath)
+	server := dashboard.NewDashboardServer(opts.frontendPath)
 	log.Println("Running dashboard on", opts.dashboardPortString())
 	log.Fatalln(http.ListenAndServe(opts.dashboardPortString(), server))
 }

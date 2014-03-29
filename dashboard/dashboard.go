@@ -7,18 +7,16 @@ import (
 	"os"
 	"strconv"
 
-	"fourth.com/apibutler/limiter"
 	"fourth.com/apibutler/metadata"
 	"github.com/codegangsta/martini"
 	"github.com/martini-contrib/render"
 )
 
 var (
-	ratelimiter limiter.RateLimit
+	pathStorage metadata.PathStorage
 )
 
-func NewDashboardServer(r limiter.RateLimit, path string) http.Handler {
-	ratelimiter = r
+func NewDashboardServer(path string) http.Handler {
 	m := martini.New()
 	m.Use(martini.Logger())
 	l := log.New(os.Stdout, "[dashboard server] ", 0)
@@ -27,6 +25,14 @@ func NewDashboardServer(r limiter.RateLimit, path string) http.Handler {
 	m.Use(martini.Static(path))
 	m.Use(render.Renderer())
 	setupRouter(m)
+
+	p, err := metadata.GetPathStore()
+	pathStorage = p
+
+	if err != nil {
+		panic(err)
+	}
+
 	return m
 }
 
@@ -48,7 +54,7 @@ type SinglePathPayload struct {
 }
 
 func pathsGetHandler(rdr render.Render) {
-	p := PathPayload{ratelimiter.Paths()}
+	p := PathPayload{pathStorage.Paths()}
 	rdr.JSON(200, p)
 }
 
@@ -79,6 +85,6 @@ func pathsPostHandler(res http.ResponseWriter, req *http.Request, rdr render.Ren
 		return
 	}
 	log.Println(p)
-	ratelimiter.AddPath(p.Path)
+	pathStorage.AddPath(p.Path)
 	rdr.JSON(http.StatusCreated, p)
 }

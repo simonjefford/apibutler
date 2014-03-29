@@ -21,8 +21,6 @@ var (
 )
 
 type RateLimit interface {
-	AddPath(p metadata.Path)
-	Paths() []metadata.Path
 	IncrementCount(path string) error
 	Forget(path string)
 	GetCount(path string) (int, error)
