@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"strconv"
 	"sync"
-	"time"
 
+	"fourth.com/apibutler/metadata"
 	"github.com/codegangsta/martini"
 	"github.com/garyburd/redigo/redis"
 )
@@ -20,8 +20,6 @@ var (
 )
 
 type RateLimit interface {
-	AddPath(p Path)
-	Paths() []Path
 	IncrementCount(path string) error
 	Forget(path string)
 	GetCount(path string) (int, error)
@@ -34,49 +32,8 @@ type rateLimit struct {
 	rdb   redis.Conn
 }
 
-type Path struct {
-	Fragment string `json:"fragment"`
-	Limit    int    `json:"limit"`
-	Seconds  int    `json:"seconds"`
-	ID       int64  `json:"id"`
-}
-
 func redisConfigKeyForPath(p string) string {
 	return fmt.Sprintf("%s:config", p)
-}
-
-func (r *rateLimit) AddPath(p Path) {
-	r.Lock()
-	defer r.Unlock()
-
-	r.calls[p.Fragment] = NewCallInfo(p.Limit, p.Seconds)
-
-	ret, err := r.rdb.Do("RPUSH", "knownPaths", p.Fragment)
-	p.ID = ret.(int64)
-
-	enc, _ := json.Marshal(p)
-
-	ret, err = r.rdb.Do("SET", redisConfigKeyForPath(p.Fragment), string(enc))
-	fmt.Println(err, ret)
-}
-
-func (r *rateLimit) Paths() []Path {
-	r.RLock()
-	defer r.RUnlock()
-
-	ps := make([]Path, 0, len(r.calls))
-	id := int64(0)
-	for path, c := range r.calls {
-		id = id + 1
-		ps = append(ps, Path{
-			Fragment: path,
-			Limit:    c.Limit,
-			Seconds:  int(c.Seconds / time.Second),
-			ID:       id,
-		})
-	}
-
-	return ps
 }
 
 func (r *rateLimit) IncrementCount(path string) error {
@@ -159,7 +116,7 @@ func (r *rateLimit) loadPaths() error {
 		if err != nil {
 			return err
 		}
-		var p Path
+		var p metadata.Api
 		err = json.Unmarshal([]byte(config), &p)
 		if err != nil {
 			return err

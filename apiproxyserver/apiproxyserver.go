@@ -7,7 +7,7 @@ import (
 	"os"
 	"sync"
 
-	"fourth.com/apibutler/applications"
+	"fourth.com/apibutler/metadata"
 	"fourth.com/apibutler/oauth"
 	"fourth.com/apibutler/routes"
 	"github.com/codegangsta/martini"
@@ -15,7 +15,7 @@ import (
 )
 
 type proxyserver struct {
-	apps    applications.ApplicationTable
+	apps    metadata.ApplicationTable
 	routes  []routes.Route
 	logger  *log.Logger
 	handler http.Handler
@@ -23,13 +23,13 @@ type proxyserver struct {
 }
 
 type APIProxyServer interface {
-	Update(applications.ApplicationTable, []routes.Route)
+	Update(metadata.ApplicationTable, []routes.Route)
 	ServeHTTP(http.ResponseWriter, *http.Request)
 }
 
 func NewAPIProxyServer() APIProxyServer {
 	s := &proxyserver{
-		apps:   applications.Get(),
+		apps:   metadata.GetApplicationsTable(),
 		routes: routes.Get(),
 		logger: log.New(os.Stdout, "[proxy server] ", 0),
 	}
@@ -57,7 +57,7 @@ func (s *proxyserver) ServeHTTP(res http.ResponseWriter, r *http.Request) {
 	s.handler.ServeHTTP(res, r)
 }
 
-func (s *proxyserver) Update(apps applications.ApplicationTable, routes []routes.Route) {
+func (s *proxyserver) Update(apps metadata.ApplicationTable, routes []routes.Route) {
 	s.Lock()
 	defer s.Unlock()
 	s.apps = apps
