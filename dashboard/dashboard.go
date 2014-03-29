@@ -9,6 +9,7 @@ import (
 
 	"fourth.com/apibutler/applications"
 	"fourth.com/apibutler/limiter"
+	"fourth.com/apibutler/metadata"
 	"github.com/codegangsta/martini"
 	"github.com/martini-contrib/render"
 )
@@ -40,11 +41,11 @@ func setupRouter(m *martini.Martini) {
 }
 
 type PathPayload struct {
-	Paths []limiter.Path `json:"paths"`
+	Paths []metadata.Path `json:"paths"`
 }
 
 type SinglePathPayload struct {
-	Path limiter.Path `json:"path"`
+	Path metadata.Path `json:"path"`
 }
 
 func pathsGetHandler(rdr render.Render) {
