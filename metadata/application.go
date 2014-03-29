@@ -11,6 +11,7 @@ type Application struct {
 	backendURL       *url.URL
 	BackendURLString string `json:"backendURL"`
 	http.Handler     `json:"-"`
+	ID               int `json:"id"`
 }
 
 func NewApplication(name, urlString string) *Application {
@@ -41,7 +42,10 @@ func GetApplicationsTable() ApplicationTable {
 
 func GetApplicationsList() []*Application {
 	t := make([]*Application, 0, len(apps))
+	i := 0
 	for _, val := range apps {
+		i = i + 1
+		val.ID = i
 		t = append(t, val)
 	}
 	return t

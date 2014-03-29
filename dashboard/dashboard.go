@@ -53,13 +53,18 @@ type SingleApiPayload struct {
 	Api metadata.Api `json:"api"`
 }
 
+type ApplicationsPayload struct {
+	Apps []*metadata.Application `json:"apps"`
+}
+
 func apisGetHandler(rdr render.Render) {
 	a := ApiPayload{apiStorage.Apis()}
 	rdr.JSON(200, a)
 }
 
 func appsGetHandler(rdr render.Render) {
-	rdr.JSON(200, metadata.GetApplicationsList())
+	a := ApplicationsPayload{metadata.GetApplicationsList()}
+	rdr.JSON(200, a)
 }
 
 type statusResponse struct {
