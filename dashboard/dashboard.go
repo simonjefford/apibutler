@@ -38,24 +38,24 @@ func NewDashboardServer(path string) http.Handler {
 
 func setupRouter(m *martini.Martini) {
 	r := martini.NewRouter()
-	r.Post("/paths", pathsPostHandler)
-	r.Get("/paths", pathsGetHandler)
+	r.Post("/apis", apisPostHandler)
+	r.Get("/apis", apisGetHandler)
 	r.Get("/apps", appsGetHandler)
-	r.Put("/paths/:id", pathsPutHandler)
+	r.Put("/apis/:id", apisPutHandler)
 	m.Action(r.Handle)
 }
 
 type ApiPayload struct {
-	Apis []metadata.Api `json:"paths"`
+	Apis []metadata.Api `json:"apis"`
 }
 
 type SingleApiPayload struct {
-	Api metadata.Api `json:"path"`
+	Api metadata.Api `json:"api"`
 }
 
-func pathsGetHandler(rdr render.Render) {
-	p := ApiPayload{apiStorage.Apis()}
-	rdr.JSON(200, p)
+func apisGetHandler(rdr render.Render) {
+	a := ApiPayload{apiStorage.Apis()}
+	rdr.JSON(200, a)
 }
 
 func appsGetHandler(rdr render.Render) {
@@ -66,25 +66,25 @@ type statusResponse struct {
 	Message string `json:message`
 }
 
-func pathsPutHandler(res http.ResponseWriter, req *http.Request, rdr render.Render, params martini.Params) {
+func apisPutHandler(res http.ResponseWriter, req *http.Request, rdr render.Render, params martini.Params) {
 	decoder := json.NewDecoder(req.Body)
-	var p SingleApiPayload
-	decoder.Decode(&p)
+	var a SingleApiPayload
+	decoder.Decode(&a)
 	id, _ := strconv.Atoi(params["id"])
-	p.Api.ID = int64(id)
-	log.Println(p)
-	rdr.JSON(http.StatusCreated, p)
+	a.Api.ID = int64(id)
+	log.Println(a)
+	rdr.JSON(http.StatusCreated, a)
 }
 
-func pathsPostHandler(res http.ResponseWriter, req *http.Request, rdr render.Render) {
+func apisPostHandler(res http.ResponseWriter, req *http.Request, rdr render.Render) {
 	decoder := json.NewDecoder(req.Body)
-	var p SingleApiPayload
-	err := decoder.Decode(&p)
+	var a SingleApiPayload
+	err := decoder.Decode(&a)
 	if err != nil {
 		rdr.JSON(http.StatusBadRequest, statusResponse{err.Error()})
 		return
 	}
-	log.Println(p)
-	apiStorage.AddApi(p.Api)
-	rdr.JSON(http.StatusCreated, p)
+	log.Println(a)
+	apiStorage.AddApi(a.Api)
+	rdr.JSON(http.StatusCreated, a)
 }

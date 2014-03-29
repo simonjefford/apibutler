@@ -2,7 +2,7 @@
 
 App.ApisNewRoute = Ember.Route.extend({
     model: function() {
-        return this.store.createRecord('path');
+        return this.store.createRecord('api');
     },
 
     actions: {
