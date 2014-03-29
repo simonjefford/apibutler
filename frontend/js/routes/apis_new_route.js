@@ -5,6 +5,16 @@ App.ApisNewRoute = Ember.Route.extend({
         return this.store.createRecord('api');
     },
 
+    apps: null,
+
+    setupController: function(controller, model) {
+        this._super(controller, model);
+        if(!this.get('apps')) {
+            this.set('apps', this.store.find('app'));
+        }
+        controller.set('apps', this.get('apps'));
+    },
+
     actions: {
         willTransition: function() {
             var controller = this.controllerFor('apis.new');

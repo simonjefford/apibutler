@@ -2,6 +2,20 @@
   {{input fragment label="Path"}}
   {{input limit}}
   {{input seconds}}
+  {{#unless saveDisabled }}
+    {{input app as='select'
+      collection='apps'
+      optionValuePath='content.id'
+      optionLabelPath='content.name'
+      prompt='Select Application'
+      selection='application'
+    }}
+  {{/unless}}
+  {{#if saveDisabled}}
+    <span>Loading Apps</span>
+  {{/if}}
 {{/form-for}}
-<p><button id="save" {{action "save" model}}>Save</button></p>
+
+<p><button {{bind-attr disabled="saveDisabled"}} id="save" {{action "save" model}}>Save</button></p>
+
 <p>{{#link-to 'apis'}}Cancel{{/link-to}}</p>
