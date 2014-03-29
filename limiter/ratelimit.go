@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"fourth.com/apibutler/metadata"
-
 	"github.com/codegangsta/martini"
 	"github.com/garyburd/redigo/redis"
 )
