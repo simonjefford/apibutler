@@ -7,7 +7,6 @@ import (
 	"os"
 	"strconv"
 
-	"fourth.com/apibutler/applications"
 	"fourth.com/apibutler/limiter"
 	"fourth.com/apibutler/metadata"
 	"github.com/codegangsta/martini"
@@ -54,7 +53,7 @@ func pathsGetHandler(rdr render.Render) {
 }
 
 func appsGetHandler(rdr render.Render) {
-	rdr.JSON(200, applications.GetList())
+	rdr.JSON(200, metadata.GetApplicationsList())
 }
 
 type statusResponse struct {
