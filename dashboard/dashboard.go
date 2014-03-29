@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	pathStorage metadata.PathStorage
+	apiStorage metadata.ApiStorage
 )
 
 func NewDashboardServer(path string) http.Handler {
@@ -26,8 +26,8 @@ func NewDashboardServer(path string) http.Handler {
 	m.Use(render.Renderer())
 	setupRouter(m)
 
-	p, err := metadata.GetPathStore()
-	pathStorage = p
+	a, err := metadata.GetApiStore()
+	apiStorage = a
 
 	if err != nil {
 		panic(err)
@@ -45,16 +45,16 @@ func setupRouter(m *martini.Martini) {
 	m.Action(r.Handle)
 }
 
-type PathPayload struct {
-	Paths []metadata.Path `json:"paths"`
+type ApiPayload struct {
+	Apis []metadata.Api `json:"paths"`
 }
 
-type SinglePathPayload struct {
-	Path metadata.Path `json:"path"`
+type SingleApiPayload struct {
+	Api metadata.Api `json:"path"`
 }
 
 func pathsGetHandler(rdr render.Render) {
-	p := PathPayload{pathStorage.Paths()}
+	p := ApiPayload{apiStorage.Apis()}
 	rdr.JSON(200, p)
 }
 
@@ -68,23 +68,23 @@ type statusResponse struct {
 
 func pathsPutHandler(res http.ResponseWriter, req *http.Request, rdr render.Render, params martini.Params) {
 	decoder := json.NewDecoder(req.Body)
-	var p SinglePathPayload
+	var p SingleApiPayload
 	decoder.Decode(&p)
 	id, _ := strconv.Atoi(params["id"])
-	p.Path.ID = int64(id)
+	p.Api.ID = int64(id)
 	log.Println(p)
 	rdr.JSON(http.StatusCreated, p)
 }
 
 func pathsPostHandler(res http.ResponseWriter, req *http.Request, rdr render.Render) {
 	decoder := json.NewDecoder(req.Body)
-	var p SinglePathPayload
+	var p SingleApiPayload
 	err := decoder.Decode(&p)
 	if err != nil {
 		rdr.JSON(http.StatusBadRequest, statusResponse{err.Error()})
 		return
 	}
 	log.Println(p)
-	pathStorage.AddPath(p.Path)
+	apiStorage.AddApi(p.Api)
 	rdr.JSON(http.StatusCreated, p)
 }

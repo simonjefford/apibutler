@@ -8,50 +8,50 @@ import (
 	"github.com/garyburd/redigo/redis"
 )
 
-type Path struct {
+type Api struct {
 	Fragment string `json:"fragment"`
 	Limit    int    `json:"limit"`
 	Seconds  int    `json:"seconds"`
 	ID       int64  `json:"id"`
 }
 
-type PathStorage interface {
-	AddPath(p Path)
-	Paths() []Path
+type ApiStorage interface {
+	AddApi(p Api)
+	Apis() []Api
 	Forget(path string)
 }
 
-type redisPathStore struct {
+type redisApiStore struct {
 	rdb redis.Conn
 }
 
-func redisConfigKeyForPath(p string) string {
+func redisConfigKeyForApi(p string) string {
 	return fmt.Sprintf("%s:config", p)
 }
 
-func (r *redisPathStore) AddPath(p Path) {
+func (r *redisApiStore) AddApi(p Api) {
 	ret, err := r.rdb.Do("RPUSH", "knownPaths", p.Fragment)
 	p.ID = ret.(int64)
 
 	enc, _ := json.Marshal(p)
 
-	ret, err = r.rdb.Do("SET", redisConfigKeyForPath(p.Fragment), string(enc))
+	ret, err = r.rdb.Do("SET", redisConfigKeyForApi(p.Fragment), string(enc))
 	fmt.Println(err, ret)
 }
 
-func (r *redisPathStore) Forget(path string) {
+func (r *redisApiStore) Forget(path string) {
 }
 
-func GetPathStore() (PathStorage, error) {
+func GetApiStore() (ApiStorage, error) {
 	conn, err := redis.Dial("tcp", ":6379")
 	if err != nil {
 		return nil, err
 	}
 
-	return &redisPathStore{conn}, nil
+	return &redisApiStore{conn}, nil
 }
 
-func (r *redisPathStore) Paths() []Path {
+func (r *redisApiStore) Apis() []Api {
 	n, _ := redis.Int(r.rdb.Do("LLEN", "knownPaths"))
 
 	// TODO revisit me
@@ -65,7 +65,7 @@ func (r *redisPathStore) Paths() []Path {
 		return nil
 	}
 
-	retPaths := make([]Path, 0, n)
+	retApis := make([]Api, 0, n)
 
 	paths, _ := redis.Strings(r.rdb.Do("LRANGE", "knownPaths", 0, n))
 
@@ -74,7 +74,7 @@ func (r *redisPathStore) Paths() []Path {
 	// }
 
 	for idx := range paths {
-		r.rdb.Send("GET", redisConfigKeyForPath(paths[idx]))
+		r.rdb.Send("GET", redisConfigKeyForApi(paths[idx]))
 		// if err != nil {
 		// 	return err
 		// }
@@ -87,10 +87,10 @@ func (r *redisPathStore) Paths() []Path {
 		// if err != nil {
 		// 	return err
 		// }
-		var p Path
+		var p Api
 		json.Unmarshal([]byte(config), &p)
-		retPaths = append(retPaths, p)
+		retApis = append(retApis, p)
 	}
 
-	return retPaths
+	return retApis
 }
