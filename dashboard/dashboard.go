@@ -40,8 +40,9 @@ func setupRouter(m *martini.Martini) {
 	r := martini.NewRouter()
 	r.Post("/apis", apisPostHandler)
 	r.Get("/apis", apisGetHandler)
-	r.Get("/apps", appsGetHandler)
 	r.Put("/apis/:id", apisPutHandler)
+	r.Get("/apps", appsGetHandler)
+	r.Get("/apps/:id", appGetHandler)
 	m.Action(r.Handle)
 }
 
@@ -51,6 +52,10 @@ type ApiPayload struct {
 
 type SingleApiPayload struct {
 	Api metadata.Api `json:"api"`
+}
+
+type SingleAppPayload struct {
+	App metadata.Application `json:"app"`
 }
 
 type ApplicationsPayload struct {
@@ -69,6 +74,12 @@ func appsGetHandler(rdr render.Render) {
 
 type statusResponse struct {
 	Message string `json:message`
+}
+
+func appGetHandler(res http.ResponseWriter, req *http.Request, rdr render.Render, params martini.Params) {
+	id, _ := strconv.Atoi(params["id"])
+	a := SingleAppPayload{*metadata.GetSingleApplication(id)}
+	rdr.JSON(200, a)
 }
 
 func apisPutHandler(res http.ResponseWriter, req *http.Request, rdr render.Render, params martini.Params) {
