@@ -16,7 +16,7 @@ type Api struct {
 }
 
 type ApiStorage interface {
-	AddApi(p Api)
+	AddApi(a *Api)
 	Apis() []Api
 	Forget(path string)
 }
@@ -29,13 +29,13 @@ func redisConfigKeyForApi(p string) string {
 	return fmt.Sprintf("%s:config", p)
 }
 
-func (r *redisApiStore) AddApi(p Api) {
-	ret, err := r.rdb.Do("RPUSH", "knownPaths", p.Fragment)
-	p.ID = ret.(int64)
+func (r *redisApiStore) AddApi(a *Api) {
+	ret, err := r.rdb.Do("RPUSH", "knownPaths", a.Fragment)
+	a.ID = ret.(int64)
 
-	enc, _ := json.Marshal(p)
+	enc, _ := json.Marshal(a)
 
-	ret, err = r.rdb.Do("SET", redisConfigKeyForApi(p.Fragment), string(enc))
+	ret, err = r.rdb.Do("SET", redisConfigKeyForApi(a.Fragment), string(enc))
 	fmt.Println(err, ret)
 }
 

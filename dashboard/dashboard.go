@@ -90,6 +90,6 @@ func apisPostHandler(res http.ResponseWriter, req *http.Request, rdr render.Rend
 		return
 	}
 	log.Println(a)
-	apiStorage.AddApi(a.Api)
+	apiStorage.AddApi(&a.Api)
 	rdr.JSON(http.StatusCreated, a)
 }
