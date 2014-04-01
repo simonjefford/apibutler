@@ -13,4 +13,17 @@
 // -dashboardPort - the port on whith to run the dashboard admin app
 //
 // -frontendPath - the path from which to serve the dashboard admin app
+//
+// Startup
+//
+// The startup process goes like this:
+//
+// 1. Parse any command line flags.
+//
+// 2. Startup the dashboard server on the configured port, serving files from the configured
+// directory
+//
+// 3. Startup the proxy server on the configured port.
+//
+// 4. Wait for SIGINT
 package main
