@@ -46,7 +46,7 @@ func setupRouter(m *martini.Martini) {
 	m.Action(r.Handle)
 }
 
-type ApiPayload struct {
+type ApisPayload struct {
 	Apis []metadata.Api `json:"apis"`
 }
 
@@ -63,10 +63,11 @@ type ApplicationsPayload struct {
 }
 
 func apisGetHandler(rdr render.Render) {
-	a, err := ApiPayload{apiStorage.Apis()}
+	apis, err := apiStorage.Apis()
 	if err != nil {
 		rdr.JSON(500, nil)
 	}
+	a := ApisPayload{apis}
 	rdr.JSON(200, a)
 }
 
