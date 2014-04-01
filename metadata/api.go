@@ -13,7 +13,7 @@ type Api struct {
 	Limit    int    `json:"limit"`
 	Seconds  int    `json:"seconds"`
 	ID       int64  `json:"id"`
-	App      int    `json:"app"`
+	App      string `json:"app"`
 }
 
 type ApiStorage interface {
@@ -89,7 +89,7 @@ func (r *redisApiStore) Apis() []Api {
 		// 	return err
 		// }
 		var a Api
-		a.App = 1
+		a.App = "1"
 		json.Unmarshal([]byte(config), &a)
 		retApis = append(retApis, a)
 	}
