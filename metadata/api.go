@@ -13,12 +13,12 @@ type Api struct {
 	Limit    int    `json:"limit"`
 	Seconds  int    `json:"seconds"`
 	ID       int64  `json:"id"`
-	App      int    `json:"app"`
+	App      string `json:"app"`
 }
 
 type ApiStorage interface {
 	AddApi(a *Api)
-	Apis() []Api
+	Apis() ([]Api, error)
 	Forget(path string)
 }
 
@@ -52,47 +52,46 @@ func GetApiStore() (ApiStorage, error) {
 	return &redisApiStore{conn}, nil
 }
 
-func (r *redisApiStore) Apis() []Api {
-	n, _ := redis.Int(r.rdb.Do("LLEN", "knownPaths"))
+func (r *redisApiStore) Apis() ([]Api, error) {
+	n, err := redis.Int(r.rdb.Do("LLEN", "knownPaths"))
 
-	// TODO revisit me
-	// if err != nil {
-	// 	return err
-	// }
+	if err != nil {
+		return nil, err
+	}
 
 	log.Println(n, "known paths")
 
-	if n == 0 {
-		return nil
-	}
-
 	retApis := make([]Api, 0, n)
+
+	if n == 0 {
+		return retApis, nil
+	}
 
 	paths, _ := redis.Strings(r.rdb.Do("LRANGE", "knownPaths", 0, n))
 
-	// if err != nil {
-	// 	return err
-	// }
+	if err != nil {
+		return nil, err
+	}
 
 	for idx := range paths {
 		r.rdb.Send("GET", redisConfigKeyForApi(paths[idx]))
-		// if err != nil {
-		// 	return err
-		// }
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	r.rdb.Flush()
 
 	for _ = range paths {
 		config, _ := redis.String(r.rdb.Receive())
-		// if err != nil {
-		// 	return err
-		// }
+		if err != nil {
+			return nil, err
+		}
 		var a Api
-		a.App = 1
+		a.App = "1"
 		json.Unmarshal([]byte(config), &a)
 		retApis = append(retApis, a)
 	}
 
-	return retApis
+	return retApis, nil
 }
