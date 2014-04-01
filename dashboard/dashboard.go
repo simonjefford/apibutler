@@ -63,7 +63,10 @@ type ApplicationsPayload struct {
 }
 
 func apisGetHandler(rdr render.Render) {
-	a := ApiPayload{apiStorage.Apis()}
+	a, err := ApiPayload{apiStorage.Apis()}
+	if err != nil {
+		rdr.JSON(500, nil)
+	}
 	rdr.JSON(200, a)
 }
 
