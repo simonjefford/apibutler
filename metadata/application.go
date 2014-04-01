@@ -33,8 +33,8 @@ type ApplicationTable map[string]*Application
 
 func init() {
 	apps = make(ApplicationTable)
-	apps["Test node backend"] = NewApplication("Test node backend", "http://localhost:3000", 1)
-	apps["Another test node backend"] = NewApplication("Another test node backend", "http://localhost:3001", 2)
+	apps["1"] = NewApplication("Test node backend", "http://localhost:3000", 1)
+	apps["2"] = NewApplication("Another test node backend", "http://localhost:3001", 2)
 }
 
 func GetApplicationsTable() ApplicationTable {

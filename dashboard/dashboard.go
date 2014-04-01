@@ -47,7 +47,7 @@ func setupRouter(m *martini.Martini) {
 }
 
 type ApisPayload struct {
-	Apis []metadata.Api `json:"apis"`
+	Apis []*metadata.Api `json:"apis"`
 }
 
 type SingleApiPayload struct {

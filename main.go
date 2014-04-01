@@ -11,6 +11,7 @@ import (
 
 	"fourth.com/apibutler/apiproxyserver"
 	"fourth.com/apibutler/dashboard"
+	"fourth.com/apibutler/metadata"
 )
 
 type options struct {
@@ -39,7 +40,10 @@ func init() {
 }
 
 func startProxyServer() {
-	server := apiproxyserver.NewAPIProxyServer()
+	apps := metadata.GetApplicationsTable()
+	apiStore, _ := metadata.GetApiStore()
+	apis, _ := apiStore.Apis()
+	server := apiproxyserver.NewAPIProxyServer(apps, apis)
 
 	log.Println("Running proxy on", opts.proxyPortString())
 	log.Fatalln(http.ListenAndServe(opts.proxyPortString(), server))

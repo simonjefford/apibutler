@@ -17,7 +17,7 @@ import (
 
 type proxyserver struct {
 	apps    metadata.ApplicationTable
-	routes  []metadata.Route
+	apis    []*metadata.Api
 	logger  *log.Logger
 	handler http.Handler
 	sync.RWMutex
@@ -28,7 +28,7 @@ type proxyserver struct {
 type APIProxyServer interface {
 	// Update updates the application and routing tables used by
 	// the APIProxyServer
-	Update(metadata.ApplicationTable, []metadata.Route)
+	Update(metadata.ApplicationTable, []*metadata.Api)
 
 	// ServeHTTP is the method needed to implement http.Handler
 	ServeHTTP(http.ResponseWriter, *http.Request)
@@ -37,10 +37,10 @@ type APIProxyServer interface {
 // NewAPIProxyServer returns a type implementing APIProxyServer. This type
 // implements http.Handler so the return from this function can be given to
 // http.ListenAndServe and friends.
-func NewAPIProxyServer() APIProxyServer {
+func NewAPIProxyServer(apps metadata.ApplicationTable, apis []*metadata.Api) APIProxyServer {
 	s := &proxyserver{
-		apps:   metadata.GetApplicationsTable(),
-		routes: metadata.GetRoutes(),
+		apps:   apps,
+		apis:   apis,
 		logger: log.New(os.Stdout, "[proxy server] ", 0),
 	}
 
@@ -49,12 +49,12 @@ func NewAPIProxyServer() APIProxyServer {
 	return s
 }
 
-func wrapApp(app http.Handler, route metadata.Route) http.Handler {
+func wrapApp(app http.Handler, api *metadata.Api) http.Handler {
 	m := martini.New()
 	m.Action(app.ServeHTTP)
-	l := log.New(os.Stdout, fmt.Sprintf("[%s (%s)] ", route.Path, route.ApplicationName), 0)
+	l := log.New(os.Stdout, fmt.Sprintf("[%s (%s)] ", api.Fragment, api.App), 0)
 	m.Map(l)
-	if route.NeedsAuth {
+	if api.NeedsAuth {
 		m.Use(oauth.GetIdFromRequest)
 		m.Use(logToken)
 	}
@@ -67,23 +67,23 @@ func (s *proxyserver) ServeHTTP(res http.ResponseWriter, r *http.Request) {
 	s.handler.ServeHTTP(res, r)
 }
 
-func (s *proxyserver) Update(apps metadata.ApplicationTable, routes []metadata.Route) {
+func (s *proxyserver) Update(apps metadata.ApplicationTable, apis []*metadata.Api) {
 	s.Lock()
 	defer s.Unlock()
 	s.apps = apps
-	s.routes = routes
+	s.apis = apis
 	s.configure()
 }
 
 func (s *proxyserver) configure() {
 	mux := triemux.NewMux()
 
-	for _, route := range s.routes {
-		app, ok := s.apps[route.ApplicationName]
+	for _, api := range s.apis {
+		app, ok := s.apps[api.App]
 		if ok {
-			log.Printf("Handling %s with %v", route.Path, app)
-			wrapped := wrapApp(app, route)
-			mux.Handle(route.Path, route.IsPrefix, wrapped)
+			log.Printf("Handling %s with %v", api.Fragment, app)
+			wrapped := wrapApp(app, api)
+			mux.Handle(api.Fragment, api.IsPrefix, wrapped)
 		} else {
 			log.Printf("app not found")
 		}
