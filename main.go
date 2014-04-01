@@ -11,7 +11,6 @@ import (
 
 	"fourth.com/apibutler/apiproxyserver"
 	"fourth.com/apibutler/dashboard"
-	"fourth.com/apibutler/limiter"
 )
 
 type options struct {
@@ -39,14 +38,14 @@ func init() {
 	flag.Parse()
 }
 
-func startLimitServer() {
+func startProxyServer() {
 	server := apiproxyserver.NewAPIProxyServer()
 
 	log.Println("Running proxy on", opts.proxyPortString())
 	log.Fatalln(http.ListenAndServe(opts.proxyPortString(), server))
 }
 
-func startDashboardServer(r limiter.RateLimit) {
+func startDashboardServer() {
 	server := dashboard.NewDashboardServer(opts.frontendPath)
 	log.Println("Running dashboard on", opts.dashboardPortString())
 	log.Fatalln(http.ListenAndServe(opts.dashboardPortString(), server))
@@ -56,14 +55,8 @@ func main() {
 	// use all available cores
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	go startLimitServer()
-
-	// temporary measure
-	l, err := limiter.NewRateLimit()
-	if err != nil {
-		log.Fatalln(err)
-	}
-	go startDashboardServer(l)
+	go startProxyServer()
+	go startDashboardServer()
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
