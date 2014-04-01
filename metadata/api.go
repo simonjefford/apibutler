@@ -61,11 +61,11 @@ func (r *redisApiStore) Apis() ([]Api, error) {
 
 	log.Println(n, "known paths")
 
-	if n == 0 {
-		return nil
-	}
-
 	retApis := make([]Api, 0, n)
+
+	if n == 0 {
+		return retApis, nil
+	}
 
 	paths, _ := redis.Strings(r.rdb.Do("LRANGE", "knownPaths", 0, n))
 
