@@ -26,9 +26,8 @@ type proxyserver struct {
 // APIProxyServer represents an HTTP server that acts as a transparent
 // routing proxy server.
 type APIProxyServer interface {
-	// Update updates the application and routing tables used by
-	// the APIProxyServer
-	Update(metadata.ApplicationTable, []*metadata.Api)
+	// Update updates the routing tables used by the APIProxyServer
+	Update(apis []*metadata.Api)
 
 	// ServeHTTP is the method needed to implement http.Handler
 	ServeHTTP(http.ResponseWriter, *http.Request)
@@ -67,10 +66,9 @@ func (s *proxyserver) ServeHTTP(res http.ResponseWriter, r *http.Request) {
 	s.handler.ServeHTTP(res, r)
 }
 
-func (s *proxyserver) Update(apps metadata.ApplicationTable, apis []*metadata.Api) {
+func (s *proxyserver) Update(apis []*metadata.Api) {
 	s.Lock()
 	defer s.Unlock()
-	s.apps = apps
 	s.apis = apis
 	s.configure()
 }

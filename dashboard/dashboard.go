@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 
+	"fourth.com/apibutler/apiproxyserver"
 	"fourth.com/apibutler/metadata"
 	"github.com/codegangsta/martini"
 	"github.com/martini-contrib/render"
@@ -16,11 +17,12 @@ var (
 	apiStorage metadata.ApiStorage
 )
 
-func NewDashboardServer(path string) http.Handler {
+func NewDashboardServer(path string, proxy apiproxyserver.APIProxyServer) http.Handler {
 	m := martini.New()
 	m.Use(martini.Logger())
 	l := log.New(os.Stdout, "[dashboard server] ", 0)
 	m.Map(l)
+	m.MapTo(proxy, (*apiproxyserver.APIProxyServer)(nil))
 	m.Use(martini.Recovery())
 	m.Use(martini.Static(path))
 	m.Use(render.Renderer())
@@ -96,7 +98,7 @@ func apisPutHandler(res http.ResponseWriter, req *http.Request, rdr render.Rende
 	rdr.JSON(http.StatusCreated, a)
 }
 
-func apisPostHandler(res http.ResponseWriter, req *http.Request, rdr render.Render) {
+func apisPostHandler(res http.ResponseWriter, req *http.Request, rdr render.Render, proxy apiproxyserver.APIProxyServer) {
 	decoder := json.NewDecoder(req.Body)
 	var a SingleApiPayload
 	err := decoder.Decode(&a)
@@ -106,5 +108,7 @@ func apisPostHandler(res http.ResponseWriter, req *http.Request, rdr render.Rend
 	}
 	log.Println(a)
 	apiStorage.AddApi(&a.Api)
+	apis, _ := apiStorage.Apis()
+	proxy.Update(apis)
 	rdr.JSON(http.StatusCreated, a)
 }

@@ -44,9 +44,9 @@ func GetApplicationsTable() ApplicationTable {
 func GetSingleApplication(id int) *Application {
 	switch id {
 	case 1:
-		return apps["Test node backend"]
+		return apps["1"]
 	case 2:
-		return apps["Another test node backend"]
+		return apps["2"]
 	}
 
 	return nil

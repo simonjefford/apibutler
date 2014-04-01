@@ -39,18 +39,13 @@ func init() {
 	flag.Parse()
 }
 
-func startProxyServer() {
-	apps := metadata.GetApplicationsTable()
-	apiStore, _ := metadata.GetApiStore()
-	apis, _ := apiStore.Apis()
-	server := apiproxyserver.NewAPIProxyServer(apps, apis)
-
+func startProxyServer(server apiproxyserver.APIProxyServer) {
 	log.Println("Running proxy on", opts.proxyPortString())
 	log.Fatalln(http.ListenAndServe(opts.proxyPortString(), server))
 }
 
-func startDashboardServer() {
-	server := dashboard.NewDashboardServer(opts.frontendPath)
+func startDashboardServer(proxy apiproxyserver.APIProxyServer) {
+	server := dashboard.NewDashboardServer(opts.frontendPath, proxy)
 	log.Println("Running dashboard on", opts.dashboardPortString())
 	log.Fatalln(http.ListenAndServe(opts.dashboardPortString(), server))
 }
@@ -59,8 +54,21 @@ func main() {
 	// use all available cores
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	go startProxyServer()
-	go startDashboardServer()
+	apps := metadata.GetApplicationsTable()
+	apiStore, err := metadata.GetApiStore()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	apis, err := apiStore.Apis()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	server := apiproxyserver.NewAPIProxyServer(apps, apis)
+
+	go startProxyServer(server)
+	go startDashboardServer(server)
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)

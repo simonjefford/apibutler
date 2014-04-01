@@ -7,16 +7,14 @@
       <thead>
         <tr>
           <th>Path</th>
-          <th>Limit</th>
-          <th>Duration</th>
+          <th>App</th>
         </tr>
       </thead>
       <tbody>
         {{#each item in apisToShow}}
           <tr class="path">
             <td>{{item.fragment}}</td>
-            <td>{{item.limit}}</td>
-            <td>{{item.seconds}}s</td>
+            <td>{{item.app.name}}</td>
           </tr>
         {{/each}}
       </tbody>
