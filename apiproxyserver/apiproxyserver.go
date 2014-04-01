@@ -1,3 +1,5 @@
+// Package apiproxyserver provides the core transparent HTTP routing and management
+// proxy capability.
 package apiproxyserver
 
 import (
@@ -9,28 +11,36 @@ import (
 
 	"fourth.com/apibutler/metadata"
 	"fourth.com/apibutler/oauth"
-	"fourth.com/apibutler/routes"
 	"github.com/codegangsta/martini"
 	"github.com/nickstenning/router/triemux"
 )
 
 type proxyserver struct {
 	apps    metadata.ApplicationTable
-	routes  []routes.Route
+	routes  []metadata.Route
 	logger  *log.Logger
 	handler http.Handler
 	sync.RWMutex
 }
 
+// APIProxyServer represents an HTTP server that acts as a transparent
+// routing proxy server.
 type APIProxyServer interface {
-	Update(metadata.ApplicationTable, []routes.Route)
+	// Update updates the application and routing tables used by
+	// the APIProxyServer
+	Update(metadata.ApplicationTable, []metadata.Route)
+
+	// ServeHTTP is the method needed to implement http.Handler
 	ServeHTTP(http.ResponseWriter, *http.Request)
 }
 
+// NewAPIProxyServer returns a type implementing APIProxyServer. This type
+// implements http.Handler so the return from this function can be given to
+// http.ListenAndServe and friends.
 func NewAPIProxyServer() APIProxyServer {
 	s := &proxyserver{
 		apps:   metadata.GetApplicationsTable(),
-		routes: routes.Get(),
+		routes: metadata.GetRoutes(),
 		logger: log.New(os.Stdout, "[proxy server] ", 0),
 	}
 
@@ -39,7 +49,7 @@ func NewAPIProxyServer() APIProxyServer {
 	return s
 }
 
-func wrapApp(app http.Handler, route routes.Route) http.Handler {
+func wrapApp(app http.Handler, route metadata.Route) http.Handler {
 	m := martini.New()
 	m.Action(app.ServeHTTP)
 	l := log.New(os.Stdout, fmt.Sprintf("[%s (%s)] ", route.Path, route.ApplicationName), 0)
@@ -57,7 +67,7 @@ func (s *proxyserver) ServeHTTP(res http.ResponseWriter, r *http.Request) {
 	s.handler.ServeHTTP(res, r)
 }
 
-func (s *proxyserver) Update(apps metadata.ApplicationTable, routes []routes.Route) {
+func (s *proxyserver) Update(apps metadata.ApplicationTable, routes []metadata.Route) {
 	s.Lock()
 	defer s.Unlock()
 	s.apps = apps

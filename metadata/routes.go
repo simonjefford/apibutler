@@ -1,4 +1,4 @@
-package routes
+package metadata
 
 type Route struct {
 	Path            string
@@ -22,7 +22,7 @@ func NewPublicRoute(path, applicationName string) Route {
 	return r
 }
 
-func Get() []Route {
+func GetRoutes() []Route {
 	return []Route{
 		NewRoute("/recipes", "Test node backend"),
 		NewRoute("/recipes/other", "Another test node backend"),
