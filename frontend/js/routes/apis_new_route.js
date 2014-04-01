@@ -24,11 +24,11 @@ App.ApisNewRoute = Ember.Route.extend({
         },
 
         save: function(model) {
-            var self = this;
-            console.log('Now saving %o', JSON.stringify(model));
             model.save().then(function() {
-                self.transitionTo('apis.index');
-            }, function(arg) {
+                var newModel = this.model();
+                var controller = this.controllerFor('apis.new');
+                this.setupController(controller, newModel);
+            }.bind(this), function(arg) {
                 console.log(arg);
             });
         }
