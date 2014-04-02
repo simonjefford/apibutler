@@ -35,9 +35,7 @@ App.ApisNewRoute = Ember.Route.extend({
                 var newModel = this.model();
                 var controller = this.controllerFor('apis.new');
                 this.setupController(controller, newModel);
-            }.bind(this), function(arg) {
-                console.log(arg);
-            });
+            }.bind(this));
         }
     }
 });
