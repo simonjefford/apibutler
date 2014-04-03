@@ -1,5 +1,6 @@
 /* global App */
 
 App.ApisNewController = Ember.ObjectController.extend({
-    saveDisabled: Ember.computed.not('apps.isFulfilled')
+    saveEnabled: Ember.computed.alias('apps.isFulfilled'),
+    saveDisabled: Ember.computed.not('saveEnabled')
 });

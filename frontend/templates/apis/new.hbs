@@ -1,6 +1,6 @@
 {{#form-for model}}
   {{input fragment label="Path"}}
-  {{#unless saveDisabled}}
+  {{#if saveEnabled}}
     {{input app as='select'
       collection='apps'
       optionValuePath='content.id'
@@ -8,8 +8,7 @@
       prompt='Select Application'
       selection='app'
     }}
-  {{/unless}}
-  {{#if saveDisabled}}
+  {{else}}
     <span>Loading Apps</span>
   {{/if}}
 {{/form-for}}
