@@ -1,3 +1,8 @@
-<h2>Applications</h2>
-{{view Ember.Select content=renderers value=renderer}}
-{{data-chart data=model renderer=renderer height=500 xAxisShowsTime=true}}
+{{#data-table title="Applications" columnHeaders=headers}}
+  {{#each}}
+    <tr class="path">
+      <td>{{name}}</td>
+      <td>{{backendURL}}</td>
+    </tr>
+  {{/each}}
+{{/data-table}}
