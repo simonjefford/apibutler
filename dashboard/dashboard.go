@@ -45,6 +45,7 @@ func setupRouter(m *martini.Martini) {
 	r.Put("/apis/:id", apisPutHandler)
 	r.Get("/apps", appsGetHandler)
 	r.Get("/apps/:id", appGetHandler)
+	r.Put("/apps/:id", appPutHandler)
 	m.Action(r.Handle)
 }
 
@@ -88,6 +89,16 @@ func appGetHandler(res http.ResponseWriter, req *http.Request, rdr render.Render
 	rdr.JSON(200, a)
 }
 
+func appPutHandler(req *http.Request, rdr render.Render, params martini.Params, proxy apiproxyserver.APIProxyServer) {
+	decoder := json.NewDecoder(req.Body)
+	var a SingleAppPayload
+	decoder.Decode(&a)
+	a.App.ID, _ = strconv.Atoi(params["id"])
+	metadata.ChangeApplication(a.App)
+	proxy.UpdateApps(metadata.GetApplicationsTable())
+	rdr.JSON(http.StatusAccepted, a)
+}
+
 func apisPutHandler(res http.ResponseWriter, req *http.Request, rdr render.Render, params martini.Params) {
 	decoder := json.NewDecoder(req.Body)
 	var a SingleApiPayload
@@ -109,6 +120,6 @@ func apisPostHandler(res http.ResponseWriter, req *http.Request, rdr render.Rend
 	log.Println(a)
 	apiStorage.AddApi(&a.Api)
 	apis, _ := apiStorage.Apis()
-	proxy.Update(apis)
+	proxy.UpdateApis(apis)
 	rdr.JSON(http.StatusCreated, a)
 }

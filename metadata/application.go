@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"strconv"
 )
 
 type Application struct {
@@ -39,6 +40,11 @@ func init() {
 
 func GetApplicationsTable() ApplicationTable {
 	return apps
+}
+
+func ChangeApplication(a *Application) {
+	idstring := strconv.Itoa(a.ID)
+	apps[idstring] = a
 }
 
 func GetSingleApplication(id int) *Application {

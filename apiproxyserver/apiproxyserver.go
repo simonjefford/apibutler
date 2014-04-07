@@ -27,7 +27,11 @@ type proxyserver struct {
 // routing proxy server.
 type APIProxyServer interface {
 	// Update updates the routing tables used by the APIProxyServer
-	Update(apis []*metadata.Api)
+	UpdateApis(apis []*metadata.Api)
+
+	// UpdateApps updates the list of backend applications used by
+	// the APIProxyServer
+	UpdateApps(apps metadata.ApplicationTable)
 
 	// ServeHTTP is the method needed to implement http.Handler
 	ServeHTTP(http.ResponseWriter, *http.Request)
@@ -66,10 +70,17 @@ func (s *proxyserver) ServeHTTP(res http.ResponseWriter, r *http.Request) {
 	s.handler.ServeHTTP(res, r)
 }
 
-func (s *proxyserver) Update(apis []*metadata.Api) {
+func (s *proxyserver) UpdateApis(apis []*metadata.Api) {
 	s.Lock()
 	defer s.Unlock()
 	s.apis = apis
+	s.configure()
+}
+
+func (s *proxyserver) UpdateApps(apps metadata.ApplicationTable) {
+	s.Lock()
+	defer s.Unlock()
+	s.apps = apps
 	s.configure()
 }
 
