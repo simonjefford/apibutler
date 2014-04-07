@@ -58,7 +58,7 @@ type SingleApiPayload struct {
 }
 
 type SingleAppPayload struct {
-	App metadata.Application `json:"app"`
+	App *metadata.Application `json:"app"`
 }
 
 type ApplicationsPayload struct {
@@ -85,7 +85,7 @@ type statusResponse struct {
 
 func appGetHandler(res http.ResponseWriter, req *http.Request, rdr render.Render, params martini.Params) {
 	id, _ := strconv.Atoi(params["id"])
-	a := SingleAppPayload{*metadata.GetSingleApplication(id)}
+	a := SingleAppPayload{metadata.GetSingleApplication(id)}
 	rdr.JSON(200, a)
 }
 
