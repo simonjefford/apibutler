@@ -83,7 +83,7 @@ type statusResponse struct {
 	Message string `json:message`
 }
 
-func appGetHandler(res http.ResponseWriter, req *http.Request, rdr render.Render, params martini.Params) {
+func appGetHandler(rdr render.Render, params martini.Params) {
 	id, _ := strconv.Atoi(params["id"])
 	a := SingleAppPayload{metadata.GetSingleApplication(id)}
 	rdr.JSON(200, a)
@@ -99,7 +99,7 @@ func appPutHandler(req *http.Request, rdr render.Render, params martini.Params, 
 	rdr.JSON(http.StatusAccepted, a)
 }
 
-func apisPutHandler(res http.ResponseWriter, req *http.Request, rdr render.Render, params martini.Params) {
+func apisPutHandler(req *http.Request, rdr render.Render, params martini.Params) {
 	decoder := json.NewDecoder(req.Body)
 	var a SingleApiPayload
 	decoder.Decode(&a)
@@ -109,7 +109,7 @@ func apisPutHandler(res http.ResponseWriter, req *http.Request, rdr render.Rende
 	rdr.JSON(http.StatusCreated, a)
 }
 
-func apisPostHandler(res http.ResponseWriter, req *http.Request, rdr render.Render, proxy apiproxyserver.APIProxyServer) {
+func apisPostHandler(req *http.Request, rdr render.Render, proxy apiproxyserver.APIProxyServer) {
 	decoder := json.NewDecoder(req.Body)
 	var a SingleApiPayload
 	err := decoder.Decode(&a)
