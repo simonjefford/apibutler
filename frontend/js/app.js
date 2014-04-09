@@ -14,5 +14,24 @@ App.Router.map(function() {
     this.resource('applications', function() {
         this.route('new');
     });
-    this.resource('middlewares');
+    this.resource('middlewares', function() {
+        this.route('middleware', { path: '/:middleware_id'});
+    });
 });
+
+App.Middlewares = [
+    Ember.Object.create({
+        name: 'Authorisation',
+        count: 10,
+        id: 1
+    }),
+    Ember.Object.create({
+        name: 'Throttling',
+        count: 50,
+        configSettings: [
+            'timeInterval',
+            'callCount'
+        ],
+        id: 2
+    })
+];
