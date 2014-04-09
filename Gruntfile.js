@@ -56,6 +56,7 @@ module.exports = function(grunt) {
                               'bower_components/spin/**',
                               'bower_components/rickshaw/**',
                               'bower_components/ember-data/**',
+                              'bower_components/jquery-ui/**',
                               'index.html']
                     },
                     {
