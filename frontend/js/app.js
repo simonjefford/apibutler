@@ -4,14 +4,6 @@ var App = window.App = Ember.Application.create({
     LOG_TRANSITIONS: true
 });
 
-window.ajaxWithWrapperObject = function(path, klass) {
-    return ajax.request(path).then(function(array) {
-        return array.map(function(item) {
-            return klass.create(item);
-        });
-    });
-};
-
 require('js/components/*');
 require('js/controllers/*');
 require('js/models/*');
