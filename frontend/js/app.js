@@ -14,4 +14,5 @@ App.Router.map(function() {
     this.resource('applications', function() {
         this.route('new');
     });
+    this.resource('middlewares');
 });
