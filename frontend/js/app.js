@@ -17,6 +17,7 @@ App.Router.map(function() {
     this.resource('middlewares', function() {
         this.route('middleware', { path: '/:middleware_id'});
     });
+    this.resource('stacks');
 });
 
 App.Middlewares = [
