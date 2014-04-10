@@ -6,6 +6,7 @@ require('js/components/*');
 require('js/controllers/*');
 require('js/models/*');
 require('js/routes/*');
+require('js/views/*');
 
 App.Router.map(function() {
     this.resource('apis', function() {
