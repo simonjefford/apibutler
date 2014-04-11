@@ -24,7 +24,7 @@ App.Router.map(function() {
 App.Middlewares = [
     Ember.Object.create({
         name: 'Authorisation',
-        count: 10,
+        count: 100,
         id: 1
     }),
     Ember.Object.create({

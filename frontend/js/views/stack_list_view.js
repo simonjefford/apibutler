@@ -7,6 +7,8 @@ App.StackListView = Ember.View.extend({
         this.$('.sortable').sortable({
             axis: 'y',
 
+            containment: 'parent',
+
             update: function() {
                 var indexes = {};
 

@@ -1,18 +1,5 @@
 /* global App */
 
 App.MiddlewaresController = Ember.ArrayController.extend({
-    headers: ['Name', 'API Count'],
-
-    sortProperties: ['idx'],
-
-    itemController: 'stackItem',
-
-    updateSortOrder: function(indexes) {
-        this.beginPropertyChanges();
-        this.forEach(function(item) {
-            var index = indexes[item.get('id')];
-            item.set('idx', index);
-        }, this);
-        this.endPropertyChanges();
-    }
+    headers: ['Name', 'API Count']
 });
