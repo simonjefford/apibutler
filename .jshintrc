@@ -16,5 +16,5 @@
   "unused": true,
   "trailing": true,
   "smarttabs": true,
-  "predef":["Ember", "ic", "test", "equal", "strictEqual", "asyncTest", "start", "App", "$"]
+  "predef":["Ember", "ic", "test", "equal", "strictEqual", "asyncTest", "start", "App", "$", "DS"]
 }

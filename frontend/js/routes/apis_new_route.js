@@ -1,5 +1,3 @@
-/* global App */
-
 App.ApisNewRoute = Ember.Route.extend({
     model: function() {
         var api = this.store.createRecord('api');

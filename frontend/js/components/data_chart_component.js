@@ -1,4 +1,4 @@
-/* global App, Rickshaw */
+/* global Rickshaw */
 
 App.DataChartComponent = Ember.Component.extend({
     data: [],
