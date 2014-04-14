@@ -1,4 +1,4 @@
-/* global App, Spinner */
+/* global Spinner */
 
 App.LoadingSpinnerComponent = Ember.Component.extend({
     spinner: undefined,

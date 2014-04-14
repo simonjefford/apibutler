@@ -1,11 +1,18 @@
 package oauth
 
 import (
+	"log"
 	"net/http"
 	"strings"
 
+	"fourth.com/apibutler/middleware"
 	"github.com/codegangsta/martini"
 )
+
+func init() {
+	log.Println("Registering auth middleware")
+	middleware.Register("auth", authConstructor)
+}
 
 type AccessToken interface {
 	AccessToken() string
@@ -22,6 +29,10 @@ func (a *accessToken) String() string {
 
 func (a *accessToken) AccessToken() string {
 	return a.bearerToken
+}
+
+func authConstructor(cfg middleware.MiddlewareConfig) (martini.Handler, error) {
+	return GetIdFromRequest, nil
 }
 
 func GetIdFromRequest(req *http.Request, res http.ResponseWriter, ctx martini.Context) {

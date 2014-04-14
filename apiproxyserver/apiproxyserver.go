@@ -10,7 +10,9 @@ import (
 	"sync"
 
 	"fourth.com/apibutler/metadata"
-	"fourth.com/apibutler/oauth"
+	"fourth.com/apibutler/middleware"
+	_ "fourth.com/apibutler/middleware/oauth"
+
 	"github.com/codegangsta/martini"
 	"github.com/nickstenning/router/triemux"
 )
@@ -58,8 +60,8 @@ func wrapApp(app http.Handler, api *metadata.Api) http.Handler {
 	l := log.New(os.Stdout, fmt.Sprintf("[%s (%s)] ", api.Fragment, api.App), 0)
 	m.Map(l)
 	if api.NeedsAuth {
-		m.Use(oauth.GetIdFromRequest)
-		m.Use(logToken)
+		a, _ := middleware.Create("auth", nil)
+		m.Use(a)
 	}
 	return m
 }
@@ -99,10 +101,6 @@ func (s *proxyserver) configure() {
 	}
 
 	s.handler = createHost(s.logger, mux)
-}
-
-func logToken(t oauth.AccessToken, l *log.Logger) {
-	l.Println(t)
 }
 
 func createHost(l *log.Logger, mux *triemux.Mux) http.Handler {

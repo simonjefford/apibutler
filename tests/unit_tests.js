@@ -1,4 +1,6 @@
-/* global App, ajax */
+/* global ajax */
+
+// TODO come back and fix me
 
 test('App.Path objectForSaving', function() {
     var path = App.Path.create({

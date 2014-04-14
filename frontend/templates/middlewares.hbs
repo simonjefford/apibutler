@@ -1,0 +1,12 @@
+{{#data-table title="Middlewares" columnHeaders=headers}}
+{{#each}}
+  <tr {{action 'viewMiddleware' this}}>
+    <td>{{#link-to 'middlewares.middleware' this}}{{name}}{{/link-to}}</td>
+    <td>{{count}}</td>
+  </tr>
+{{/each}}
+{{/data-table}}
+
+<div>
+  {{outlet}}
+</div>
