@@ -1,3 +1,4 @@
+{{#modal-dialog title="New API" save="save" modelToSave=model cancel="cancel" saveDisabled=saveDisabled}}
 {{#form-for model}}
   {{input fragment label="Path"}}
   {{#if saveEnabled}}
@@ -12,7 +13,4 @@
     <span>Loading Apps</span>
   {{/if}}
 {{/form-for}}
-
-<p><button {{bind-attr disabled="saveDisabled"}} id="save" {{action "save" model}}>Save</button></p>
-
-<p>{{#link-to 'apis'}}Cancel{{/link-to}}</p>
+{{/modal-dialog}}

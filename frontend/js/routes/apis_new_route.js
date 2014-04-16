@@ -28,6 +28,10 @@ App.ApisNewRoute = Ember.Route.extend({
             }
         },
 
+        cancel: function() {
+            this.transitionTo('apis');
+        },
+
         save: function(model) {
             model.save().then(function() {
                 var newModel = this.model();

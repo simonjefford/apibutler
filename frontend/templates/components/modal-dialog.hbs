@@ -1,0 +1,14 @@
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4 class="modal-title">{{title}}</h4>
+    </div>
+    <div class="modal-body">
+      {{yield}}
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" {{action "cancelClick"}}>Close</button>
+      <button type="button" {{bind-attr disabled="saveDisabled"}} class="btn btn-primary" {{action "saveClick"}}>Save changes</button>
+    </div>
+  </div>
+</div>
