@@ -1,10 +1,15 @@
 App.ApisNewController = Ember.ObjectController.extend({
-    saveEnabled: Ember.computed.alias('apps.isFulfilled'),
+    appsReady: Ember.computed.alias('apps.isFulfilled'),
+
+    saveEnabled: Ember.computed.and('appsReady', 'valid'),
+
     saveDisabled: Ember.computed.not('saveEnabled'),
 
     actions: {
         submit: function() {
-            this.send('save', this.get('content'));
+            if (this.get('valid')) {
+                this.send('save', this.get('content'));
+            }
         }
     }
 });

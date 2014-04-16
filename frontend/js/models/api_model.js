@@ -4,5 +4,10 @@ App.Api = DS.Model.extend({
     seconds: DS.attr('number'),
     isPrefix: DS.attr('boolean'),
     needsAuth: DS.attr('boolean'),
-    app: DS.belongsTo('app')
+    app: DS.belongsTo('app'),
+
+    valid: function() {
+        return !Ember.isEmpty(this.get('app')) &&
+            !Ember.isEmpty(this.get('fragment'));
+    }.property('app', 'fragment')
 });

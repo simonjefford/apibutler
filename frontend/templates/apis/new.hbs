@@ -1,7 +1,7 @@
 {{#modal-dialog title="New API" save="save" modelToSave=model cancel="cancel" saveDisabled=saveDisabled}}
 {{#form-for model}}
   {{input fragment label="Path"}}
-  {{#if saveEnabled}}
+  {{#if appsReady}}
     {{input app as='select'
       collection='apps'
       optionValuePath='content.id'
