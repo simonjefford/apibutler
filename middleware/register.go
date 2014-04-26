@@ -8,8 +8,6 @@ import (
 	"github.com/codegangsta/martini"
 )
 
-type MiddlewareConfig map[string]string
-
 type MiddlewareConstructor func(MiddlewareConfig) (martini.Handler, error)
 
 var (
