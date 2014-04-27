@@ -3,13 +3,13 @@ package apiproxyserver
 import (
 	"fmt"
 	"log"
+
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"testing"
 
-	"fourth.com/apibutler/applications"
-	"fourth.com/apibutler/routes"
+	"fourth.com/apibutler/metadata"
 )
 
 type testendpoint struct {
@@ -90,15 +90,19 @@ func BenchmarkProxyRequests(b *testing.B) {
 }
 
 func TestUpdateServer(t *testing.T) {
-	m := make(applications.ApplicationTable)
-	m["endpoint1"] = &testendpoint{"endpoint1"}
-	r := []routes.Route{
-		routes.NewRoute("/endpoint1", "endpoint1"),
-		routes.NewPublicRoute("/newendpoint", "endpoint1"),
+	m := make(metadata.ApplicationTable)
+	m["endpoint1"] = &metadata.Application{
+		Handler: &testendpoint{"endpoint1"},
+		Name:    "endpoint1",
+	}
+	r := []*metadata.Api{
+		&metadata.Api{Fragment: "/endpoint1", App: "endpoint1"},
+		&metadata.Api{Fragment: "/newendpoint", App: "endpoint1"},
 	}
 
 	srv := configureProxyServer()
-	srv.Update(m, r)
+	srv.UpdateApis(r)
+	srv.UpdateApps(m)
 	res, err := makeRequest("GET", "/newendpoint", "Bearer some.bearer.token", srv)
 
 	if err != nil {
@@ -109,16 +113,30 @@ func TestUpdateServer(t *testing.T) {
 }
 
 func configureProxyServer() APIProxyServer {
-	m := make(applications.ApplicationTable)
-	m["endpoint1"] = &testendpoint{"endpoint1"}
-	m["public"] = &testendpoint{"public"}
-	r := []routes.Route{
-		routes.NewRoute("/endpoint1", "endpoint1"),
-		routes.NewPublicRoute("/public", "public"),
+	m := make(metadata.ApplicationTable)
+	m["endpoint1"] = &metadata.Application{
+		Handler: &testendpoint{"endpoint1"},
+		Name:    "endpoint1",
+	}
+	m["public"] = &metadata.Application{
+		Handler: &testendpoint{"public"},
+		Name:    "public",
+	}
+	r := []*metadata.Api{
+		&metadata.Api{
+			Fragment:  "/endpoint1",
+			App:       "endpoint1",
+			NeedsAuth: true,
+		},
+		&metadata.Api{
+			Fragment:  "/public",
+			App:       "public",
+			NeedsAuth: false,
+		},
 	}
 	s := &proxyserver{
 		apps:   m,
-		routes: r,
+		apis:   r,
 		logger: log.New(os.Stderr, "[TESTS] ", 0),
 	}
 
