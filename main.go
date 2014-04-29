@@ -33,7 +33,7 @@ func (o options) dashboardPortString() string {
 }
 
 func init() {
-	flag.IntVar(&opts.proxyPort, "proxyPort", 4000, "Port on which to run the rate limiting proxy")
+	flag.IntVar(&opts.proxyPort, "proxyPort", 4000, "Port on which to run the api proxy server")
 	flag.IntVar(&opts.dashboardPort, "dashboardPort", 8080, "Port on which to run the dashboard webapp")
 	flag.StringVar(&opts.frontendPath, "frontendPath", "public", "Folder containing the webapp static assets")
 	flag.Parse()

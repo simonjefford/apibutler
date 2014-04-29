@@ -31,7 +31,7 @@ func (s *dummyApiStore) AddApi(a *metadata.Api) {
 
 func (s *dummyApiStore) Apis() ([]*metadata.Api, error) {
 	return []*metadata.Api{
-		&metadata.Api{Fragment: "/cool"},
+		&metadata.Api{Path: "/cool"},
 	}, nil
 }
 
@@ -52,7 +52,7 @@ func TestRouter(t *testing.T) {
 	w := httptest.NewRecorder()
 	d.ServeHTTP(w, req)
 	body := w.Body.String()
-	if !strings.Contains(body, `"fragment":"/cool"`) {
+	if !strings.Contains(body, `"path":"/cool"`) {
 		t.Fatalf("unexpected response: %s", body)
 	}
 }

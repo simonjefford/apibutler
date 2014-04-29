@@ -57,7 +57,7 @@ func NewAPIProxyServer(apps metadata.ApplicationTable, apis []*metadata.Api) API
 func wrapApp(app http.Handler, api *metadata.Api) http.Handler {
 	m := martini.New()
 	m.Action(app.ServeHTTP)
-	l := log.New(os.Stdout, fmt.Sprintf("[%s (%s)] ", api.Fragment, api.App), 0)
+	l := log.New(os.Stdout, fmt.Sprintf("[%s (%s)] ", api.Path, api.App), 0)
 	m.Map(l)
 	if api.NeedsAuth {
 		a, _ := middleware.Create("auth", nil)
@@ -92,9 +92,9 @@ func (s *proxyserver) configure() {
 	for _, api := range s.apis {
 		app, ok := s.apps[api.App]
 		if ok {
-			log.Printf("Handling %s with %v", api.Fragment, app)
+			log.Printf("Handling %s with %v", api.Path, app)
 			wrapped := wrapApp(app, api)
-			mux.Handle(api.Fragment, api.IsPrefix, wrapped)
+			mux.Handle(api.Path, false, wrapped)
 		} else {
 			log.Printf("app not found")
 		}

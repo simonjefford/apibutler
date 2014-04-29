@@ -95,8 +95,8 @@ func TestUpdateServer(t *testing.T) {
 		Name:    "endpoint1",
 	}
 	r := []*metadata.Api{
-		&metadata.Api{Fragment: "/endpoint1", App: "endpoint1"},
-		&metadata.Api{Fragment: "/newendpoint", App: "endpoint1"},
+		&metadata.Api{Path: "/endpoint1", App: "endpoint1"},
+		&metadata.Api{Path: "/newendpoint", App: "endpoint1"},
 	}
 
 	srv := configureProxyServer()
@@ -123,12 +123,12 @@ func configureProxyServer() APIProxyServer {
 	}
 	r := []*metadata.Api{
 		&metadata.Api{
-			Fragment:  "/endpoint1",
+			Path:      "/endpoint1",
 			App:       "endpoint1",
 			NeedsAuth: true,
 		},
 		&metadata.Api{
-			Fragment:  "/public",
+			Path:      "/public",
 			App:       "public",
 			NeedsAuth: false,
 		},

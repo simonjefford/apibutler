@@ -4,14 +4,14 @@
 
 test('App.Path objectForSaving', function() {
     var path = App.Path.create({
-        fragment: '/foo',
+        path: '/foo',
         limit: '10',
         seconds: '5'
     });
 
     var output = path.get('objectForSaving');
     console.log(output);
-    strictEqual(output.fragment, '/foo');
+    strictEqual(output.path, '/foo');
     strictEqual(output.limit, 10);
     strictEqual(output.seconds, 5);
 });
@@ -19,7 +19,7 @@ test('App.Path objectForSaving', function() {
 asyncTest('App.Path findAll', function() {
     ajax.defineFixture('/paths', {
         response: [{
-            fragment: '/foo',
+            path: '/foo',
             limit: 10,
             seconds: 5
         }],

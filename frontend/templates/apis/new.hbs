@@ -1,6 +1,6 @@
 {{#modal-dialog title="New API" save="save" modelToSave=model cancel="cancel" saveDisabled=saveDisabled}}
 {{#form-for model}}
-  {{input fragment label="Path"}}
+  {{input path label="Path"}}
   {{#if appsReady}}
     {{input app as='select'
       collection='apps'

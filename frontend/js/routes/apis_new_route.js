@@ -3,7 +3,6 @@ App.ApisNewRoute = Ember.Route.extend({
         var api = this.store.createRecord('api');
 
         api.setProperties({
-            isPrefix: true,
             needsAuth: true
         });
 

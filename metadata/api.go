@@ -1,12 +1,9 @@
 package metadata
 
 type Api struct {
-	Fragment  string `json:"fragment"`
-	Limit     int    `json:"limit"`
-	Seconds   int    `json:"seconds"`
+	Path      string `json:"path"`
 	ID        int64  `json:"id"`
 	App       string `json:"app"`
-	IsPrefix  bool   `json:"isPrefix"`
 	NeedsAuth bool   `json:"needsAuth"`
 }
 

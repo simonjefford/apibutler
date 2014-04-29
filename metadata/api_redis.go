@@ -17,12 +17,12 @@ func redisConfigKeyForApi(p string) string {
 }
 
 func (r *redisApiStore) AddApi(a *Api) {
-	ret, err := r.rdb.Do("RPUSH", "knownPaths", a.Fragment)
+	ret, err := r.rdb.Do("RPUSH", "knownPaths", a.Path)
 	a.ID = ret.(int64)
 
 	enc, _ := json.Marshal(a)
 
-	ret, err = r.rdb.Do("SET", redisConfigKeyForApi(a.Fragment), string(enc))
+	ret, err = r.rdb.Do("SET", redisConfigKeyForApi(a.Path), string(enc))
 	fmt.Println(err, ret)
 }
 
