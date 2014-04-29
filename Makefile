@@ -8,6 +8,9 @@ buildbin:
 run: buildbin npm bower
 	grunt serve
 
+builddeps:
+	go install fourth.com/apibutler
+
 test:
 	go test fourth.com/apibutler/...
 
