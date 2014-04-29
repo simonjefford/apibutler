@@ -13,27 +13,17 @@ import (
 	"github.com/martini-contrib/render"
 )
 
-var (
-	apiStorage metadata.ApiStorage
-)
-
-func NewDashboardServer(path string, proxy apiproxyserver.APIProxyServer) http.Handler {
+func NewDashboardServer(path string, proxy apiproxyserver.APIProxyServer, store metadata.ApiStorage) http.Handler {
 	m := martini.New()
 	m.Use(martini.Logger())
 	l := log.New(os.Stdout, "[dashboard server] ", 0)
 	m.Map(l)
 	m.MapTo(proxy, (*apiproxyserver.APIProxyServer)(nil))
+	m.MapTo(store, (*metadata.ApiStorage)(nil))
 	m.Use(martini.Recovery())
 	m.Use(martini.Static(path))
 	m.Use(render.Renderer())
 	setupRouter(m)
-
-	a, err := metadata.GetApiStore()
-	apiStorage = a
-
-	if err != nil {
-		panic(err)
-	}
 
 	return m
 }
@@ -65,7 +55,7 @@ type ApplicationsPayload struct {
 	Apps []*metadata.Application `json:"apps"`
 }
 
-func apisGetHandler(rdr render.Render) {
+func apisGetHandler(rdr render.Render, apiStorage metadata.ApiStorage) {
 	apis, err := apiStorage.Apis()
 	if err != nil {
 		rdr.JSON(500, nil)
@@ -109,7 +99,7 @@ func apisPutHandler(req *http.Request, rdr render.Render, params martini.Params)
 	rdr.JSON(http.StatusCreated, a)
 }
 
-func apisPostHandler(req *http.Request, rdr render.Render, proxy apiproxyserver.APIProxyServer) {
+func apisPostHandler(req *http.Request, rdr render.Render, proxy apiproxyserver.APIProxyServer, apiStorage metadata.ApiStorage) {
 	decoder := json.NewDecoder(req.Body)
 	var a SingleApiPayload
 	err := decoder.Decode(&a)

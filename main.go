@@ -44,8 +44,8 @@ func startProxyServer(server apiproxyserver.APIProxyServer) {
 	log.Fatalln(http.ListenAndServe(opts.proxyPortString(), server))
 }
 
-func startDashboardServer(proxy apiproxyserver.APIProxyServer) {
-	server := dashboard.NewDashboardServer(opts.frontendPath, proxy)
+func startDashboardServer(proxy apiproxyserver.APIProxyServer, storage metadata.ApiStorage) {
+	server := dashboard.NewDashboardServer(opts.frontendPath, proxy, storage)
 	log.Println("Running dashboard on", opts.dashboardPortString())
 	log.Fatalln(http.ListenAndServe(opts.dashboardPortString(), server))
 }
@@ -68,7 +68,7 @@ func main() {
 	server := apiproxyserver.NewAPIProxyServer(apps, apis)
 
 	go startProxyServer(server)
-	go startDashboardServer(server)
+	go startDashboardServer(server, apiStore)
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
