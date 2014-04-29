@@ -14,6 +14,9 @@ builddeps:
 test:
 	go test fourth.com/apibutler/...
 
+testpublish:
+	go test -v fourth.com/apibutler/... | go2xunit -output tests.xml
+
 bench:
 	cd apiproxyserver; go test -bench . 2> /dev/null
 
