@@ -27,7 +27,7 @@ bower:
 	bower install
 
 buildweb: npm bower
-	grunt
+	grunt --no-color
 
 container: buildbin buildweb
 	docker build -t simonj/apibutler .
