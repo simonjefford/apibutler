@@ -3,11 +3,13 @@ package middleware
 import (
 	"testing"
 
+	"fourth.com/apibutler/jsonconfig"
+
 	"github.com/codegangsta/inject"
 	"github.com/codegangsta/martini"
 )
 
-func ctor(cfg MiddlewareConfig) (martini.Handler, error) {
+func ctor(cfg jsonconfig.Obj) (martini.Handler, error) {
 	return func() string {
 		return "martini.Handler"
 	}, nil
@@ -48,9 +50,9 @@ func Test_UnknownMiddleware(t *testing.T) {
 	}
 }
 
-func ctorWithConfig(cfg MiddlewareConfig) (martini.Handler, error) {
+func ctorWithConfig(cfg jsonconfig.Obj) (martini.Handler, error) {
 	return func() string {
-		return cfg["foo"]
+		return cfg.RequiredString("foo")
 	}, nil
 }
 
@@ -61,7 +63,7 @@ func Test_Configuration(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	h, err := Create("mw3", MiddlewareConfig{
+	h, err := Create("mw3", jsonconfig.Obj{
 		"foo": "bar",
 	})
 

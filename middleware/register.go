@@ -5,10 +5,12 @@ import (
 	"log"
 	"sync"
 
+	"fourth.com/apibutler/jsonconfig"
+
 	"github.com/codegangsta/martini"
 )
 
-type MiddlewareConstructor func(MiddlewareConfig) (martini.Handler, error)
+type MiddlewareConstructor func(jsonconfig.Obj) (martini.Handler, error)
 
 var (
 	mu    sync.Mutex
@@ -28,7 +30,7 @@ func Register(name string, fn MiddlewareConstructor) error {
 }
 
 // TODO - should be able to return singletons if so configured
-func Create(name string, cfg MiddlewareConfig) (martini.Handler, error) {
+func Create(name string, cfg jsonconfig.Obj) (martini.Handler, error) {
 	mu.Lock()
 	defer mu.Unlock()
 	fn, ok := ctors[name]

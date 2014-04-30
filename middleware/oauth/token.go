@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strings"
 
+	"fourth.com/apibutler/jsonconfig"
 	"fourth.com/apibutler/middleware"
 	"github.com/codegangsta/martini"
 )
@@ -31,7 +32,7 @@ func (a *accessToken) AccessToken() string {
 	return a.bearerToken
 }
 
-func authConstructor(cfg middleware.MiddlewareConfig) (martini.Handler, error) {
+func authConstructor(cfg jsonconfig.Obj) (martini.Handler, error) {
 	return GetIdFromRequest, nil
 }
 
