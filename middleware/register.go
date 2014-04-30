@@ -36,10 +36,5 @@ func Create(name string, cfg MiddlewareConfig) (martini.Handler, error) {
 		return nil, errors.New("Unknown middleware " + name)
 	}
 
-	mw, err := fn(cfg)
-	if err != nil {
-		return nil, err
-	}
-
-	return mw, nil
+	return fn(cfg)
 }
