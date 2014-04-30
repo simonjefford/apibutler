@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"net/http/httptest"
 	"os"
 	"testing"
 
 	"fourth.com/apibutler/metadata"
+	"fourth.com/apibutler/testhelpers"
 )
 
 type testendpoint struct {
@@ -17,23 +17,6 @@ type testendpoint struct {
 
 func (t *testendpoint) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, t.outputString)
-}
-
-type checkableResponse struct {
-	*httptest.ResponseRecorder
-}
-
-func (r *checkableResponse) CheckStatus(expected int, t *testing.T) {
-	if expected != r.Code {
-		t.Fatalf("Response was not %d, was %d", expected, r.Code)
-	}
-}
-
-func (r *checkableResponse) CheckBody(expected string, t *testing.T) {
-	body := r.Body.String()
-	if body != expected {
-		t.Fatalf("Unexpected response, \"%s\". Was the wrong endpoint hit?", body)
-	}
 }
 
 func TestEndpointRouting(t *testing.T) {
@@ -143,7 +126,7 @@ func configureProxyServer() APIProxyServer {
 	return s
 }
 
-func makeRequest(method, path, auth string, handler http.Handler) (*checkableResponse, error) {
+func makeRequest(method, path, auth string, handler http.Handler) (*testhelpers.CheckableResponse, error) {
 	req, err := http.NewRequest(method, path, nil)
 	if err != nil {
 		return nil, err
@@ -151,7 +134,5 @@ func makeRequest(method, path, auth string, handler http.Handler) (*checkableRes
 	if auth != "" {
 		req.Header.Add("Authorization", auth)
 	}
-	res := httptest.NewRecorder()
-	handler.ServeHTTP(res, req)
-	return &checkableResponse{res}, nil
+	return testhelpers.MakeTestableRequest(handler, req), nil
 }

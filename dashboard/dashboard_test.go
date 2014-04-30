@@ -2,11 +2,10 @@ package dashboard
 
 import (
 	"net/http"
-	"net/http/httptest"
-	"strings"
 	"testing"
 
 	"fourth.com/apibutler/metadata"
+	"fourth.com/apibutler/testhelpers"
 )
 
 type dummyApiServer struct {
@@ -49,10 +48,6 @@ func TestRouter(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	w := httptest.NewRecorder()
-	d.ServeHTTP(w, req)
-	body := w.Body.String()
-	if !strings.Contains(body, `"path":"/cool"`) {
-		t.Fatalf("unexpected response: %s", body)
-	}
+	r := testhelpers.MakeTestableRequest(d, req)
+	r.CheckBodySubstring(`"path":"/cool"`, t)
 }
