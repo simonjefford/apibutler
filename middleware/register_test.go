@@ -47,3 +47,31 @@ func Test_UnknownMiddleware(t *testing.T) {
 		t.Fatalf("An unexpected error was returned: %v", err)
 	}
 }
+
+func ctorWithConfig(cfg MiddlewareConfig) (martini.Handler, error) {
+	return func() string {
+		return cfg["foo"]
+	}, nil
+}
+
+func Test_Configuration(t *testing.T) {
+	err := Register("mw3", ctorWithConfig)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	h, err := Create("mw3", MiddlewareConfig{
+		"foo": "bar",
+	})
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	i := inject.New()
+	v, err := i.Invoke(h)
+	if v[0].String() != "bar" {
+		t.Fatalf("Unexpected value %s", v[0])
+	}
+}
