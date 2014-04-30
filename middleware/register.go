@@ -33,7 +33,7 @@ func Create(name string, cfg MiddlewareConfig) (martini.Handler, error) {
 	defer mu.Unlock()
 	fn, ok := ctors[name]
 	if !ok {
-		return nil, errors.New("Unknown middleware " + name)
+		return nil, errors.New("Unknown middleware: " + name)
 	}
 
 	return fn(cfg)
