@@ -45,12 +45,17 @@ func (s *Stack) AddToServer(srv *martini.Martini) error {
 }
 
 func (s *Stack) reify() error {
+	mwerr := &MiddlewareStackError{}
 	for i, name := range s.middlewares {
 		mw, err := Create(name, s.configs[i])
 		if err != nil {
-			return err
+			mwerr.AddError(name, err)
 		}
 		s.reified = append(s.reified, mw)
+	}
+
+	if !mwerr.IsEmpty() {
+		return mwerr
 	}
 
 	return nil
@@ -82,11 +87,11 @@ func (e *MiddlewareStackError) Error() string {
 		return ""
 	}
 
-	l := make([]string, len(e.errors))
+	l := make([]string, 0, len(e.errors))
 
 	for name, err := range e.errors {
-		l = append(l, fmt.Sprintf("Middleware: %s - %v", name, err))
+		l = append(l, fmt.Sprintf("Middleware error with %s - %v", name, err))
 	}
 
-	return strings.Join(l, "/n")
+	return strings.Join(l, "\n")
 }

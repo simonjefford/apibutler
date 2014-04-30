@@ -1,7 +1,9 @@
 package middleware
 
 import (
+	"errors"
 	"net/http"
+	"strings"
 	"testing"
 
 	"fmt"
@@ -22,6 +24,10 @@ func init() {
 		return func(r http.ResponseWriter) {
 			r.Header().Add("x-stack2", obj.RequiredString("header"))
 		}, nil
+	})
+
+	Register("errors", func(_ jsonconfig.Obj) (martini.Handler, error) {
+		return nil, errors.New("failed to create")
 	})
 }
 
@@ -65,4 +71,28 @@ func Test_AddToServer(t *testing.T) {
 	res := testhelpers.MakeTestableRequest(m, req)
 	res.CheckHeader("X-Stack1", "stack1", t)
 	res.CheckHeader("X-Stack2", "foo", t)
+}
+
+func checkForError(message, expected string, t *testing.T) {
+	if !strings.Contains(message, expected) {
+		t.Errorf("Expected %s to contain error %s", message, expected)
+	}
+}
+
+func Test_MiddlewareErrors(t *testing.T) {
+	s := NewStack()
+	s.AddMiddleware("missing1", nil)
+	s.AddMiddleware("missing2", nil)
+	s.AddMiddleware("errors", nil)
+	err := s.reify()
+
+	if err == nil {
+		t.Fatal("No error was thrown")
+	}
+
+	msg := err.Error()
+
+	checkForError(msg, "Unknown middleware: missing1", t)
+	checkForError(msg, "Unknown middleware: missing2", t)
+	checkForError(msg, "failed to create", t)
 }
