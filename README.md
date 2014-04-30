@@ -1,4 +1,4 @@
-A POC for an API management layer for Fourth.
+A POC for an API management application for Fourth.
 
 Consists of two main parts:
 
