@@ -20,7 +20,9 @@ limitations under the License.
 package jsonconfig
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
 	"sort"
 	"strconv"
 	"strings"
@@ -28,6 +30,16 @@ import (
 
 // Obj is a JSON configuration map.
 type Obj map[string]interface{}
+
+func Create(r io.Reader) (Obj, error) {
+	dec := json.NewDecoder(r)
+	var o map[string]interface{}
+	err := dec.Decode(&o)
+	if err != nil {
+		return nil, err
+	}
+	return o, nil
+}
 
 func (jc Obj) RequiredObject(key string) Obj {
 	return jc.obj(key, false)
