@@ -94,7 +94,7 @@ func (s *proxyserver) configure() {
 		if ok {
 			log.Printf("Handling %s with %v", api.Path, app)
 			wrapped := wrapApp(app, api)
-			mux.Handle(api.Path, false, wrapped)
+			mux.Handle(api.Path, true, wrapped)
 		} else {
 			log.Printf("app not found")
 		}
