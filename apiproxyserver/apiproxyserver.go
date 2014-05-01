@@ -7,11 +7,14 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"sync"
 
+	"fourth.com/apibutler/jsonconfig"
 	"fourth.com/apibutler/metadata"
 	"fourth.com/apibutler/middleware"
 	_ "fourth.com/apibutler/middleware/oauth"
+	_ "fourth.com/apibutler/middleware/ratelimiter"
 
 	"github.com/codegangsta/martini"
 	"github.com/nickstenning/router/triemux"
@@ -63,6 +66,13 @@ func wrapApp(app http.Handler, api *metadata.Api) http.Handler {
 		a, _ := middleware.Create("auth", nil)
 		m.Use(a)
 	}
+
+	// Obviously temporary
+	obj, _ := jsonconfig.Create(strings.NewReader("{\"limit\": 10, \"seconds\": 60}"))
+	r, _ := middleware.Create("ratelimiter", obj)
+
+	m.Use(r)
+
 	return m
 }
 
