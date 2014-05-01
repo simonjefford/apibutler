@@ -16,13 +16,13 @@ import (
 func init() {
 	Register("stack1", func(obj jsonconfig.Obj) (martini.Handler, error) {
 		return func(r http.ResponseWriter) {
-			r.Header().Add("x-stack1", "stack1")
+			r.Header().Add("X-Stack1", "stack1")
 		}, nil
 	})
 
 	Register("stack2", func(obj jsonconfig.Obj) (martini.Handler, error) {
 		return func(r http.ResponseWriter) {
-			r.Header().Add("x-stack2", obj.RequiredString("header"))
+			r.Header().Add("X-Stack2", obj.RequiredString("header"))
 		}, nil
 	})
 
