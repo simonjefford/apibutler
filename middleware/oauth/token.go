@@ -12,7 +12,7 @@ import (
 
 func init() {
 	log.Println("Registering auth middleware")
-	middleware.Register("auth", authConstructor)
+	middleware.Register("auth", middleware.NewMiddlewareDefinition(authConstructor))
 }
 
 type AccessToken interface {

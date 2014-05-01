@@ -18,7 +18,7 @@ var (
 )
 
 func init() {
-	middleware.Register("ratelimiter", ratelimiterCtor)
+	middleware.Register("ratelimiter", middleware.NewMiddlewareDefinition(ratelimiterCtor))
 }
 
 type RateLimit interface {

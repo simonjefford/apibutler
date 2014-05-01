@@ -16,15 +16,15 @@ func ctor(cfg jsonconfig.Obj) (martini.Handler, error) {
 }
 
 func Test_DuplicateRegistration(t *testing.T) {
-	Register("mw", ctor)
-	err := Register("mw", ctor)
+	Register("mw", NewMiddlewareDefinition(ctor))
+	err := Register("mw", nil)
 	if err == nil {
 		t.Fatal("Expected error was not returned on duplicate middleware registration")
 	}
 }
 
 func Test_RegisterAndCreate(t *testing.T) {
-	err := Register("mw2", ctor)
+	err := Register("mw2", NewMiddlewareDefinition(ctor))
 
 	if err != nil {
 		t.Fatal(err)
@@ -57,7 +57,7 @@ func ctorWithConfig(cfg jsonconfig.Obj) (martini.Handler, error) {
 }
 
 func Test_Configuration(t *testing.T) {
-	err := Register("mw3", ctorWithConfig)
+	err := Register("mw3", NewMiddlewareDefinition(ctorWithConfig))
 
 	if err != nil {
 		t.Fatal(err)

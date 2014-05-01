@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"errors"
-	"log"
 	"sync"
 
 	"fourth.com/apibutler/jsonconfig"
@@ -12,20 +11,42 @@ import (
 
 type MiddlewareConstructor func(jsonconfig.Obj) (martini.Handler, error)
 
+type MiddlewareConfigItem struct {
+	Name string `json:"name"`
+	Type string `json:"type"`
+}
+
+type MiddlewareDefinition struct {
+	Schema      []*MiddlewareConfigItem `json:"schema"`
+	Constructor MiddlewareConstructor   `json:"-"`
+}
+
+func NewMiddlewareDefinition(
+	ctor MiddlewareConstructor,
+	schema ...*MiddlewareConfigItem) *MiddlewareDefinition {
+
+	return &MiddlewareDefinition{
+		Schema:      schema,
+		Constructor: ctor,
+	}
+}
+
+type MiddlewareTable map[string]*MiddlewareDefinition
+
 var (
-	mu    sync.Mutex
-	ctors = make(map[string]MiddlewareConstructor)
+	mu  sync.Mutex
+	mws = make(MiddlewareTable)
 )
 
-func Register(name string, fn MiddlewareConstructor) error {
+func Register(name string, def *MiddlewareDefinition) error {
 	mu.Lock()
 	defer mu.Unlock()
-	if _, dup := ctors[name]; dup {
+	if _, dup := mws[name]; dup {
 		return errors.New("Duplicate registration of middleware constructor " + name)
 	}
 
-	ctors[name] = fn
-	log.Println(ctors)
+	mws[name] = def
+
 	return nil
 }
 
@@ -33,10 +54,10 @@ func Register(name string, fn MiddlewareConstructor) error {
 func Create(name string, cfg jsonconfig.Obj) (martini.Handler, error) {
 	mu.Lock()
 	defer mu.Unlock()
-	fn, ok := ctors[name]
+	def, ok := mws[name]
 	if !ok {
 		return nil, errors.New("Unknown middleware: " + name)
 	}
 
-	return fn(cfg)
+	return def.Constructor(cfg)
 }

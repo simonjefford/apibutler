@@ -14,21 +14,21 @@ import (
 )
 
 func init() {
-	Register("stack1", func(obj jsonconfig.Obj) (martini.Handler, error) {
+	Register("stack1", NewMiddlewareDefinition(func(obj jsonconfig.Obj) (martini.Handler, error) {
 		return func(r http.ResponseWriter) {
 			r.Header().Add("X-Stack1", "stack1")
 		}, nil
-	})
+	}))
 
-	Register("stack2", func(obj jsonconfig.Obj) (martini.Handler, error) {
+	Register("stack2", NewMiddlewareDefinition(func(obj jsonconfig.Obj) (martini.Handler, error) {
 		return func(r http.ResponseWriter) {
 			r.Header().Add("X-Stack2", obj.RequiredString("header"))
 		}, nil
-	})
+	}))
 
-	Register("errors", func(_ jsonconfig.Obj) (martini.Handler, error) {
+	Register("errors", NewMiddlewareDefinition(func(_ jsonconfig.Obj) (martini.Handler, error) {
 		return nil, errors.New("failed to create")
-	})
+	}))
 }
 
 func Test_AddMiddleware(t *testing.T) {
