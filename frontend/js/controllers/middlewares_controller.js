@@ -1,5 +1,5 @@
 /* global App */
 
 App.MiddlewaresController = Ember.ArrayController.extend({
-    headers: ['Name', 'API Count']
+    headers: ['Friendly Name', 'Internal Name']
 });

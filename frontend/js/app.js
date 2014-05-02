@@ -15,9 +15,7 @@ App.Router.map(function() {
     this.resource('applications', function() {
         this.route('new');
     });
-    this.resource('middlewares', function() {
-        this.route('middleware', { path: '/:middleware_id'});
-    });
+    this.resource('middlewares');
     this.resource('stacks');
 });
 
