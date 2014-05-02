@@ -17,7 +17,7 @@ type ConfigItem struct {
 }
 
 type Definition struct {
-	ConfigItems  []*ConfigItem `json:"configItems"`
+	Schema       []*ConfigItem `json:"schema"`
 	Constructor  Constructor   `json:"-"`
 	FriendlyName string        `json:"friendlyName"`
 	Name         string        `json:"name"`
@@ -27,10 +27,10 @@ type Definition struct {
 func NewDefinition(
 	friendlyName string,
 	ctor Constructor,
-	configItems ...*ConfigItem) *Definition {
+	schema ...*ConfigItem) *Definition {
 
 	return &Definition{
-		ConfigItems:  configItems,
+		Schema:       schema,
 		Constructor:  ctor,
 		FriendlyName: friendlyName,
 	}

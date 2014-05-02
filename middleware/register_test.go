@@ -98,15 +98,15 @@ func Test_GetMiddlewares(t *testing.T) {
 		t.Fatal("middleware not found")
 	}
 
-	if len(mw4.ConfigItems) != 1 {
+	if len(mw4.Schema) != 1 {
 		t.Fatalf("Unexpected schema length %v", *mw4)
 	}
 
-	if mw4.ConfigItems[0].Name != "foo" {
-		t.Error("Unexpected name", mw4.ConfigItems[0].Name)
+	if mw4.Schema[0].Name != "foo" {
+		t.Error("Unexpected name", mw4.Schema[0].Name)
 	}
 
-	if mw4.ConfigItems[0].Type != "string" {
-		t.Error("Unexpected type", mw4.ConfigItems[0].Type)
+	if mw4.Schema[0].Type != "string" {
+		t.Error("Unexpected type", mw4.Schema[0].Type)
 	}
 }
