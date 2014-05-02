@@ -4,6 +4,7 @@ window.App = Ember.Application.create({
 
 require('js/components/*');
 require('js/controllers/*');
+require('js/serializers/*');
 require('js/models/*');
 require('js/routes/*');
 require('js/views/*');
