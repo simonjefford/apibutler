@@ -17,17 +17,20 @@ type MiddlewareConfigItem struct {
 }
 
 type MiddlewareDefinition struct {
-	Schema      []*MiddlewareConfigItem `json:"schema"`
-	Constructor MiddlewareConstructor   `json:"-"`
+	Schema       []*MiddlewareConfigItem `json:"schema"`
+	Constructor  MiddlewareConstructor   `json:"-"`
+	FriendlyName string                  `json:"friendly-name"`
 }
 
 func NewMiddlewareDefinition(
+	friendlyName string,
 	ctor MiddlewareConstructor,
 	schema ...*MiddlewareConfigItem) *MiddlewareDefinition {
 
 	return &MiddlewareDefinition{
-		Schema:      schema,
-		Constructor: ctor,
+		Schema:       schema,
+		Constructor:  ctor,
+		FriendlyName: friendlyName,
 	}
 }
 
@@ -48,6 +51,13 @@ func Register(name string, def *MiddlewareDefinition) error {
 	mws[name] = def
 
 	return nil
+}
+
+func GetMiddlewares() MiddlewareTable {
+	mu.Lock()
+	defer mu.Unlock()
+
+	return mws
 }
 
 // TODO - should be able to return singletons if so configured
