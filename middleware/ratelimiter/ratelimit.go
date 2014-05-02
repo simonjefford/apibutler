@@ -25,6 +25,10 @@ func init() {
 				Name: "limit",
 				Type: "integer",
 			},
+			&middleware.ConfigItem{
+				Name: "seconds",
+				Type: "integer",
+			},
 		))
 }
 
