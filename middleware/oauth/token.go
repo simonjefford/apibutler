@@ -14,7 +14,7 @@ func init() {
 	log.Println("Registering auth middleware")
 	middleware.Register(
 		"auth",
-		middleware.NewMiddlewareDefinition("Authorization", authConstructor))
+		middleware.NewDefinition("Authorization", authConstructor))
 }
 
 type AccessToken interface {

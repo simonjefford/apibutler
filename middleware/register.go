@@ -9,41 +9,41 @@ import (
 	"github.com/codegangsta/martini"
 )
 
-type MiddlewareConstructor func(jsonconfig.Obj) (martini.Handler, error)
+type Constructor func(jsonconfig.Obj) (martini.Handler, error)
 
-type MiddlewareConfigItem struct {
+type ConfigItem struct {
 	Name string `json:"name"`
 	Type string `json:"type"`
 }
 
-type MiddlewareDefinition struct {
-	Schema       []*MiddlewareConfigItem `json:"schema"`
-	Constructor  MiddlewareConstructor   `json:"-"`
-	FriendlyName string                  `json:"friendlyName"`
-	Name         string                  `json:"name"`
-	Id           int                     `json:"id"`
+type Definition struct {
+	Schema       []*ConfigItem `json:"schema"`
+	Constructor  Constructor   `json:"-"`
+	FriendlyName string        `json:"friendlyName"`
+	Name         string        `json:"name"`
+	Id           int           `json:"id"`
 }
 
-func NewMiddlewareDefinition(
+func NewDefinition(
 	friendlyName string,
-	ctor MiddlewareConstructor,
-	schema ...*MiddlewareConfigItem) *MiddlewareDefinition {
+	ctor Constructor,
+	schema ...*ConfigItem) *Definition {
 
-	return &MiddlewareDefinition{
+	return &Definition{
 		Schema:       schema,
 		Constructor:  ctor,
 		FriendlyName: friendlyName,
 	}
 }
 
-type MiddlewareTable map[string]*MiddlewareDefinition
+type Table map[string]*Definition
 
 var (
 	mu  sync.Mutex
-	mws = make(MiddlewareTable)
+	mws = make(Table)
 )
 
-func Register(name string, def *MiddlewareDefinition) error {
+func Register(name string, def *Definition) error {
 	mu.Lock()
 	defer mu.Unlock()
 	if _, dup := mws[name]; dup {
@@ -56,7 +56,7 @@ func Register(name string, def *MiddlewareDefinition) error {
 	return nil
 }
 
-func GetMiddlewares() MiddlewareTable {
+func GetMiddlewares() Table {
 	mu.Lock()
 	defer mu.Unlock()
 

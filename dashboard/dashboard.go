@@ -58,12 +58,12 @@ type ApplicationsPayload struct {
 }
 
 type MiddlewaresPayload struct {
-	Middlewares []*middleware.MiddlewareDefinition `json:"middlewares"`
+	Middlewares []*middleware.Definition `json:"middlewares"`
 }
 
 func middlewaresGetHandler(rdr render.Render) {
 	mw := middleware.GetMiddlewares()
-	t := make([]*middleware.MiddlewareDefinition, 0, len(mw))
+	t := make([]*middleware.Definition, 0, len(mw))
 	idx := 0
 	for _, val := range mw {
 		idx++

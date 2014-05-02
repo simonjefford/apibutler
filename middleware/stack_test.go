@@ -14,19 +14,19 @@ import (
 )
 
 func init() {
-	Register("stack1", NewMiddlewareDefinition("stack1", func(obj jsonconfig.Obj) (martini.Handler, error) {
+	Register("stack1", NewDefinition("stack1", func(obj jsonconfig.Obj) (martini.Handler, error) {
 		return func(r http.ResponseWriter) {
 			r.Header().Add("X-Stack1", "stack1")
 		}, nil
 	}))
 
-	Register("stack2", NewMiddlewareDefinition("stack2", func(obj jsonconfig.Obj) (martini.Handler, error) {
+	Register("stack2", NewDefinition("stack2", func(obj jsonconfig.Obj) (martini.Handler, error) {
 		return func(r http.ResponseWriter) {
 			r.Header().Add("X-Stack2", obj.RequiredString("header"))
 		}, nil
 	}))
 
-	Register("errors", NewMiddlewareDefinition("errors", func(_ jsonconfig.Obj) (martini.Handler, error) {
+	Register("errors", NewDefinition("errors", func(_ jsonconfig.Obj) (martini.Handler, error) {
 		return nil, errors.New("failed to create")
 	}))
 }
