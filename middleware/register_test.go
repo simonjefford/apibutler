@@ -77,3 +77,36 @@ func Test_Configuration(t *testing.T) {
 		t.Fatalf("Unexpected value %s", v[0])
 	}
 }
+
+func Test_GetMiddlewares(t *testing.T) {
+	err := Register("mw4", NewMiddlewareDefinition(
+		"mw4",
+		ctorWithConfig,
+		&MiddlewareConfigItem{
+			Name: "foo",
+			Type: "string",
+		}))
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	mws := GetMiddlewares()
+	mw4 := mws["mw4"]
+
+	if mw4 == nil {
+		t.Fatal("middleware not found")
+	}
+
+	if len(mw4.Schema) != 1 {
+		t.Fatalf("Unexpected schema length %v", *mw4)
+	}
+
+	if mw4.Schema[0].Name != "foo" {
+		t.Error("Unexpected name", mw4.Schema[0].Name)
+	}
+
+	if mw4.Schema[0].Type != "string" {
+		t.Error("Unexpected type", mw4.Schema[0].Type)
+	}
+}
