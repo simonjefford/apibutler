@@ -112,8 +112,6 @@ func apisPutHandler(req *http.Request, rdr render.Render, params martini.Params)
 	decoder := json.NewDecoder(req.Body)
 	var a SingleApiPayload
 	decoder.Decode(&a)
-	id, _ := strconv.Atoi(params["id"])
-	a.Api.ID = int64(id)
 	log.Println(a)
 	rdr.JSON(http.StatusCreated, a)
 }

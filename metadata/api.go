@@ -1,10 +1,12 @@
 package metadata
 
+import "labix.org/v2/mgo/bson"
+
 type Api struct {
-	Path      string `json:"path"`
-	ID        int64  `json:"id"`
-	App       string `json:"app"`
-	NeedsAuth bool   `json:"needsAuth"`
+	Path      string        `json:"path"`
+	App       string        `json:"app"`
+	NeedsAuth bool          `json:"needsAuth"`
+	ID        bson.ObjectId `bson:"_id" json:"id"`
 }
 
 type ApiStorage interface {

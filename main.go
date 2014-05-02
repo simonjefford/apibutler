@@ -55,9 +55,10 @@ func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	apps := metadata.GetApplicationsTable()
-	apiStore, err := metadata.GetApiStore()
-	if err != nil {
-		log.Fatalln(err)
+
+	apiStore := &metadata.MongoApiStore{
+		MongoUrl:    "localhost:27017",
+		MongoDbName: "apibutler",
 	}
 
 	apis, err := apiStore.Apis()
