@@ -19,7 +19,9 @@ type MiddlewareConfigItem struct {
 type MiddlewareDefinition struct {
 	Schema       []*MiddlewareConfigItem `json:"schema"`
 	Constructor  MiddlewareConstructor   `json:"-"`
-	FriendlyName string                  `json:"friendly-name"`
+	FriendlyName string                  `json:"friendlyName"`
+	Name         string                  `json:"name"`
+	Id           int                     `json:"id"`
 }
 
 func NewMiddlewareDefinition(
@@ -48,6 +50,7 @@ func Register(name string, def *MiddlewareDefinition) error {
 		return errors.New("Duplicate registration of middleware constructor " + name)
 	}
 
+	def.Name = name
 	mws[name] = def
 
 	return nil

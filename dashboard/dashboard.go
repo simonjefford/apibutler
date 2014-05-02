@@ -9,6 +9,7 @@ import (
 
 	"fourth.com/apibutler/apiproxyserver"
 	"fourth.com/apibutler/metadata"
+	"fourth.com/apibutler/middleware"
 	"github.com/codegangsta/martini"
 	"github.com/martini-contrib/render"
 )
@@ -36,6 +37,7 @@ func setupRouter(m *martini.Martini) {
 	r.Get("/apps", appsGetHandler)
 	r.Get("/apps/:id", appGetHandler)
 	r.Put("/apps/:id", appPutHandler)
+	r.Get("/middlewares", middlewaresGetHandler)
 	m.Action(r.Handle)
 }
 
@@ -53,6 +55,23 @@ type SingleAppPayload struct {
 
 type ApplicationsPayload struct {
 	Apps []*metadata.Application `json:"apps"`
+}
+
+type MiddlewaresPayload struct {
+	Middlewares []*middleware.MiddlewareDefinition `json:"middlewares"`
+}
+
+func middlewaresGetHandler(rdr render.Render) {
+	mw := middleware.GetMiddlewares()
+	t := make([]*middleware.MiddlewareDefinition, 0, len(mw))
+	idx := 0
+	for _, val := range mw {
+		idx++
+		val.Id = idx
+		t = append(t, val)
+	}
+
+	rdr.JSON(http.StatusOK, &MiddlewaresPayload{t})
 }
 
 func apisGetHandler(rdr render.Render, apiStorage metadata.ApiStorage) {
