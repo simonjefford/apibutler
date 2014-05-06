@@ -10,7 +10,7 @@ type Api struct {
 }
 
 type ApiStorage interface {
-	AddApi(a *Api)
+	AddApi(a *Api) error
 	Apis() ([]*Api, error)
 	Forget(path string)
 }

@@ -25,7 +25,8 @@ func (s *dummyApiServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 type dummyApiStore struct {
 }
 
-func (s *dummyApiStore) AddApi(a *metadata.Api) {
+func (s *dummyApiStore) AddApi(a *metadata.Api) error {
+	return nil
 }
 
 func (s *dummyApiStore) Apis() ([]*metadata.Api, error) {

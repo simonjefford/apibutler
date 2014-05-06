@@ -24,14 +24,22 @@ func (m *MongoApiStore) apiMongoCollection(s *mgo.Session) *mgo.Collection {
 	return db.C("apis")
 }
 
-// TODO - this needs to return an error
-func (m *MongoApiStore) AddApi(a *Api) {
-	sess, _ := m.openSession()
+func (m *MongoApiStore) AddApi(a *Api) error {
+	sess, err := m.openSession()
+	if err != nil {
+		return err
+	}
+
 	defer sess.Close()
 
 	c := m.apiMongoCollection(sess)
 	a.ID = bson.NewObjectId()
-	c.Insert(a)
+	err = c.Insert(a)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (m *MongoApiStore) Apis() ([]*Api, error) {
