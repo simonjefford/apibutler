@@ -38,6 +38,7 @@ func setupRouter(m *martini.Martini) {
 	r.Get("/apps/:id", appGetHandler)
 	r.Put("/apps/:id", appPutHandler)
 	r.Get("/middlewares", middlewaresGetHandler)
+	r.Get("/stacks", stacksGetHandler)
 	m.Action(r.Handle)
 }
 
@@ -61,10 +62,29 @@ type MiddlewaresPayload struct {
 	Middlewares []*middleware.Definition `json:"middlewares"`
 }
 
+type StacksPayload struct {
+	Stacks []*middleware.Stack `json:"stacks"`
+}
+
 func middlewaresGetHandler(rdr render.Render) {
 	mw := middleware.GetMiddlewares()
 
 	rdr.JSON(http.StatusOK, &MiddlewaresPayload{mw})
+}
+
+func stacksGetHandler(rdr render.Render) {
+	// TODO this is inconsistent
+	s := &middleware.MongoStackStore{
+		MongoUrl:    "localhost:27017",
+		MongoDbName: "apibutler",
+	}
+
+	// TODO err here
+	st, _ := s.Stacks()
+
+	p := &StacksPayload{st}
+
+	rdr.JSON(http.StatusOK, p)
 }
 
 func apisGetHandler(rdr render.Render, apiStorage metadata.ApiStorage) {

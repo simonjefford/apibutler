@@ -6,5 +6,7 @@ App.Router.map(function() {
         this.route('new');
     });
     this.resource('middlewares');
-    this.resource('stacks');
+    this.resource('stacks', function() {
+        this.route('new');
+    });
 });
