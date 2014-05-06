@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	"labix.org/v2/mgo/bson"
+
 	"fourth.com/apibutler/jsonconfig"
 	"github.com/codegangsta/martini"
 )
@@ -11,6 +13,7 @@ import (
 type Stack struct {
 	Middlewares []string          `json:"middlewares"`
 	Configs     []jsonconfig.Obj  `json:"configs"`
+	ID          bson.ObjectId     `bson:"_id" json:"id"`
 	reified     []martini.Handler `json:"-"`
 }
 
