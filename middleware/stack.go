@@ -9,9 +9,9 @@ import (
 )
 
 type Stack struct {
-	middlewares []string
-	configs     []jsonconfig.Obj
-	reified     []martini.Handler
+	Middlewares []string          `json:"middlewares"`
+	Configs     []jsonconfig.Obj  `json:"configs"`
+	reified     []martini.Handler `json:"-"`
 }
 
 const (
@@ -24,8 +24,8 @@ func NewStack() *Stack {
 
 func NewStackWithCapacity(capacity int) *Stack {
 	return &Stack{
-		middlewares: make([]string, 0, capacity),
-		configs:     make([]jsonconfig.Obj, 0, capacity),
+		Middlewares: make([]string, 0, capacity),
+		Configs:     make([]jsonconfig.Obj, 0, capacity),
 	}
 }
 
@@ -46,8 +46,8 @@ func (s *Stack) AddToServer(srv *martini.Martini) error {
 
 func (s *Stack) reify() error {
 	mwerr := &MiddlewareStackError{}
-	for i, name := range s.middlewares {
-		mw, err := Create(name, s.configs[i])
+	for i, name := range s.Middlewares {
+		mw, err := Create(name, s.Configs[i])
 		if err != nil {
 			mwerr.AddError(name, err)
 		}
@@ -62,8 +62,8 @@ func (s *Stack) reify() error {
 }
 
 func (s *Stack) AddMiddleware(name string, cfg jsonconfig.Obj) {
-	s.middlewares = append(s.middlewares, name)
-	s.configs = append(s.configs, cfg)
+	s.Middlewares = append(s.Middlewares, name)
+	s.Configs = append(s.Configs, cfg)
 	s.reified = nil
 }
 
