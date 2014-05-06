@@ -1,12 +1,6 @@
 App.ApisNewRoute = Ember.Route.extend({
     model: function() {
-        var api = this.store.createRecord('api');
-
-        api.setProperties({
-            needsAuth: true
-        });
-
-        return api;
+        return this.store.createRecord('api');
     },
 
     apps: null,
@@ -25,6 +19,7 @@ App.ApisNewRoute = Ember.Route.extend({
             if(controller.get('isNew')) {
                 controller.content.deleteRecord();
             }
+            controller.set('saveSucceeded', false);
         },
 
         cancel: function() {
@@ -35,6 +30,7 @@ App.ApisNewRoute = Ember.Route.extend({
             model.save().then(function() {
                 var newModel = this.model();
                 var controller = this.controllerFor('apis.new');
+                controller.set('saveSucceeded', true);
                 this.setupController(controller, newModel);
             }.bind(this));
         }

@@ -1,4 +1,5 @@
 require('js/application.js');
+require('js/mixins/*');
 require('js/components/*');
 require('js/controllers/*');
 require('js/serializers/*');

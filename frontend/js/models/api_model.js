@@ -1,4 +1,4 @@
-App.Api = DS.Model.extend({
+App.Api = DS.Model.extend(App.ModelMixin, {
     path: DS.attr('string'),
     needsAuth: DS.attr('boolean'),
     app: DS.belongsTo('app'),

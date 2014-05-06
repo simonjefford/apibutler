@@ -5,6 +5,10 @@ App.ApisNewController = Ember.ObjectController.extend({
 
     saveDisabled: Ember.computed.not('saveEnabled'),
 
+    saveSucceeded: false,
+
+    showSuccessAlert: Ember.computed.and('saveSucceeded', 'isClean'),
+
     actions: {
         submit: function() {
             if (this.get('valid')) {
