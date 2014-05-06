@@ -2,6 +2,7 @@ package ratelimiter
 
 import (
 	"errors"
+	"log"
 	"net/http"
 	"strconv"
 	"sync"
@@ -18,6 +19,7 @@ var (
 )
 
 func init() {
+	log.Println("Registering rate limit")
 	middleware.Register(
 		"ratelimiter",
 		middleware.NewDefinition("Rate Limiting", ratelimiterCtor,
