@@ -11,5 +11,14 @@ App.StacksNewRoute = Ember.Route.extend({
             this.set('availableMiddlewares', this.store.find('middleware'));
         }
         controller.set('availableMiddlewares', this.get('availableMiddlewares'));
+    },
+
+    actions: {
+        willTransition: function() {
+            var controller = this.controllerFor('stacks.new');
+            if (controller.get('isNew')) {
+                controller.content.deleteRecord();
+            }
+        }
     }
 });
