@@ -91,7 +91,7 @@ func Test_GetMiddlewares(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	mws := GetMiddlewares()
+	mws := GetTable()
 	mw4 := mws["mw4"]
 
 	if mw4 == nil {
@@ -108,5 +108,42 @@ func Test_GetMiddlewares(t *testing.T) {
 
 	if mw4.Schema[0].Type != "string" {
 		t.Error("Unexpected type", mw4.Schema[0].Type)
+	}
+}
+
+func Test_GetMiddlewareSortOrder(t *testing.T) {
+	clearTable()
+	err := Register("mw4", NewDefinition(
+		"mw4",
+		ctorWithConfig,
+		&ConfigItem{
+			Name: "foo",
+			Type: "string",
+		}))
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = Register("mw3", NewDefinition(
+		"mw3",
+		ctorWithConfig,
+		&ConfigItem{
+			Name: "foo",
+			Type: "string",
+		}))
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	m := GetMiddlewares()
+
+	if m[0].Id != "mw3" {
+		t.Error("Unexpected middleware", m[0].Id)
+	}
+
+	if m[1].Id != "mw4" {
+		t.Error("Unexpected middleware", m[1].Id)
 	}
 }

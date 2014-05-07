@@ -63,15 +63,8 @@ type MiddlewaresPayload struct {
 
 func middlewaresGetHandler(rdr render.Render) {
 	mw := middleware.GetMiddlewares()
-	t := make([]*middleware.Definition, 0, len(mw))
-	idx := 0
-	for _, val := range mw {
-		idx++
-		val.Id = idx
-		t = append(t, val)
-	}
 
-	rdr.JSON(http.StatusOK, &MiddlewaresPayload{t})
+	rdr.JSON(http.StatusOK, &MiddlewaresPayload{mw})
 }
 
 func apisGetHandler(rdr render.Render, apiStorage metadata.ApiStorage) {

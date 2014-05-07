@@ -13,7 +13,8 @@ import (
 	"github.com/codegangsta/martini"
 )
 
-func init() {
+func setup() {
+	clearTable()
 	Register("stack1", NewDefinition("stack1", func(obj jsonconfig.Obj) (martini.Handler, error) {
 		return func(r http.ResponseWriter) {
 			r.Header().Add("X-Stack1", "stack1")
@@ -32,6 +33,7 @@ func init() {
 }
 
 func Test_AddMiddleware(t *testing.T) {
+	setup()
 	s := NewStack()
 	s.AddMiddleware("stack1", nil)
 
@@ -48,6 +50,7 @@ func Test_AddMiddleware(t *testing.T) {
 }
 
 func Test_AddToServer(t *testing.T) {
+	setup()
 	m := martini.Classic()
 	m.Get("/", func(r http.ResponseWriter) {
 		fmt.Fprintf(r, "Hello")
@@ -80,6 +83,7 @@ func checkForError(message, expected string, t *testing.T) {
 }
 
 func Test_MiddlewareErrors(t *testing.T) {
+	setup()
 	s := NewStack()
 	s.AddMiddleware("missing1", nil)
 	s.AddMiddleware("missing2", nil)

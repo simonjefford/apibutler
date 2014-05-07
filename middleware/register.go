@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"errors"
+	"sort"
 	"sync"
 
 	"fourth.com/apibutler/jsonconfig"
@@ -21,7 +22,7 @@ type Definition struct {
 	Constructor  Constructor   `json:"-"`
 	FriendlyName string        `json:"friendlyName"`
 	Name         string        `json:"name"`
-	Id           int           `json:"id"`
+	Id           string        `json:"id"`
 }
 
 func NewDefinition(
@@ -38,6 +39,20 @@ func NewDefinition(
 
 type Table map[string]*Definition
 
+type List []*Definition
+
+func (l List) Len() int {
+	return len(l)
+}
+
+func (l List) Less(i, j int) bool {
+	return l[i].Id < l[j].Id
+}
+
+func (l List) Swap(i, j int) {
+	l[i], l[j] = l[j], l[i]
+}
+
 var (
 	mu  sync.Mutex
 	mws = make(Table)
@@ -51,15 +66,37 @@ func Register(name string, def *Definition) error {
 	}
 
 	def.Name = name
+	def.Id = name
 	mws[name] = def
 
 	return nil
 }
 
-func GetMiddlewares() Table {
+// For unit testing only
+func clearTable() {
 	mu.Lock()
 	defer mu.Unlock()
 
+	mws = make(Table)
+}
+
+func GetMiddlewares() List {
+	mu.Lock()
+	defer mu.Unlock()
+
+	t := List(make([]*Definition, 0, len(mws)))
+	for _, val := range mws {
+		t = append(t, val)
+	}
+
+	sort.Sort(t)
+
+	return t
+}
+
+func GetTable() Table {
+	mu.Lock()
+	defer mu.Unlock()
 	return mws
 }
 
