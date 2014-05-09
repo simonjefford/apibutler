@@ -1,6 +1,8 @@
 App.StacksNewRoute = Ember.Route.extend({
     model: function() {
-        return this.store.createRecord('stack');
+        var stack = this.store.createRecord('stack');
+        stack.set('middlewares', Ember.A());
+        return stack;
     },
 
     availableMiddlewares: null,
