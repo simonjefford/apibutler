@@ -11,7 +11,7 @@ var wrapObjects = function(array) {
 App.StackSerializer = DS.RESTSerializer.extend({
     normalizeHash: {
         stacks: function(hash) {
-            hash.configs = wrapObjects(hash.configs);
+            hash.middlewares = wrapObjects(hash.middlewares);
         }
     }
 });

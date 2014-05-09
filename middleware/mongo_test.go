@@ -44,15 +44,15 @@ func Test_InsertAndRetrieve(t *testing.T) {
 		t.Errorf("Unexpected number of stacks: %d (stacks = %v)", count, stacks)
 	}
 
-	h := stacks[0].Configs[0]["header"].(string)
+	h := stacks[0].Middlewares[0].Config["header"].(string)
 
 	if h != "foo" {
-		t.Errorf("Unexpected config value. %v", stacks[0].Configs)
+		t.Errorf("Unexpected config value. %v", stacks[0].Middlewares[0].Config)
 	}
 
 	m := stacks[0].Middlewares[0]
 
-	if m != "mongo_teststack" {
+	if m.Name != "mongo_teststack" {
 		t.Errorf("Unexpected middleware name %s", m)
 	}
 }
