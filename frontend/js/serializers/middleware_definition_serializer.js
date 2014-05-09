@@ -1,6 +1,6 @@
-App.MiddlewareSerializer = DS.RESTSerializer.extend({
+App.MiddlewareDefinitionSerializer = DS.RESTSerializer.extend({
     normalizeHash: {
-        middlewares: function(hash) {
+        middleware_definitions: function(hash) {
             if (Ember.isArray(hash.schema)) {
                 hash.schema = hash.schema.map(function(item) {
                     return Ember.Object.create(item);

@@ -37,7 +37,7 @@ func setupRouter(m *martini.Martini) {
 	r.Get("/apps", appsGetHandler)
 	r.Get("/apps/:id", appGetHandler)
 	r.Put("/apps/:id", appPutHandler)
-	r.Get("/middlewares", middlewaresGetHandler)
+	r.Get("/middlewareDefinitions", middlewaresGetHandler)
 	r.Get("/stacks", stacksGetHandler)
 	m.Action(r.Handle)
 }
@@ -58,8 +58,8 @@ type ApplicationsPayload struct {
 	Apps []*metadata.Application `json:"apps"`
 }
 
-type MiddlewaresPayload struct {
-	Middlewares []*middleware.Definition `json:"middlewares"`
+type MiddlewareDefinitionsPayload struct {
+	Middlewares []*middleware.Definition `json:"middleware_definitions"`
 }
 
 type StacksPayload struct {
@@ -67,9 +67,9 @@ type StacksPayload struct {
 }
 
 func middlewaresGetHandler(rdr render.Render) {
-	mw := middleware.GetMiddlewares()
+	mw := middleware.Definitions()
 
-	rdr.JSON(http.StatusOK, &MiddlewaresPayload{mw})
+	rdr.JSON(http.StatusOK, &MiddlewareDefinitionsPayload{mw})
 }
 
 func stacksGetHandler(rdr render.Render) {
