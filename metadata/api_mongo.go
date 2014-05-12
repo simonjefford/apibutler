@@ -2,69 +2,45 @@ package metadata
 
 import (
 	"fourth.com/apibutler/config"
-	"labix.org/v2/mgo"
+	"fourth.com/apibutler/mongo"
 	"labix.org/v2/mgo/bson"
 )
 
 type MongoApiStore struct {
-	MongoUrl    string
-	MongoDbName string
+	store *mongo.MongoStore
 }
 
 func NewMongoApiStoreFromConfig() ApiStore {
 	return &MongoApiStore{
-		MongoUrl:    config.Options.MongoUrl,
-		MongoDbName: config.Options.MongoDbName,
+		store: &mongo.MongoStore{
+			MongoUrl:    config.Options.MongoUrl,
+			MongoDbName: config.Options.MongoDbName,
+			NewItemCtor: func() interface{} {
+				return &Api{}
+			},
+			CollectionName: "apis",
+		},
 	}
-}
-
-func (m *MongoApiStore) openSession() (*mgo.Session, error) {
-	sess, err := mgo.Dial(m.MongoUrl)
-	if err != nil {
-		return nil, err
-	}
-
-	return sess, nil
-}
-
-func (m *MongoApiStore) apiMongoCollection(s *mgo.Session) *mgo.Collection {
-	db := s.DB(m.MongoDbName)
-	return db.C("apis")
 }
 
 func (m *MongoApiStore) AddApi(a *Api) error {
-	sess, err := m.openSession()
-	if err != nil {
-		return err
-	}
-
-	defer sess.Close()
-
-	c := m.apiMongoCollection(sess)
 	a.ID = bson.NewObjectId()
-	err = c.Insert(a)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	err := m.store.Add(a)
+	return err
 }
 
 func (m *MongoApiStore) Apis() ([]*Api, error) {
-	sess, err := m.openSession()
+	items, err := m.store.ItemIter()
+
 	if err != nil {
 		return nil, err
 	}
 
-	defer sess.Close()
-
-	c := m.apiMongoCollection(sess)
 	apis := make([]*Api, 0, 100)
-	iter := c.Find(nil).Iter()
-	api := &Api{}
-	for iter.Next(&api) {
-		apis = append(apis, api)
-		api = &Api{}
+
+	for i := range items {
+		newapi := i.(*Api)
+		apis = append(apis, newapi)
 	}
 
 	return apis, nil
