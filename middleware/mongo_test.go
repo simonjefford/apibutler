@@ -19,10 +19,7 @@ func clear(t *testing.T) {
 
 func Test_InsertAndRetrieve(t *testing.T) {
 	clear(t)
-	store := &MongoStackStore{
-		MongoUrl:    "localhost:27017",
-		MongoDbName: "stack_test",
-	}
+	store := NewMongoStackStore("localhost:27017", "stack_test")
 
 	s := NewStack()
 	s.Name = "default"
@@ -32,7 +29,6 @@ func Test_InsertAndRetrieve(t *testing.T) {
 	})
 
 	store.AddStack(s)
-
 	stacks, err := store.Stacks()
 
 	if err != nil {
@@ -42,7 +38,7 @@ func Test_InsertAndRetrieve(t *testing.T) {
 	count := len(stacks)
 
 	if count != 1 {
-		t.Errorf("Unexpected number of stacks: %d (stacks = %v)", count, stacks)
+		t.Fatalf("Unexpected number of stacks: %d (stacks = %v)", count, stacks)
 	}
 
 	h := stacks[0].Middlewares[0].Config["header"].(string)
