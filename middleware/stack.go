@@ -22,6 +22,11 @@ type Stack struct {
 	reified     []martini.Handler       `json:"-"`
 }
 
+type StackStore interface {
+	AddStack(*Stack) error
+	Stacks() ([]*Stack, error)
+}
+
 const (
 	initialStackCapacity = 10
 )

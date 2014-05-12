@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"fourth.com/apibutler/metadata"
+	"fourth.com/apibutler/middleware"
 	"fourth.com/apibutler/testhelpers"
 )
 
@@ -38,11 +39,23 @@ func (s *dummyApiStore) Apis() ([]*metadata.Api, error) {
 func (s *dummyApiStore) Forget(path string) {
 }
 
+type dummyStackStore struct {
+}
+
+func (s *dummyStackStore) AddStack(*middleware.Stack) error {
+	return nil
+}
+
+func (s *dummyStackStore) Stacks() ([]*middleware.Stack, error) {
+	return nil, nil
+}
+
 func TestRouter(t *testing.T) {
 	apiserver := &dummyApiServer{}
 	apistore := &dummyApiStore{}
+	stackstore := &dummyStackStore{}
 
-	d := NewDashboardServer("/", apiserver, apistore)
+	d := NewDashboardServer("/", apiserver, apistore, stackstore)
 
 	req, err := http.NewRequest("GET", "http://example.com/apis", nil)
 	if err != nil {

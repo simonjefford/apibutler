@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fourth.com/apibutler/config"
 	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
 )
@@ -8,6 +9,13 @@ import (
 type MongoStackStore struct {
 	MongoUrl    string
 	MongoDbName string
+}
+
+func NewMongoStackStoreFromConfig() StackStore {
+	return &MongoStackStore{
+		MongoUrl:    config.Options.MongoUrl,
+		MongoDbName: config.Options.MongoDbName,
+	}
 }
 
 func (m *MongoStackStore) openSession() (*mgo.Session, error) {

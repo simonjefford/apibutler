@@ -11,6 +11,7 @@ import (
 	"fourth.com/apibutler/config"
 	"fourth.com/apibutler/dashboard"
 	"fourth.com/apibutler/metadata"
+	"fourth.com/apibutler/middleware"
 )
 
 func startProxyServer(server apiproxyserver.APIProxyServer) {
@@ -19,10 +20,10 @@ func startProxyServer(server apiproxyserver.APIProxyServer) {
 	log.Fatalln(http.ListenAndServe(port, server))
 }
 
-func startDashboardServer(proxy apiproxyserver.APIProxyServer, storage metadata.ApiStorage) {
+func startDashboardServer(proxy apiproxyserver.APIProxyServer, apiStore metadata.ApiStore, stackStore middleware.StackStore) {
 	path := config.Options.FrontendPath
 	port := config.Options.GetDashboardPortString()
-	server := dashboard.NewDashboardServer(path, proxy, storage)
+	server := dashboard.NewDashboardServer(path, proxy, apiStore, stackStore)
 	log.Println("Running dashboard on", port)
 	log.Fatalln(http.ListenAndServe(port, server))
 }
@@ -34,6 +35,7 @@ func main() {
 	apps := metadata.GetApplicationsTable()
 
 	apiStore := metadata.NewMongoApiStoreFromConfig()
+	stackStore := middleware.NewMongoStackStoreFromConfig()
 
 	apis, err := apiStore.Apis()
 	if err != nil {
@@ -43,7 +45,7 @@ func main() {
 	server := apiproxyserver.NewAPIProxyServer(apps, apis)
 
 	go startProxyServer(server)
-	go startDashboardServer(server, apiStore)
+	go startDashboardServer(server, apiStore, stackStore)
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)

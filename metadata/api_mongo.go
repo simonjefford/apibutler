@@ -11,7 +11,7 @@ type MongoApiStore struct {
 	MongoDbName string
 }
 
-func NewMongoApiStoreFromConfig() *MongoApiStore {
+func NewMongoApiStoreFromConfig() ApiStore {
 	return &MongoApiStore{
 		MongoUrl:    config.Options.MongoUrl,
 		MongoDbName: config.Options.MongoDbName,
