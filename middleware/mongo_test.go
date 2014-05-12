@@ -25,6 +25,7 @@ func Test_InsertAndRetrieve(t *testing.T) {
 	}
 
 	s := NewStack()
+	s.Name = "default"
 	s.AddMiddleware("mongo_teststack", jsonconfig.Obj{
 		"header": "foo",
 		"life":   42,

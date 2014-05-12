@@ -16,6 +16,7 @@ type ConfiguredMiddleware struct {
 }
 
 type Stack struct {
+	Name        string                  `json:"string"`
 	Middlewares []*ConfiguredMiddleware `json:"middlewares"`
 	ID          bson.ObjectId           `bson:"_id" json:"id"`
 	reified     []martini.Handler       `json:"-"`
