@@ -58,6 +58,7 @@ func (s *Stack) reify() error {
 	}
 
 	if !mwerr.IsEmpty() {
+		s.reified = nil
 		return mwerr
 	}
 
