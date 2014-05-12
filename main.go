@@ -33,10 +33,7 @@ func main() {
 
 	apps := metadata.GetApplicationsTable()
 
-	apiStore := &metadata.MongoApiStore{
-		MongoUrl:    "localhost:27017",
-		MongoDbName: "apibutler",
-	}
+	apiStore := metadata.NewMongoApiStoreFromConfig()
 
 	apis, err := apiStore.Apis()
 	if err != nil {

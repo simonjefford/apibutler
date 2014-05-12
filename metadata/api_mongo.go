@@ -1,6 +1,7 @@
 package metadata
 
 import (
+	"fourth.com/apibutler/config"
 	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
 )
@@ -8,6 +9,13 @@ import (
 type MongoApiStore struct {
 	MongoUrl    string
 	MongoDbName string
+}
+
+func NewMongoApiStoreFromConfig() *MongoApiStore {
+	return &MongoApiStore{
+		MongoUrl:    config.Options.MongoUrl,
+		MongoDbName: config.Options.MongoDbName,
+	}
 }
 
 func (m *MongoApiStore) openSession() (*mgo.Session, error) {
