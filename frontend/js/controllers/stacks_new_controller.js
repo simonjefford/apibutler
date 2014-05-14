@@ -42,10 +42,19 @@ App.StacksNewController = Ember.ObjectController.extend({
         removeFromStack: function(mw) {
             mw.parent.removeObject(mw);
             mw.get('underlying').toggleProperty('selected');
-        },
+        }
+    }
+});
 
-        configure: function(mw) {
-            console.log('now configuring', mw.get('underlying.friendlyName'));
+
+App.MiddlewareItemController = Ember.ObjectController.extend({
+    configurationToggled: false,
+
+    canBeConfigured: Ember.computed.bool('underlying.schema.length'),
+
+    actions: {
+        toggleConfiguration: function() {
+            this.toggleProperty('configurationToggled');
         }
     }
 });

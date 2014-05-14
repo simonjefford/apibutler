@@ -9,6 +9,8 @@ App.ModalDialogComponent = Ember.Component.extend({
 
     classNames: ['modal', 'fade'],
 
+    saveDisabled: false,
+
     actions: {
         saveClick: function() {
             this.sendAction('save', this.get('modelToSave'));

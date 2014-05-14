@@ -1,12 +1,21 @@
 <div class="col-md-6 stack_items">
   <h2>New stack</h2>
   {{input value=name class="form-control field" placeholder="Stack Name"}}
-  {{#each mw in middlewares}}
+  {{#each mw in middlewares itemController="middleware-item"}}
     <div class="stack_item">
       <button class="btn btn-default" {{action "removeFromStack" mw}}>Remove</button>
       {{mw.underlying.friendlyName}}
-      <button class="btn btn-primary configure_btn" {{action "configure" mw}}>Configure</button>
+      {{#if canBeConfigured}}
+        <button class="btn btn-primary configure_btn" {{action "toggleConfiguration"}}>Configure</button>
+      {{/if}}
     </div>
+    {{#if configurationToggled}}
+      {{#modal-dialog title=mw.underlying.friendlyName cancel="toggleConfiguration" saveDisabled=true}}
+      {{#each schemaItem in mw.underlying.schema}}
+        <p>{{schemaItem.name}}</p>
+      {{/each}}
+      {{/modal-dialog}}
+    {{/if}}
   {{/each}}
 </div>
 
