@@ -1,21 +1,19 @@
-<div class="col-md-6">
+<div class="col-md-6 stack_items">
   <h2>New stack</h2>
-  {{input value=name class="form-control" placeholder="Stack Name"}}
-  <ul>
-    {{#each mw in middlewares}}
-      <li>
-        {{mw.underlying.friendlyName}}
-        <button {{action "removeFromStack" mw}}>Remove</button>
-      </li>
-    {{/each}}
-  </ul>
+  {{input value=name class="form-control field" placeholder="Stack Name"}}
+  {{#each mw in middlewares}}
+    <div class="stack_item">
+      <button class="btn btn-default" {{action "removeFromStack" mw}}>Remove</button>
+      {{mw.underlying.friendlyName}}
+    </div>
+  {{/each}}
 </div>
 
 <div class="stack_items col-md-6">
   <h2>Available middleware</h2>
 
   {{#if middlewareRemaining}}
-    {{input value=middlewareQuery placeholder="Search" type="search" class="form-control search"}}
+    {{input value=middlewareQuery placeholder="Search" type="search" class="form-control field"}}
   {{else}}
     <span>No middlewares left to add</span>
   {{/if}}
