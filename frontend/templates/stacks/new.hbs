@@ -12,7 +12,18 @@
     {{#if configurationToggled}}
       {{#modal-dialog title=mw.underlying.friendlyName cancel="toggleConfiguration" saveDisabled=true}}
       {{#each schemaItem in mw.underlying.schema}}
-        <p>{{schemaItem.name}}</p>
+        <div>
+          {{#view App.ConfigFieldView}}
+            <label {{bind-attr for="view.configText.elementId"}}>
+              {{schemaItem.name}}
+            </label>
+            {{view App.ConfigTextField
+              viewName="configText"
+              fieldName=schemaItem.name
+              config=config
+              placeholder=schemaItem.name}}
+          {{/view}}
+        </div>
       {{/each}}
       {{/modal-dialog}}
     {{/if}}
