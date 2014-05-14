@@ -38,6 +38,11 @@ html, body {
   .stack_item {
     @include stack_item
   }
+
+  .configure_btn {
+    float: right;
+    margin-right: 20px;
+  }
 }
 
 ul.sortable {

@@ -42,6 +42,10 @@ App.StacksNewController = Ember.ObjectController.extend({
         removeFromStack: function(mw) {
             mw.parent.removeObject(mw);
             mw.get('underlying').toggleProperty('selected');
+        },
+
+        configure: function(mw) {
+            console.log('now configuring', mw.get('underlying.friendlyName'));
         }
     }
 });
