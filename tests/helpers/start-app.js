@@ -1,7 +1,7 @@
 /* global require */
 
-var Application = require('testing/app')['default'];
-var Router = require('testing/router')['default'];
+var Application = require('apibutler/app')['default'];
+var Router = require('apibutler/router')['default'];
 
 export default function startApp(attrs) {
   var App;

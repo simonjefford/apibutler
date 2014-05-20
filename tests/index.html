@@ -3,14 +3,14 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Testing Tests</title>
+    <title>Apibutler Tests</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    {{BASE_TAG}}
+    <base href="/" />
 
     <link rel="stylesheet" href="assets/vendor.css">
-    <link rel="stylesheet" href="assets/testing.css">
+    <link rel="stylesheet" href="assets/apibutler.css">
     <link rel="stylesheet" href="assets/qunit.css">
     <style>
       #ember-testing-container {
@@ -37,11 +37,11 @@
       window.ENV = {{ENV}};
     </script>
     <script src="assets/qunit.js"></script>
-    <script src="assets/testing.js"></script>
+    <script src="assets/apibutler.js"></script>
     <script src="testem.js"></script>
     <script>
-      require('testing/tests/test-helper');
-      require('testing/tests/test-loader');
+      require('apibutler/tests/test-helper');
+      require('apibutler/tests/test-loader');
     </script>
   </body>
 </html>
