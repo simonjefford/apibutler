@@ -1,4 +1,4 @@
-App.MiddlewareSerializer = DS.RESTSerializer.extend({
+var MiddlewareSerializer = DS.RESTSerializer.extend({
     normalizeHash: {
         middlewares: function(hash) {
             if (Ember.isArray(hash.schema)) {
@@ -10,3 +10,5 @@ App.MiddlewareSerializer = DS.RESTSerializer.extend({
         }
     },
 });
+
+export default MiddlewareSerializer;

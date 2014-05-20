@@ -1,4 +1,4 @@
-App.ApisNewRoute = Ember.Route.extend({
+var ApisNewRoute = Ember.Route.extend({
     model: function() {
         return this.store.createRecord('api');
     },
@@ -36,3 +36,5 @@ App.ApisNewRoute = Ember.Route.extend({
         }
     }
 });
+
+export default ApisNewRoute;

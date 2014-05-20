@@ -1,4 +1,4 @@
-App.ModalDialogComponent = Ember.Component.extend({
+var ModalDialogComponent = Ember.Component.extend({
     didInsertElement: function() {
         this.$().modal({backdrop: 'static'});
     },
@@ -19,3 +19,5 @@ App.ModalDialogComponent = Ember.Component.extend({
         }
     }
 });
+
+export default ModalDialogComponent;

@@ -1,4 +1,8 @@
-App.Router.map(function() {
+var Router = Ember.Router.extend({
+    location: ENV.locationType
+});
+
+Router.map(function() {
     this.resource('apis', function() {
         this.route('new');
     });
@@ -8,3 +12,5 @@ App.Router.map(function() {
     this.resource('middlewares');
     this.resource('stacks');
 });
+
+export default Router;

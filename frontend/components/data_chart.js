@@ -1,6 +1,6 @@
 /* global Rickshaw */
 
-App.DataChartComponent = Ember.Component.extend({
+var DataChartComponent = Ember.Component.extend({
     data: [],
 
     renderer: 'bar',
@@ -45,3 +45,5 @@ App.DataChartComponent = Ember.Component.extend({
         graph.render();
     }.on('didInsertElement').observes('data', 'renderer')
 });
+
+export default DataChartComponent;

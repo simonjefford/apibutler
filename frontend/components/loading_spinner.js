@@ -1,6 +1,6 @@
 /* global Spinner */
 
-App.LoadingSpinnerComponent = Ember.Component.extend({
+var LoadingSpinnerComponent = Ember.Component.extend({
     spinner: undefined,
     lines: 13,
     length: 20,
@@ -24,3 +24,5 @@ App.LoadingSpinnerComponent = Ember.Component.extend({
         }
     }.on('willDestroyElement')
 });
+
+export default LoadingSpinnerComponent;

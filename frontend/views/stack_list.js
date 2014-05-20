@@ -1,4 +1,4 @@
-App.StackListView = Ember.View.extend({
+var StackListView = Ember.View.extend({
     templateName: 'stack-list',
 
     didInsertElement: function() {
@@ -23,3 +23,5 @@ App.StackListView = Ember.View.extend({
         });
     }
 });
+
+export default StackListView;

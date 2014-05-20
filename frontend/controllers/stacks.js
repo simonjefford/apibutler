@@ -1,4 +1,4 @@
-App.StacksController = Ember.ArrayController.extend({
+var StacksController = Ember.ArrayController.extend({
     sortProperties: ['idx'],
 
     updateSortOrder: function(indexes) {
@@ -10,3 +10,5 @@ App.StacksController = Ember.ArrayController.extend({
         this.endPropertyChanges();
     }
 });
+
+export default StacksController;
