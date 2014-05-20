@@ -7,3 +7,7 @@ frontend/dist
 .sass-cache
 bower_components
 _vendor/pkg
+/vendor/
+/tmp/
+/dist
+!/dist/.gitkeep
