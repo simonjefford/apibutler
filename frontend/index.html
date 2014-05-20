@@ -10,15 +10,15 @@
     {{BASE_TAG}}
 
     <link rel="stylesheet" href="assets/vendor.css">
-    <link rel="stylesheet" href="assets/testing.css">
+    <link rel="stylesheet" href="assets/apibutler.css">
   </head>
   <body>
     <script>
       window.ENV = {{ENV}};
     </script>
-    <script src="assets/testing.js"></script>
+    <script src="assets/apibutler.js"></script>
     <script>
-      window.Testing = require('testing/app')['default'].create(ENV.APP);
+      window.ApiButler = require('apibutler/app')['default'].create(ENV.APP);
     </script>
   </body>
 </html>
