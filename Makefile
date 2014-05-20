@@ -16,6 +16,7 @@ test:
 
 testpublish:
 	go test -v fourth.com/apibutler/... | go2xunit -output tests.xml
+	ember test > embertest.tap
 
 bench:
 	cd apiproxyserver; go test -bench . 2> /dev/null
