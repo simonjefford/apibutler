@@ -11,7 +11,8 @@ var app = new EmberApp({
     },
     getEnvJSON: require('./config/environment'),
     trees: {
-        app: 'frontend'
+        app: 'frontend',
+        styles: 'frontend/css'
     }
 });
 
