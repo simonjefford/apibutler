@@ -8,3 +8,6 @@ frontend/dist
 bower_components
 _vendor/pkg
 /vendor/
+/tmp/
+/dist
+!/dist/.gitkeep
