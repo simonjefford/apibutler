@@ -1,4 +1,4 @@
-App.StacksNewController = Ember.ObjectController.extend({
+var StacksNewController = Ember.ObjectController.extend({
     availableMiddlewares: [],
 
     middlewareQuery: '',
@@ -46,15 +46,4 @@ App.StacksNewController = Ember.ObjectController.extend({
     }
 });
 
-
-App.MiddlewareItemController = Ember.ObjectController.extend({
-    configurationToggled: false,
-
-    canBeConfigured: Ember.computed.bool('underlying.schema.length'),
-
-    actions: {
-        toggleConfiguration: function() {
-            this.toggleProperty('configurationToggled');
-        }
-    }
-});
+export default StacksNewController;

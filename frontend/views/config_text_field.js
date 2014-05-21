@@ -1,4 +1,4 @@
-App.ConfigTextField = Ember.TextField.extend({
+var ConfigTextField = Ember.TextField.extend({
     fieldName: null,
 
     config: null,
@@ -20,6 +20,4 @@ App.ConfigTextField = Ember.TextField.extend({
     }.on('didInsertElement')
 });
 
-App.ConfigFieldView = Ember.View.extend({
-    tagName: 'fieldset'
-});
+export default ConfigTextField;

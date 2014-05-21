@@ -1,4 +1,4 @@
-App.StacksNewRoute = Ember.Route.extend({
+var StacksNewRoute = Ember.Route.extend({
     model: function() {
         var stack = this.store.createRecord('stack');
         stack.set('middlewares', Ember.A());
@@ -24,3 +24,5 @@ App.StacksNewRoute = Ember.Route.extend({
         }
     }
 });
+
+export default StacksNewRoute;

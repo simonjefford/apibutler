@@ -13,11 +13,11 @@
       {{#modal-dialog title=mw.underlying.friendlyName cancel="toggleConfiguration" saveDisabled=true}}
       {{#each schemaItem in mw.underlying.schema}}
         <div>
-          {{#view App.ConfigFieldView}}
+          {{#view "config-field"}}
             <label {{bind-attr for="view.configText.elementId"}}>
               {{schemaItem.name}}
             </label>
-            {{view App.ConfigTextField
+            {{view "config-text-field"
               viewName="configText"
               fieldName=schemaItem.name
               config=config
