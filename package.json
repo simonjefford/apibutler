@@ -27,6 +27,7 @@
     "body-parser": "^1.2.0",
     "glob": "^3.2.9",
     "broccoli-sass": "^0.1.4",
-    "grunt-broccoli": "^0.2.2"
+    "grunt-broccoli": "^0.2.2",
+    "leek": "0.0.5"
   }
 }
