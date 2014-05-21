@@ -1,6 +1,6 @@
 import { test, moduleFor } from 'ember-qunit';
 
-moduleFor('controller:applications', "Unit - ApisController", {
+moduleFor('controller:applications', "Unit - ApplicationsController", {
     setup: function() {},
     teardown: function() {}
 });
