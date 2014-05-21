@@ -47,6 +47,11 @@ module.exports = function(grunt) {
             default: {
                 dest: 'dist'
             }
+        },
+        env: {
+            default: {
+                EMBER_ENV: 'production'
+            }
         }
     });
 
@@ -76,6 +81,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('default', [
         'jshint',
+        'env',
         'broccoli:default:build'
     ]);
 
