@@ -1,0 +1,54 @@
+@import 'vendor/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap';
+
+@mixin stack_item {
+  list-style-type: none;
+  margin-bottom: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 15px;
+  background-color: #439cff;
+  color: white;
+  border-radius: 10px;
+}
+
+html, body {
+  margin: 30px 0;
+}
+
+.spinner {
+  padding-top: 150px;
+}
+
+.rickshaw_graph .x_tick .title {
+  opacity: 1 !important;
+  position: relative !important;
+  color: #646464;
+  margin-top: 10px;
+}
+
+.data-table-body tr {
+  cursor: pointer
+}
+
+.stack_items {
+  .field {
+    margin-bottom: 15px;
+  }
+
+  .stack_item {
+    @include stack_item
+  }
+
+  .configure_btn {
+    float: right;
+    margin-right: 20px;
+  }
+}
+
+ul.sortable {
+  padding-left: 0px;
+
+  .item {
+    @include stack_item
+  }
+}

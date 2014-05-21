@@ -1,33 +1,24 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="utf-8">
-<title>API Management</title>
-  <!-- build:css(.tmp) css/style.css -->
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="bower_components/rickshaw/rickshaw.css">
-  <!-- endbuild -->
-</head>
-<body>
-  <!-- build:js app.min.js -->
-  <script src="bower_components/jquery/jquery.js"></script>
-  <script src="bower_components/handlebars/handlebars.runtime.js"></script>
-  <script src="bower_components/ember/ember.js"></script>
-  <script src="bower_components/ember-easyForm/index.js"></script>
-  <script src="bower_components/bootstrap-sass/js/collapse.js"></script>
-  <script src="bower_components/bootstrap-sass/js/modal.js"></script>
-  <script src="bower_components/spin/index.js"></script>
-  <script src="bower_components/ember-data/ember-data.js"></script>
-  <script src="bower_components/ic-ajax/dist/globals/main.js"></script>
-  <script src="bower_components/jquery-ui/ui/jquery-ui.js"></script>
-  <!-- endbuild -->
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>API Management</title>
 
-  <!-- build:js(.tmp) main.js -->
-  <script src="combined-app.js"></script>
-  <!-- endbuild -->
+    {{BASE_TAG}}
 
-  <!-- build:js(.tmp) compiled-templates.js -->
-  <script src="compiled-templates.js"></script>
-  <!-- endbuild -->
-</body>
+    <link rel="stylesheet" href="assets/vendor.css">
+    <link rel="stylesheet" href="assets/apibutler.css">
+  </head>
+  <body>
+    <script>
+      window.ENV = {{ENV}};
+    </script>
+    <script src="assets/apibutler.js"></script>
+    <script>
+      window.ApiButler = require('apibutler/app')['default'].create(ENV.APP);
+    </script>
+  </body>
 </html>

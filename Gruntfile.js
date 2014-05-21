@@ -1,200 +1,91 @@
-var LIVERELOAD_PORT = 35729;
+/* globals require, process */
+
+var UI = require('ember-cli/lib/ui');
+var ui = new UI({
+    inputStream: process.stdin,
+    outputStream: process.stdout
+});
+var Project = require('ember-cli/lib/models/project');
+var project = Project.closest(process.cwd());
+var path = require('path');
+var project = new Project(process.cwd(), require(path.join(process.cwd(), 'package.json')));
+var buildWatcher = require('ember-cli/lib/utilities/build-watcher');
+var livereload = require('ember-cli/lib/tasks/server/livereload-server');
 
 module.exports = function(grunt) {
     require('time-grunt')(grunt);
+    require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
+
     grunt.initConfig({
         jshint: {
             all: {
-                src: ['frontend/js/**/*.js',
+                src: ['frontend/**/*.js',
                       'tests/**/*.js']
             },
             options: {
                 jshintrc: true
             }
         },
-        useminPrepare: {
-            html: 'frontend/index.html',
-            options: {
-                dest: 'frontend/dist'
-            }
-        },
-        usemin: {
-            html: 'frontend/dist/index.html',
-            options: {
-                dirs: ['frontend/dist']
-            }
-        },
-        neuter: {
-            app: {
-                options: {
-                    filepathTransform: function(filepath) {
-                        return 'frontend/' + filepath;
-                    },
-                    includeSourceMap: true
-                },
-                src: 'frontend/js/app.js',
-                dest: '.tmp/combined-app.js'
-            }
-        },
-        copy: {
-            dist: {
-                src: 'frontend/index.html',
-                dest: 'frontend/dist/index.html'
-            },
-            server: {
-                files: [
-                    {
-                        dest: '.tmp/',
-                        expand: true,
-                        cwd: 'frontend',
-                        src: ['bower_components/bootstrap-sass/js/**',
-                              'bower_components/jquery/jquery.js',
-                              'bower_components/handlebars/**',
-                              'bower_components/ember/**',
-                              'bower_components/ember-easyForm/**',
-                              'bower_components/ic-ajax/**',
-                              'bower_components/spin/**',
-                              'bower_components/rickshaw/**',
-                              'bower_components/ember-data/**',
-                              'bower_components/jquery-ui/**',
-                              'index.html']
-                    },
-                    {
-                        dest: '.tmp/',
-                        src: ['frontend/js/**/*.js']
-                    }
-                ]
-            },
-            justTheAppPlease: {
-                files: [
-                    {
-                        dest: '.tmp/',
-                        expand: true,
-                        cwd: 'frontend',
-                        src: ['index.html']
-                    },
-                    {
-                        dest: '.tmp/',
-                        src: ['frontend/js/**/*.js']
-                    }
-                ]
-            }
-        },
-        emberTemplates: {
-            options: {
-                templateName: function (sourceFile) {
-                    var templatePath = 'frontend/templates/';
-                    return sourceFile.replace(templatePath, '');
-                }
-            },
-            dist: {
-                files: {
-                    '.tmp/compiled-templates.js': 'frontend/templates/{,*/}*.hbs'
-                }
-            }
-        },
-        compass: {
-            options: {
-                sassDir: 'frontend/css',
-                cssDir: '.tmp/css',
-                generatedImagesDir: '.tmp/images/generated',
-                imagesDir: 'frontend/images',
-                javascriptsDir: 'frontend/js',
-                fontsDir: 'frontend/css/fonts',
-                importPath: 'frontend/bower_components',
-                relativeAssets: false
-            },
-            dist: {}
-        },
-        clean: {
-            dist: {
-                files: [{
-                    src: [
-                        '.tmp',
-                        'frontend/dist'
-                    ]
-                }]
-            },
-            server: '.tmp'
-        },
-        watch: {
-            emberTemplates: {
-                files: 'frontend/templates/**/*.hbs',
-                tasks: ['emberTemplates']
-            },
-            compass: {
-                files: ['frontend/css/{,*/}*.{scss,sass}'],
-                tasks: ['compass']
-            },
-            copy: {
-                files: [
-                    'frontend/index.html',
-                    'frontend/js/**/*.js'
-                ],
-                tasks: ['copy:justTheAppPlease']
-            },
-            neuter: {
-                files: [
-                    'frontend/js/**/*.js'
-                ],
-                tasks: ['neuter']
-            },
-            livereload: {
-                options: {
-                    livereload: LIVERELOAD_PORT
-                },
-                files: [
-                    '.tmp/**/*.js',
-                    '.tmp/*.html',
-                    '.tmp/css/*.css'
-                ]
-            }
-        },
         spawn: {
             apibutler: {
                 command: './apibutler',
-                commandArgs: ['-frontendPath=.tmp']
+                commandArgs: ['-frontendPath=tmp/output']
             }
         },
         concurrent: {
             server: {
                 tasks: [
                     'spawn:apibutler',
-                    'watch'
+                    'watchAndBuild'
                 ],
                 options: {
                     logConcurrentOutput: true,
                 }
             }
+        },
+        broccoli: {
+            default: {
+                dest: 'dist'
+            }
+        },
+        env: {
+            default: {
+                EMBER_ENV: 'production'
+            }
         }
     });
 
-    require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
+    grunt.registerTask('watchAndBuild', 'watch and build for app changes (with Live Reload)', function() {
+        this.async();
+        var leek = require('leek');
+        var watcher = buildWatcher({
+            ui: ui,
+            analytics: leek
+        });
 
-    grunt.registerTask('build', [
-        'clean:dist',
-        'useminPrepare',
-        'emberTemplates',
-        'compass',
-        'neuter',
-        'concat',
-        'uglify',
-        'cssmin',
-        'copy:dist',
-        'usemin'
-    ]);
+        var opts = {
+            environment: 'development',
+            port: 4200,
+            host: '0.0.0.0',
+            project: project,
+            watcher: watcher,
+            liveReload: true,
+            liveReloadPort: 35729
+        };
 
-    grunt.registerTask('serve', [
-        'clean:server',
-        'copy:server',
-        'emberTemplates',
-        'compass',
-        'neuter',
-        'concurrent:server'
-    ]);
+        livereload.ui = ui;
+        livereload.analytics = leek;
+
+        livereload.start(opts).then(function(res) { console.log("Result ", res)}, function(err) { console.log(err) });
+    });
 
     grunt.registerTask('default', [
         'jshint',
-        'build'
+        'env',
+        'broccoli:default:build'
+    ]);
+
+    grunt.registerTask('serve', [
+        'concurrent:server'
     ]);
 };
