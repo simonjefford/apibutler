@@ -1,5 +1,6 @@
 {
   "predef": [
+    "ENV",
     "document",
     "window",
     "location",
