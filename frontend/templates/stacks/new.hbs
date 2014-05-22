@@ -41,7 +41,7 @@
 
   {{#each mw in filteredMiddlewares}}
     <div class="stack_item">
-      <button class="btn btn-default" {{action 'addToStack' mw}}>Add</button>
+      <button {{bind-attr class="mw.id :btn :btn-default"}}  {{action 'addToStack' mw}}>Add</button>
       {{mw.friendlyName}}
     </div>
   {{/each}}

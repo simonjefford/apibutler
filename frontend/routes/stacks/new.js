@@ -21,6 +21,7 @@ var StacksNewRoute = Ember.Route.extend({
             if (controller.get('isNew')) {
                 controller.content.deleteRecord();
             }
+            controller.resetSelected();
         }
     }
 });

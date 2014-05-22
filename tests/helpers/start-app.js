@@ -10,7 +10,8 @@ export default function startApp(attrs) {
     // useful Test defaults
     rootElement: '#ember-testing',
     LOG_ACTIVE_GENERATION:false,
-    LOG_VIEW_LOOKUPS: false
+    LOG_VIEW_LOOKUPS: false,
+    ApplicationAdapter: DS.FixtureAdapter
   }, attrs); // but you can override;
 
   Router.reopen({

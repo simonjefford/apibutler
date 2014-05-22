@@ -26,6 +26,12 @@ var StacksNewController = Ember.ObjectController.extend({
 
     middlewareRemaining: Ember.computed.bool('unselectedMiddlewares.length'),
 
+    resetSelected: function() {
+        this.get('availableMiddlewares').forEach(function(mw) {
+            mw.set('selected', false);
+        });
+    },
+
     actions: {
         addToStack: function(mw) {
             mw.set('selected', true);
