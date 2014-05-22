@@ -20,3 +20,10 @@ test('Stack creation pane', function() {
         equal(stacks.length, 0, 'Stack creation pane is empty');
     });
 });
+
+test('Available middleware pane', function() {
+    visit('/stacks/new').then(function() {
+        var stackPaneTitle = find('.available .title');
+        equal(stackPaneTitle.text(), 'Available middleware', 'Available middleware pane title');
+    });
+});
