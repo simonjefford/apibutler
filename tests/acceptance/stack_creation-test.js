@@ -46,19 +46,15 @@ test('Available middleware pane', function() {
 
 test('Adding some middleware to the stack', function() {
     expect(3);
-    visit('/stacks/new');
-    andThen(function() {
+    visit('/stacks/new').then(function() {
         click('.foo');
-    });
-    andThen(function() {
+    }).then(function() {
         var stacks = find('.new_stack .stack_item');
         equal(stacks.length, 1, 'Added a middleware to the stack. Now navigating away.');
         visit('/');
-    });
-    andThen(function() {
+    }).then(function() {
         visit('/stacks/new');
-    });
-    andThen(function() {
+    }).then(function() {
         var stacks = find('.new_stack .stack_item');
         equal(stacks.length, 0, 'After coming back, stack creation pane is empty');
         var available = find('.available .stack_item');
