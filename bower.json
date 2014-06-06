@@ -1,22 +1,23 @@
 {
   "name": "apibutler",
-  "version": "0.0.0",
   "dependencies": {
-    "jquery": "^1.11.1",
     "handlebars": "~1.3.0",
-    "ember": "~1.5.0",
-    "qunit": "~1.14.0",
-    "ember-easyForm": "http://builds.dockyard.com/ember-easyForm/latest/ember-easyForm.js",
-    "ic-ajax": "~1.0.1",
-    "spin": "http://fgnass.github.io/spin.js/spin.min.js",
-    "rickshaw": "~1.4.6",
-    "ember-data": "1.0.0-beta.7",
-    "jquery-ui": "~1.10.4",
-    "ember-resolver": "stefanpenner/ember-jj-abrams-resolver#master",
+    "jquery": "^1.11.1",
+    "qunit": "~1.12.0",
+    "ember-qunit": "~0.1.5",
+    "ember": "1.5.1",
+    "ember-data": "1.0.0-beta.8",
+    "ember-resolver": "~0.1.1",
+    "ic-ajax": "~1.x",
     "loader": "stefanpenner/loader.js#1.0.0",
     "ember-cli-shims": "stefanpenner/ember-cli-shims#0.0.1",
-    "ember-load-initializers": "stefanpenner/ember-load-initializers#0.0.1",
-    "ember-qunit": "~0.1.5",
-    "bootstrap-sass-official": "~3.1.1"
+    "bootstrap-sass-official": "~3.1.1",
+    "ember-load-initializers": "stefanpenner/ember-load-initializers#0.0.2",
+    "ember-qunit-notifications": "^0.0.1",
+    "ember-cli-test-loader": "rjackson/ember-cli-test-loader#0.0.2",
+    "ember-easyForm": "http://builds.dockyard.com/ember-easyForm/latest/ember-easyForm.js",
+    "spin": "http://fgnass.github.io/spin.js/spin.min.js",
+    "rickshaw": "~1.4.6",
+    "jquery-ui": "~1.10.4"
   }
 }

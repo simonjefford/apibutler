@@ -11,7 +11,7 @@ export default function startApp(attrs) {
     rootElement: '#ember-testing',
     LOG_ACTIVE_GENERATION:false,
     LOG_VIEW_LOOKUPS: false,
-    ApplicationAdapter: DS.FixtureAdapter
+    ApplicationAdapter: DS.FixtureAdapter,
   }, attrs); // but you can override;
 
   Router.reopen({
