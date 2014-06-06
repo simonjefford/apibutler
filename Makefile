@@ -6,7 +6,7 @@ buildbin:
 	go build -o apibutler
 
 run: buildbin npm bower
-	grunt serve
+	forego start
 
 builddeps:
 	go install fourth.com/apibutler
@@ -28,7 +28,7 @@ bower:
 	bower install
 
 buildweb: npm bower
-	grunt --no-color
+	ember build --production
 
 container: buildbin buildweb
 	docker build -t simonj/apibutler .
