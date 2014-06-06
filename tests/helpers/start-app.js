@@ -10,6 +10,7 @@ export default function startApp(attrs) {
     // useful Test defaults
     rootElement: '#ember-testing',
     LOG_ACTIVE_GENERATION:false,
+    ApplicationAdapter: DS.FixtureAdapter,
     LOG_VIEW_LOOKUPS: false
   }, attrs); // but you can override;
 
