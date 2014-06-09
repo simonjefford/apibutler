@@ -14,7 +14,7 @@ builddeps:
 test:
 	go test fourth.com/apibutler/...
 
-testpublish:
+testpublish: buildweb
 	go test -v fourth.com/apibutler/... | go2xunit -output tests.xml
 	ember test > embertest.tap
 
