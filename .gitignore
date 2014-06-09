@@ -1,15 +1,24 @@
 .vagrant
-.gopath
 testbackend/node_modules
-node_modules
-.tmp
 frontend/dist
-.sass-cache
 bower_components
 _vendor/pkg
-/vendor/*
 !/vendor/_loader.js
-/tmp/
+
+# compiled output
 /dist
-!/dist/.gitkeep
-/apibutler.sublime-workspace
+/tmp
+
+# dependencies
+/node_modules
+/vendor/*
+
+# misc
+/.sass-cache
+/connect.lock
+/libpeerconnection.log
+.DS_Store
+Thumbs.db
+/coverage/*
+npm-debug.log
+testem.log
