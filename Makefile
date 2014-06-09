@@ -28,7 +28,7 @@ bower:
 	bower install
 
 buildweb: npm bower
-	ember build --production
+	ember build --environment=production
 
 container: buildbin buildweb
 	docker build -t simonj/apibutler .
