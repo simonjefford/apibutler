@@ -1,5 +1,5 @@
 var Router = Ember.Router.extend({
-    location: ENV.locationType
+    location: ApibutlerENV.locationType
 });
 
 Router.map(function() {
