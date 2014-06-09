@@ -8,7 +8,7 @@
     "Em": true,
     "DS": true,
     "$": true,
-    "ENV": true,
+    "ApibutlerENV": true,
     "module": true
   },
   "node" : false,
@@ -38,4 +38,3 @@
   "esnext": true,
   "unused": true
 }
-
