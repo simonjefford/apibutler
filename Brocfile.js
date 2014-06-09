@@ -1,17 +1,20 @@
-/* global require, module */
+/* global require, module, process  */
 
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
+var env = process.env.EMBER_ENV || 'development';
+
 
 var app = new EmberApp({
     name: require('./package.json').name,
 
-    wrapInEval: true,
+    wrapInEval: env !== 'production',
 
     minifyCSS: {
         enabled: true,
         options: {}
     },
     getEnvJSON: require('./config/environment'),
+
     trees: {
         app: 'frontend',
         styles: 'frontend/css'
@@ -19,12 +22,15 @@ var app = new EmberApp({
 });
 
 // Use this to add additional libraries to the generated output files.
-app.import('vendor/ember-data/ember-data.js');
 app.import('vendor/spin/index.js');
 app.import('vendor/jquery-ui/ui/jquery-ui.js');
 app.import('vendor/ember-easyForm/index.js');
 app.import('vendor/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/collapse.js');
 app.import('vendor/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/modal.js');
+app.import({
+    development: 'vendor/ember-data/ember-data.js',
+    production:  'vendor/ember-data/ember-data.prod.js'
+});
 
 // If the library that you are including contains AMD or ES6 modules that
 // you would like to import into your application please specify an
