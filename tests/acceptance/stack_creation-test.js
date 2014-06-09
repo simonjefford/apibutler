@@ -25,6 +25,7 @@ module('Acceptance Tests - Stack Creation', {
 });
 
 test('Stack creation pane', function() {
+    expect(2);
     visit('/stacks/new').then(function() {
         var stackPaneTitle = find('.new_stack .title');
         equal(stackPaneTitle.text(), 'New stack', 'Stack creation pane title');
@@ -35,6 +36,7 @@ test('Stack creation pane', function() {
 });
 
 test('Available middleware pane', function() {
+    expect(2);
     visit('/stacks/new').then(function() {
         var stackPaneTitle = find('.available .title');
         equal(stackPaneTitle.text(), 'Available middleware', 'Available middleware pane title');
