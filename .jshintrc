@@ -1,6 +1,6 @@
 {
   "predef": [
-    "ApiButlerENV",
+    "ApibutlerENV",
     "document",
     "window",
     "location",
