@@ -28,6 +28,9 @@
       {{/modal-dialog}}
     {{/if}}
   {{/each}}
+  {{#if canBeSaved}}
+    <button class="btn btn-primary save_stack_button">Save Stack</button>
+  {{/if}}
 </div>
 
 <div class="available stack_pane col-md-6">

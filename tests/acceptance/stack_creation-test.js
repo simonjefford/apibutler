@@ -25,13 +25,16 @@ module('Acceptance Tests - Stack Creation', {
 });
 
 test('Stack creation pane', function() {
-    expect(2);
+    expect(3);
     visit('/stacks/new').then(function() {
         var stackPaneTitle = find('.new_stack .title');
         equal(stackPaneTitle.text(), 'New stack', 'Stack creation pane title');
 
         var stacks = find('.new_stack .stack_item');
         equal(stacks.length, 0, 'Stack creation pane is empty');
+
+        var button = find('.save_stack_button');
+        equal(button.length, 0, 'Save stack button is not shown');
     });
 });
 
@@ -47,12 +50,15 @@ test('Available middleware pane', function() {
 });
 
 test('Adding some middleware to the stack', function() {
-    expect(3);
+    expect(4);
     visit('/stacks/new').then(function() {
         click('.foo');
     }).then(function() {
         var stacks = find('.new_stack .stack_item');
-        equal(stacks.length, 1, 'Added a middleware to the stack. Now navigating away.');
+        equal(stacks.length, 1, 'Added a middleware to the stack.');
+        var button = find('.save_stack_button');
+        equal(button.length, 1, 'Can now save the stack, button is showing');
+
         visit('/');
     }).then(function() {
         visit('/stacks/new');

@@ -3,6 +3,8 @@ var StacksNewController = Ember.ObjectController.extend({
 
     middlewareQuery: '',
 
+    canBeSaved: Ember.computed.bool('middlewares.length'),
+
     unselectedMiddlewares: function() {
         return this.get('availableMiddlewares').filter(function(item) {
             var selected = item.get('selected');
