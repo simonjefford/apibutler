@@ -13,7 +13,11 @@ module('Acceptance Tests - Stack Creation', {
                 },
                 {
                     friendlyName: 'bar',
-                    id: 'bar'
+                    id: 'bar',
+                    schema: [{
+                        name: 'configItem',
+                        type: 'integer'
+                    }]
                 }
             ]
         });
@@ -24,6 +28,12 @@ module('Acceptance Tests - Stack Creation', {
     }
 });
 
+var assertSaveButtonShown = function(shown, message) {
+    var button = find('.save_stack_button');
+    var length = shown ? 1 : 0;
+    equal(button.length, length, message);
+};
+
 test('Stack creation pane', function() {
     expect(3);
     visit('/stacks/new').then(function() {
@@ -33,8 +43,7 @@ test('Stack creation pane', function() {
         var stacks = find('.new_stack .stack_item');
         equal(stacks.length, 0, 'Stack creation pane is empty');
 
-        var button = find('.save_stack_button');
-        equal(button.length, 0, 'Save stack button is not shown');
+        assertSaveButtonShown(false, 'Save stack button is not shown');
     });
 });
 
@@ -56,9 +65,7 @@ test('Adding some middleware to the stack', function() {
     }).then(function() {
         var stacks = find('.new_stack .stack_item');
         equal(stacks.length, 1, 'Added a middleware to the stack.');
-        var button = find('.save_stack_button');
-        equal(button.length, 1, 'Can now save the stack, button is showing');
-
+        assertSaveButtonShown(true, 'Can now save the stack, button is showing');
         visit('/');
     }).then(function() {
         visit('/stacks/new');
@@ -67,5 +74,14 @@ test('Adding some middleware to the stack', function() {
         equal(stacks.length, 0, 'After coming back, stack creation pane is empty');
         var available = find('.available .stack_item');
         equal(available.length, 2, 'After coming back, available middleware pane has all middleware');
+    });
+});
+
+test('Adding configurable middleware to the stack', function() {
+    expect(1);
+    visit('/stacks/new').then(function() {
+        click('.bar');
+    }).then(function() {
+        assertSaveButtonShown(false, 'Can\'t save the stack yet - needs configuration');
     });
 });

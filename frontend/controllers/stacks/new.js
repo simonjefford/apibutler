@@ -3,7 +3,17 @@ var StacksNewController = Ember.ObjectController.extend({
 
     middlewareQuery: '',
 
-    canBeSaved: Ember.computed.bool('middlewares.length'),
+    hasMiddlewares: Ember.computed.bool('middlewares.length'),
+
+    middlewaresNeedConfig: function() {
+        return this.get('middlewares').any(function(mw) {
+            return mw.get('underlying.needsConfiguration');
+        });
+    }.property('middlewares.@each', 'middlewares.@each.config'),
+
+    canBeSaved: function() {
+        return this.get('hasMiddlewares') && !this.get('middlewaresNeedConfig');
+    }.property('hasMiddlewares', 'middlewaresNeedConfig'),
 
     unselectedMiddlewares: function() {
         return this.get('availableMiddlewares').filter(function(item) {
