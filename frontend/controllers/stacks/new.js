@@ -5,17 +5,17 @@ var StacksNewController = Ember.ObjectController.extend({
 
     hasMiddlewares: Ember.computed.bool('middlewares.length'),
 
-    middlewaresNeedConfig: function() {
+    _middlewaresNeedConfig: function() {
         return this.get('middlewares').any(function(mw) {
             return mw.get('underlying.needsConfiguration');
         });
     }.property('middlewares.@each', 'middlewares.@each.config'),
 
     canBeSaved: function() {
-        return this.get('hasMiddlewares') && !this.get('middlewaresNeedConfig');
+        return this.get('hasMiddlewares') && !this.get('_middlewaresNeedConfig');
     }.property('hasMiddlewares', 'middlewaresNeedConfig'),
 
-    unselectedMiddlewares: function() {
+    _unselectedMiddlewares: function() {
         return this.get('availableMiddlewares').filter(function(item) {
             var selected = item.get('selected');
             return Ember.isEmpty(selected) || !selected;
@@ -25,18 +25,21 @@ var StacksNewController = Ember.ObjectController.extend({
                'availableMiddlewares.@each.selected'),
 
     filteredMiddlewares: function() {
-        if (Ember.isEmpty(this.get('middlewareQuery'))) {
-            return this.get('unselectedMiddlewares');
+        var unselected = this.get('_unselectedMiddlewares'),
+            query = this.get('middlewareQuery');
+
+        if (Ember.isEmpty(query)) {
+            return unselected;
         }
 
-        var filterExp = new RegExp(this.get('middlewareQuery'), 'i');
+        var filterExp = new RegExp(query, 'i');
 
-        return this.get('unselectedMiddlewares').filter(function(item) {
+        return unselected.filter(function(item) {
             return filterExp.test(item.get('friendlyName'));
         });
-    }.property('middlewareQuery', 'unselectedMiddlewares'),
+    }.property('middlewareQuery', '_unselectedMiddlewares'),
 
-    middlewareRemaining: Ember.computed.bool('unselectedMiddlewares.length'),
+    middlewareRemaining: Ember.computed.bool('_unselectedMiddlewares.length'),
 
     resetSelected: function() {
         this.get('availableMiddlewares').forEach(function(mw) {
