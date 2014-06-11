@@ -3,22 +3,31 @@ var StacksNewController = Ember.ObjectController.extend({
 
     middlewareQuery: '',
 
-    hasMiddlewares: Ember.computed.bool('middlewares.length'),
+    hasMiddlewares: Ember.computed.bool('selectedMiddlewares.length'),
 
     _middlewaresNeedConfig: function() {
-        return this.get('middlewares').any(function(mw) {
-            return mw.get('underlying.needsConfiguration');
+        return this.get('selectedMiddlewares').any(function(mw) {
+            return mw.get('needsConfiguration');
         });
-    }.property('middlewares.@each', 'middlewares.@each.config'),
+    }.property('selectedMiddlewares.@each', 'selectedMiddlewares.@each.config'),
 
     canBeSaved: function() {
         return this.get('hasMiddlewares') && !this.get('_middlewaresNeedConfig');
-    }.property('hasMiddlewares', 'middlewaresNeedConfig'),
+    }.property('hasMiddlewares', '_middlewaresNeedConfig'),
 
     _unselectedMiddlewares: function() {
         return this.get('availableMiddlewares').filter(function(item) {
             var selected = item.get('selected');
             return Ember.isEmpty(selected) || !selected;
+        });
+    }.property('availableMiddlewares',
+               'availableMiddlewares.isFulfilled',
+               'availableMiddlewares.@each.selected'),
+
+    selectedMiddlewares: function() {
+        return this.get('availableMiddlewares').filter(function(item) {
+            var selected = item.get('selected');
+            return !Ember.isEmpty(selected) && selected;
         });
     }.property('availableMiddlewares',
                'availableMiddlewares.isFulfilled',
@@ -51,13 +60,6 @@ var StacksNewController = Ember.ObjectController.extend({
         addToStack: function(mw) {
             mw.set('selected', true);
             this.set('middlewareQuery', '');
-            var middlewares = this.get('middlewares');
-            middlewares.pushObject(Ember.Object.create({
-                name: mw.get('name'),
-                underlying: mw,
-                config: {},
-                parent: middlewares
-            }));
         },
 
         removeFromStack: function(mw) {

@@ -1,7 +1,8 @@
 <div class="col-md-6 stack_pane new_stack">
   <h2 class="title">New stack</h2>
   {{input value=name class="form-control field" placeholder="Stack Name"}}
-  {{#each mw in middlewares itemController="middleware-item"}}
+
+  {{#each mw in selectedMiddlewares itemController="middleware-item"}}
     <div class="stack_item">
       <button class="btn btn-default" {{action "removeFromStack" mw}}>Remove</button>
       {{mw.underlying.friendlyName}}
