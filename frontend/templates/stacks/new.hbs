@@ -7,7 +7,7 @@
       <button {{bind-attr class=":remove-btn :btn :btn-default mw.id"}}{{action "removeFromStack" mw}}>Remove</button>
       {{mw.friendlyName}}
       {{#if canBeConfigured}}
-        <button class="btn btn-primary configure_btn" {{action "configure" mw}}>Configure</button>
+        <button {{bind-attr class=":btn :btn-primary :configure_btn mw.id"}} {{action "configure" mw}}>Configure</button>
       {{/if}}
     </div>
     {{#if configurationToggled}}

@@ -78,10 +78,12 @@ test('Adding some middleware to the stack', function() {
 });
 
 test('Adding configurable middleware to the stack', function() {
-    expect(1);
+    expect(2);
     visit('/stacks/new').then(function() {
         click('.bar');
     }).then(function() {
         assertSaveButtonShown(false, 'Can\'t save the stack yet - needs configuration');
+        var button = find('.configure_btn.bar');
+        equal(button.length, 1, 'A configuration button is shown');
     });
 });
