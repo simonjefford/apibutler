@@ -1,7 +1,7 @@
 var MiddlewareItemController = Ember.ObjectController.extend({
     configurationToggled: false,
 
-    canBeConfigured: Ember.computed.bool('underlying.needsConfiguration'),
+    canBeConfigured: Ember.computed.bool('needsConfiguration'),
 
     actions: {
         toggleConfiguration: function() {

@@ -63,8 +63,7 @@ var StacksNewController = Ember.ObjectController.extend({
         },
 
         removeFromStack: function(mw) {
-            mw.parent.removeObject(mw);
-            mw.get('underlying').toggleProperty('selected');
+            mw.set('selected', false);
         }
     }
 });
