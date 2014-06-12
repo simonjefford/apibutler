@@ -5,6 +5,14 @@ var StacksNewController = Ember.ObjectController.extend({
 
     hasMiddlewares: Ember.computed.bool('selectedMiddlewares.length'),
 
+    middlewareConfig: Ember.Object.create({}),
+
+    currentMiddleware: '',
+
+    currentConfig: function() {
+        return this.get('middlewareConfig.' + this.get('currentMiddleware'));
+    }.property('currentMiddleware'),
+
     _middlewaresNeedConfig: function() {
         return this.get('selectedMiddlewares').any(function(mw) {
             return mw.get('needsConfiguration');
@@ -59,11 +67,20 @@ var StacksNewController = Ember.ObjectController.extend({
     actions: {
         addToStack: function(mw) {
             mw.set('selected', true);
+            var configPath = 'middlewareConfig.' + mw.get('name');
+            if (mw.get('needsConfiguration') && Ember.isBlank(this.get(configPath))) {
+                this.set(configPath, Ember.Object.create({}));
+            }
             this.set('middlewareQuery', '');
         },
 
         removeFromStack: function(mw) {
             mw.set('selected', false);
+        },
+
+        configure: function(mw) {
+            console.log('now configuring ' + mw.get('name'));
+            this.set('currentMiddleware', mw.get('name'));
         }
     }
 });

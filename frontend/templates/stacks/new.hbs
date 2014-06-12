@@ -7,14 +7,15 @@
       <button {{bind-attr class=":remove-btn :btn :btn-default mw.id"}}{{action "removeFromStack" mw}}>Remove</button>
       {{mw.friendlyName}}
       {{#if canBeConfigured}}
-        <button class="btn btn-primary configure_btn" {{action "toggleConfiguration"}}>Configure</button>
+        <button class="btn btn-primary configure_btn" {{action "configure" mw}}>Configure</button>
       {{/if}}
     </div>
     {{#if configurationToggled}}
-      {{#modal-dialog title=mw.friendlyName cancel="toggleConfiguration" saveDisabled=true}}
+      {{#modal-dialog title=mw.friendlyName cancel="finishConfiguration" saveDisabled=true}}
       {{#each schemaItem in mw.schema}}
         <div>
-          {{#view "config-field"}}
+          {{#view "config-field"
+            config=controller.parentController.currentConfig}}
             <label {{bind-attr for="view.configText.elementId"}}>
               {{schemaItem.name}}
             </label>
@@ -22,7 +23,6 @@
               class=schemaItem.name
               viewName="configText"
               fieldName=schemaItem.name
-              config=config
               placeholder=schemaItem.name}}
           {{/view}}
         </div>
