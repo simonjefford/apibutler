@@ -84,6 +84,9 @@ test('Adding configurable middleware to the stack', function() {
     }).then(function() {
         assertSaveButtonShown(false, 'Can\'t save the stack yet - needs configuration');
         var button = find('.configure_btn.bar');
-        equal(button.length, 1, 'A configuration button is shown');
+        equal(button.length, 1, 'A configuration button is shown and clicked');
+        click('.configure_btn.bar');
+    }).then(function() {
+        findWithAssert('.configItem.config_field');
     });
 });

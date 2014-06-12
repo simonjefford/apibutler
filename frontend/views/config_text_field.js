@@ -3,6 +3,8 @@ var ConfigTextField = Ember.TextField.extend({
 
     config: Ember.computed.alias('parentView.config'),
 
+    classNameBindings: [':config_field', 'fieldName'],
+
     valueChange: function() {
         var fieldName = this.get('fieldName');
         var config = this.get('config');
