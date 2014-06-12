@@ -19,7 +19,6 @@ var app = new EmberApp({
 
 // Use this to add additional libraries to the generated output files.
 app.import('vendor/spin/index.js');
-app.import('vendor/jquery-ui/ui/jquery-ui.js');
 app.import('vendor/ember-easyForm/index.js');
 app.import('vendor/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/collapse.js');
 app.import('vendor/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/modal.js');
