@@ -33,10 +33,12 @@ var StacksNewController = Ember.ObjectController.extend({
                'availableMiddlewares.@each.selected'),
 
     selectedMiddlewares: function() {
-        return this.get('availableMiddlewares').filter(function(item) {
+        var selected = this.get('availableMiddlewares').filter(function(item) {
             var selected = item.get('selected');
             return !Ember.isEmpty(selected) && selected;
         });
+
+        return Ember.ArrayController.create({content:selected});
     }.property('availableMiddlewares',
                'availableMiddlewares.isFulfilled',
                'availableMiddlewares.@each.selected'),
@@ -62,6 +64,9 @@ var StacksNewController = Ember.ObjectController.extend({
         this.get('availableMiddlewares').forEach(function(mw) {
             mw.set('selected', false);
         });
+
+        this.set('middlewareConfig', Ember.Object.create({}));
+        this.set('currentMiddleware', '');
     },
 
     actions: {
@@ -79,7 +84,6 @@ var StacksNewController = Ember.ObjectController.extend({
         },
 
         configure: function(mw) {
-            console.log('now configuring ' + mw.get('name'));
             this.set('currentMiddleware', mw.get('name'));
         }
     }
