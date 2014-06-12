@@ -1,8 +1,6 @@
 /* global require, module, process  */
 
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
-var env = process.env.EMBER_ENV || 'development';
-
 
 var app = new EmberApp({
     name: require('./package.json').name,
