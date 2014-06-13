@@ -1,0 +1,50 @@
+<div class="col-md-6 stack_pane new_stack">
+  {{input value=name class="form-control field" placeholder="Stack Name"}}
+
+  {{#each mw in selectedMiddlewares itemController="middleware-item"}}
+    <div class="stack_item">
+      <button {{bind-attr class=":remove-btn :btn :btn-default mw.id"}}{{action "removeFromStack" mw}}>x</button>
+      {{mw.friendlyName}}
+      {{#if canBeConfigured}}
+        <button {{bind-attr class=":btn :btn-primary :configure_btn mw.id"}} {{action "configure" mw}}>Configure</button>
+      {{/if}}
+    </div>
+    {{#if configurationToggled}}
+      {{#modal-dialog title=mw.friendlyName cancel="finishConfiguration" saveDisabled=true}}
+      {{#each schemaItem in mw.schema}}
+        <div>
+          {{#view "config-field"
+            config=controller.parentController.currentConfig
+            configParent=controller.parentController.middlewareConfig}}
+            <label {{bind-attr for="view.configText.elementId"}}>
+              {{schemaItem.name}}
+            </label>
+            {{view "config-text-field"
+              viewName="configText"
+              fieldName=schemaItem.name
+              placeholder=schemaItem.name}}
+          {{/view}}
+        </div>
+      {{/each}}
+      {{/modal-dialog}}
+    {{/if}}
+  {{/each}}
+  {{#if canBeSaved}}
+    <button class="btn btn-primary save_stack_button" {{action prepareAndSaveStack}}>Save Stack</button>
+  {{/if}}
+</div>
+
+<div class="available stack_pane col-md-6">
+  {{#if middlewareRemaining}}
+    {{input value=middlewareQuery placeholder="Search" type="search" class="form-control field"}}
+  {{else}}
+    <span>No middlewares left to add</span>
+  {{/if}}
+
+  {{#each mw in filteredMiddlewares}}
+    <div class="stack_item">
+      <button {{bind-attr class="mw.id :btn :btn-default"}}  {{action 'addToStack' mw}}>Add</button>
+      {{mw.friendlyName}}
+    </div>
+  {{/each}}
+</div>

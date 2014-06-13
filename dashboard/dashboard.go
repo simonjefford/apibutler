@@ -14,13 +14,14 @@ import (
 	"github.com/martini-contrib/render"
 )
 
-func NewDashboardServer(path string, proxy apiproxyserver.APIProxyServer, store metadata.ApiStorage) http.Handler {
+func NewDashboardServer(path string, proxy apiproxyserver.APIProxyServer, apiStore metadata.ApiStore, stackStore middleware.StackStore) http.Handler {
 	m := martini.New()
 	m.Use(martini.Logger())
 	l := log.New(os.Stdout, "[dashboard server] ", 0)
 	m.Map(l)
 	m.MapTo(proxy, (*apiproxyserver.APIProxyServer)(nil))
-	m.MapTo(store, (*metadata.ApiStorage)(nil))
+	m.MapTo(apiStore, (*metadata.ApiStore)(nil))
+	m.MapTo(stackStore, (*middleware.StackStore)(nil))
 	m.Use(martini.Recovery())
 	m.Use(martini.Static(path))
 	m.Use(render.Renderer())
@@ -38,6 +39,8 @@ func setupRouter(m *martini.Martini) {
 	r.Get("/apps/:id", appGetHandler)
 	r.Put("/apps/:id", appPutHandler)
 	r.Get("/middlewares", middlewaresGetHandler)
+	r.Get("/stacks", stacksGetHandler)
+	r.Post("/stacks", stacksPostHandler)
 	m.Action(r.Handle)
 }
 
@@ -47,6 +50,10 @@ type ApisPayload struct {
 
 type SingleApiPayload struct {
 	Api metadata.Api `json:"api"`
+}
+
+type SingleStackPayload struct {
+	Stack *middleware.Stack `json:"stack"`
 }
 
 type SingleAppPayload struct {
@@ -61,14 +68,40 @@ type MiddlewaresPayload struct {
 	Middlewares []*middleware.Definition `json:"middlewares"`
 }
 
+type StacksPayload struct {
+	Stacks []*middleware.Stack `json:"stacks"`
+}
+
 func middlewaresGetHandler(rdr render.Render) {
-	mw := middleware.GetMiddlewares()
+	mw := middleware.Definitions()
 
 	rdr.JSON(http.StatusOK, &MiddlewaresPayload{mw})
 }
 
-func apisGetHandler(rdr render.Render, apiStorage metadata.ApiStorage) {
-	apis, err := apiStorage.Apis()
+func stacksGetHandler(rdr render.Render, stackStore middleware.StackStore) {
+	// TODO err here
+	st, _ := stackStore.Stacks()
+
+	p := &StacksPayload{st}
+
+	rdr.JSON(http.StatusOK, p)
+}
+
+func stacksPostHandler(req *http.Request, rdr render.Render, stackStore middleware.StackStore) {
+	decoder := json.NewDecoder(req.Body)
+	var s SingleStackPayload
+	err := decoder.Decode(&s)
+	if err != nil {
+		rdr.JSON(http.StatusBadRequest, statusResponse{err.Error()})
+		return
+	}
+	log.Println(&s)
+	stackStore.AddStack(s.Stack)
+	rdr.JSON(http.StatusCreated, s)
+}
+
+func apisGetHandler(rdr render.Render, apiStore metadata.ApiStore) {
+	apis, err := apiStore.Apis()
 	if err != nil {
 		rdr.JSON(500, nil)
 	}
@@ -109,7 +142,7 @@ func apisPutHandler(req *http.Request, rdr render.Render, params martini.Params)
 	rdr.JSON(http.StatusCreated, a)
 }
 
-func apisPostHandler(req *http.Request, rdr render.Render, proxy apiproxyserver.APIProxyServer, apiStorage metadata.ApiStorage) {
+func apisPostHandler(req *http.Request, rdr render.Render, proxy apiproxyserver.APIProxyServer, apiStorage metadata.ApiStore) {
 	decoder := json.NewDecoder(req.Body)
 	var a SingleApiPayload
 	err := decoder.Decode(&a)

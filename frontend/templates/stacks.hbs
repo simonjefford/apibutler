@@ -1,8 +1,17 @@
-<div class="panel panel-primary">
-  <div class="panel-heading">
-    <h3 class="panel-title">Default Stack</h3>
+<div class="col-md-12">
+  <div class="panel panel-info col-md-4 well">
+    <div class="panel-heading">
+      <h3 class="panel-title">Stacks</h3>
+    </div>
+    <ul class="nav nav-pills nav-stacked">
+      {{#each stack in stackList}}
+        {{navbar-link route="stack" model=stack text=stack.name}}
+      {{/each}}
+      {{navbar-link route="stacks.new" text="(Create New Stack)"}}
+    </ul>
   </div>
-  <div class="panel-body">
-    {{view "stack-list"}}
+
+  <div class="col-md-8">
+    {{outlet}}
   </div>
 </div>

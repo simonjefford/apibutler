@@ -10,11 +10,21 @@ import (
 	"github.com/codegangsta/martini"
 )
 
+type ConfiguredMiddleware struct {
+	Name   string         `json:"name"`
+	Config jsonconfig.Obj `json:"config"`
+}
+
 type Stack struct {
-	Middlewares []string          `json:"middlewares"`
-	Configs     []jsonconfig.Obj  `json:"configs"`
-	ID          bson.ObjectId     `bson:"_id" json:"id"`
-	reified     []martini.Handler `json:"-"`
+	Name        string                  `json:"name"`
+	Middlewares []*ConfiguredMiddleware `json:"middlewares"`
+	ID          bson.ObjectId           `bson:"_id" json:"id"`
+	reified     []martini.Handler       `json:"-"`
+}
+
+type StackStore interface {
+	AddStack(*Stack) error
+	Stacks() ([]*Stack, error)
 }
 
 const (
@@ -27,8 +37,7 @@ func NewStack() *Stack {
 
 func NewStackWithCapacity(capacity int) *Stack {
 	return &Stack{
-		Middlewares: make([]string, 0, capacity),
-		Configs:     make([]jsonconfig.Obj, 0, capacity),
+		Middlewares: make([]*ConfiguredMiddleware, 0, capacity),
 	}
 }
 
@@ -49,10 +58,10 @@ func (s *Stack) AddToServer(srv *martini.Martini) error {
 
 func (s *Stack) reify() error {
 	mwerr := &MiddlewareStackError{}
-	for i, name := range s.Middlewares {
-		mw, err := Create(name, s.Configs[i])
+	for _, cmw := range s.Middlewares {
+		mw, err := Create(cmw.Name, cmw.Config)
 		if err != nil {
-			mwerr.AddError(name, err)
+			mwerr.AddError(cmw.Name, err)
 		}
 		s.reified = append(s.reified, mw)
 	}
@@ -66,8 +75,10 @@ func (s *Stack) reify() error {
 }
 
 func (s *Stack) AddMiddleware(name string, cfg jsonconfig.Obj) {
-	s.Middlewares = append(s.Middlewares, name)
-	s.Configs = append(s.Configs, cfg)
+	s.Middlewares = append(s.Middlewares, &ConfiguredMiddleware{
+		Name:   name,
+		Config: cfg,
+	})
 	s.reified = nil
 }
 

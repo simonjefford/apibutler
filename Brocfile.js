@@ -1,8 +1,6 @@
 /* global require, module, process  */
 
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
-var env = process.env.EMBER_ENV || 'development';
-
 
 var app = new EmberApp({
     name: require('./package.json').name,
@@ -21,7 +19,6 @@ var app = new EmberApp({
 
 // Use this to add additional libraries to the generated output files.
 app.import('vendor/spin/index.js');
-app.import('vendor/jquery-ui/ui/jquery-ui.js');
 app.import('vendor/ember-easyForm/index.js');
 app.import('vendor/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/collapse.js');
 app.import('vendor/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/modal.js');

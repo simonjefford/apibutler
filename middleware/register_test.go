@@ -137,7 +137,7 @@ func Test_GetMiddlewareSortOrder(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	m := GetMiddlewares()
+	m := Definitions()
 
 	if m[0].Id != "mw3" {
 		t.Error("Unexpected middleware", m[0].Id)

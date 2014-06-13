@@ -1,62 +1,49 @@
 package middleware
 
 import (
-	"labix.org/v2/mgo"
+	"fourth.com/apibutler/config"
+	"fourth.com/apibutler/mongo"
 	"labix.org/v2/mgo/bson"
 )
 
 type MongoStackStore struct {
-	MongoUrl    string
-	MongoDbName string
+	store *mongo.MongoStore
 }
 
-func (m *MongoStackStore) openSession() (*mgo.Session, error) {
-	sess, err := mgo.Dial(m.MongoUrl)
-	if err != nil {
-		return nil, err
+func NewMongoStackStoreFromConfig() StackStore {
+	return NewMongoStackStore(config.Options.MongoUrl, config.Options.MongoDbName)
+}
+
+func NewMongoStackStore(mongoUrl, mongoDbName string) StackStore {
+	return &MongoStackStore{
+		store: &mongo.MongoStore{
+			MongoUrl:    mongoUrl,
+			MongoDbName: mongoDbName,
+			NewItemCtor: func() interface{} {
+				return &Stack{}
+			},
+			CollectionName: "stacks",
+		},
 	}
-
-	return sess, nil
-}
-
-func (m *MongoStackStore) stackMongoCollection(s *mgo.Session) *mgo.Collection {
-	db := s.DB(m.MongoDbName)
-	return db.C("stacks")
 }
 
 func (m *MongoStackStore) AddStack(s *Stack) error {
-	sess, err := m.openSession()
-	if err != nil {
-		return err
-	}
-
-	defer sess.Close()
-
-	c := m.stackMongoCollection(sess)
 	s.ID = bson.NewObjectId()
-	err = c.Insert(s)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return m.store.Add(s)
 }
 
 func (m *MongoStackStore) Stacks() ([]*Stack, error) {
-	sess, err := m.openSession()
+	items, err := m.store.ItemIter()
+
 	if err != nil {
 		return nil, err
 	}
 
-	defer sess.Close()
-
-	c := m.stackMongoCollection(sess)
 	stacks := make([]*Stack, 0, 100)
-	iter := c.Find(nil).Iter()
-	stack := &Stack{}
-	for iter.Next(stack) {
+
+	for i := range items {
+		stack := i.(*Stack)
 		stacks = append(stacks, stack)
-		stack = &Stack{}
 	}
 
 	return stacks, nil

@@ -10,7 +10,10 @@ Router.map(function() {
         this.route('new');
     });
     this.resource('middlewares');
-    this.resource('stacks');
+    this.resource('stacks', function() {
+        this.route('new');
+        this.resource('stack', { path: ':stack_id' });
+    });
 });
 
 export default Router;

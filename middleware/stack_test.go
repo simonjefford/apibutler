@@ -38,14 +38,9 @@ func Test_AddMiddleware(t *testing.T) {
 	s.AddMiddleware("stack1", nil)
 
 	mw := len(s.Middlewares)
-	cfg := len(s.Configs)
 
 	if mw != 1 {
 		t.Errorf("Unexpected middleware count: %d", mw)
-	}
-
-	if cfg != 1 {
-		t.Errorf("Unexpected config count: %d", cfg)
 	}
 }
 

@@ -80,7 +80,7 @@ func clearTable() {
 	mws = make(Table)
 }
 
-func GetMiddlewares() List {
+func Definitions() List {
 	mu.Lock()
 	defer mu.Unlock()
 

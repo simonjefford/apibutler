@@ -9,7 +9,7 @@ type Api struct {
 	ID        bson.ObjectId `bson:"_id" json:"id"`
 }
 
-type ApiStorage interface {
+type ApiStore interface {
 	AddApi(a *Api) error
 	Apis() ([]*Api, error)
 	Forget(path string)
