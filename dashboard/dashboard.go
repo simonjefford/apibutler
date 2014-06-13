@@ -40,6 +40,7 @@ func setupRouter(m *martini.Martini) {
 	r.Put("/apps/:id", appPutHandler)
 	r.Get("/middlewares", middlewaresGetHandler)
 	r.Get("/stacks", stacksGetHandler)
+	r.Post("/stacks", stacksPostHandler)
 	m.Action(r.Handle)
 }
 
@@ -49,6 +50,10 @@ type ApisPayload struct {
 
 type SingleApiPayload struct {
 	Api metadata.Api `json:"api"`
+}
+
+type SingleStackPayload struct {
+	Stack *middleware.Stack `json:"stack"`
 }
 
 type SingleAppPayload struct {
@@ -80,6 +85,19 @@ func stacksGetHandler(rdr render.Render, stackStore middleware.StackStore) {
 	p := &StacksPayload{st}
 
 	rdr.JSON(http.StatusOK, p)
+}
+
+func stacksPostHandler(req *http.Request, rdr render.Render, stackStore middleware.StackStore) {
+	decoder := json.NewDecoder(req.Body)
+	var s SingleStackPayload
+	err := decoder.Decode(&s)
+	if err != nil {
+		rdr.JSON(http.StatusBadRequest, statusResponse{err.Error()})
+		return
+	}
+	log.Println(&s)
+	stackStore.AddStack(s.Stack)
+	rdr.JSON(http.StatusCreated, s)
 }
 
 func apisGetHandler(rdr render.Render, apiStore metadata.ApiStore) {

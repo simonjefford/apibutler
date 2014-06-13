@@ -95,6 +95,18 @@ var StacksNewController = Ember.ObjectController.extend({
 
         configure: function(mw) {
             this.set('currentMiddleware', mw.get('name'));
+        },
+
+        prepareAndSaveStack: function() {
+            console.log('save');
+            this.set('model.middlewares', []);
+            this.get('selectedMiddlewares').forEach(function (mw) {
+                this.get('model.middlewares').pushObject({
+                    name: mw.get('name'),
+                    config: this._configForMiddleware(mw.get('name'))
+                });
+            }.bind(this));
+            this.send('save', this.get('model'));
         }
     }
 });

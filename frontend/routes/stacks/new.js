@@ -22,6 +22,15 @@ var StacksNewRoute = Ember.Route.extend({
                 controller.content.deleteRecord();
             }
             controller.resetSelected();
+        },
+
+        save: function(model) {
+            model.save().then(function() {
+                var controller = this.controllerFor('stacks.new');
+                controller.resetSelected();
+                var newModel = this.model();
+                this.setupController(controller, newModel);
+            }.bind(this));
         }
     }
 });
