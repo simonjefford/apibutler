@@ -5,19 +5,29 @@ var StacksNewController = Ember.ObjectController.extend({
 
     hasMiddlewares: Ember.computed.bool('selectedMiddlewares.length'),
 
-    middlewareConfig: Ember.Object.create({}),
+    middlewareConfig: Ember.Object.create({
+        _changes: 0
+    }),
 
     currentMiddleware: '',
 
+    _configForMiddleware: function(name) {
+        return this.get('middlewareConfig.' + name);
+    },
+
     currentConfig: function() {
-        return this.get('middlewareConfig.' + this.get('currentMiddleware'));
+        return this._configForMiddleware(this.get('currentMiddleware'));
     }.property('currentMiddleware'),
 
     _middlewaresNeedConfig: function() {
+        var self = this;
         return this.get('selectedMiddlewares').any(function(mw) {
-            return mw.get('needsConfiguration');
+            var needsConfig = mw.get('needsConfiguration') &&
+                !mw.isValid(self._configForMiddleware(mw.get('name')));
+            console.debug('%s: needsConfig=%s', mw.get('name'), needsConfig);
+            return needsConfig;
         });
-    }.property('selectedMiddlewares.@each', 'selectedMiddlewares.@each.config'),
+    }.property('selectedMiddlewares.@each', 'selectedMiddlewares.@each.config', 'middlewareConfig._changes'),
 
     canBeSaved: function() {
         return this.get('hasMiddlewares') && !this.get('_middlewaresNeedConfig');
@@ -65,7 +75,7 @@ var StacksNewController = Ember.ObjectController.extend({
             mw.set('selected', false);
         });
 
-        this.set('middlewareConfig', Ember.Object.create({}));
+        this.set('middlewareConfig', Ember.Object.create({_changes: 0}));
         this.set('currentMiddleware', '');
     },
 

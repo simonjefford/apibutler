@@ -78,7 +78,7 @@ test('Adding some middleware to the stack', function() {
 });
 
 test('Adding configurable middleware to the stack', function() {
-    expect(2);
+    expect(4);
     visit('/stacks/new').then(function() {
         click('.bar');
     }).then(function() {
@@ -88,5 +88,12 @@ test('Adding configurable middleware to the stack', function() {
         click('.configure_btn.bar');
     }).then(function() {
         findWithAssert('.configItem.config_field');
+        ok(true, 'config field is there. Filling in and closing');
+        fillIn('.configItem.config_field', 10);
+    }).then(function() {
+        click('.close_dialog.btn');
+    }).then(function() {
+        findWithAssert('.save_stack_button');
+        ok(true, 'Can save the stack now everything is configured');
     });
 });

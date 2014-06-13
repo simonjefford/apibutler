@@ -7,7 +7,7 @@
       {{yield}}
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-default" {{action "cancelClick"}}>Close</button>
+      <button type="button" class="btn btn-default close_dialog" {{action "cancelClick"}}>Close</button>
       {{#unless saveDisabled}}
         <button type="button" {{bind-attr disabled="saveDisabled"}} class="btn btn-primary" {{action "saveClick"}}>Save changes</button>
       {{/unless}}

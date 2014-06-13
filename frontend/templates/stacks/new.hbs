@@ -15,7 +15,8 @@
       {{#each schemaItem in mw.schema}}
         <div>
           {{#view "config-field"
-            config=controller.parentController.currentConfig}}
+            config=controller.parentController.currentConfig
+            configParent=controller.parentController.middlewareConfig}}
             <label {{bind-attr for="view.configText.elementId"}}>
               {{schemaItem.name}}
             </label>
