@@ -1,5 +1,6 @@
 import startApp from 'apibutler/tests/helpers/start-app';
 import Middleware from 'apibutler/models/middleware';
+import Stack from 'apibutler/models/stack';
 
 var App;
 
@@ -21,6 +22,11 @@ module('Acceptance Tests - Stack Creation', {
                 }
             ]
         });
+
+        Stack.reopenClass({
+            FIXTURES: []
+        });
+
         App = startApp();
     },
     teardown: function() {
@@ -35,11 +41,8 @@ var assertSaveButtonShown = function(shown, message) {
 };
 
 test('Stack creation pane', function() {
-    expect(3);
+    expect(2);
     visit('/stacks/new').then(function() {
-        var stackPaneTitle = find('.new_stack .title');
-        equal(stackPaneTitle.text(), 'New stack', 'Stack creation pane title');
-
         var stacks = find('.new_stack .stack_item');
         equal(stacks.length, 0, 'Stack creation pane is empty');
 
@@ -48,11 +51,8 @@ test('Stack creation pane', function() {
 });
 
 test('Available middleware pane', function() {
-    expect(2);
+    expect(1);
     visit('/stacks/new').then(function() {
-        var stackPaneTitle = find('.available .title');
-        equal(stackPaneTitle.text(), 'Available middleware', 'Available middleware pane title');
-
         var stacks = find('.available .stack_item');
         equal(stacks.length, 2, 'Available middleware pane has some middleware');
     });
