@@ -1,1 +1,17 @@
-{{outlet}}
+<div class="col-md-12">
+  <div class="panel panel-info col-md-4 well">
+    <div class="panel-heading">
+      <h3 class="panel-title">Stacks</h3>
+    </div>
+    <ul class="nav nav-pills nav-stacked">
+      {{#each stack in model}}
+        {{navbar-link route="stack" model=stack text=stack.name}}
+      {{/each}}
+      {{navbar-link route="stacks.new" text="(Create New Stack)"}}
+    </ul>
+  </div>
+
+  <div class="col-md-8">
+    {{outlet}}
+  </div>
+</div>

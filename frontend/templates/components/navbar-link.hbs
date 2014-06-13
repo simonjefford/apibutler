@@ -1,3 +1,9 @@
-{{#link-to route tagName='li' href=false}}
-  {{#link-to route bubbles=false}}{{text}}{{/link-to}}
-{{/link-to}}
+{{#if model}}
+  {{#link-to route model tagName='li' href=false}}
+    {{#link-to route model bubbles=false}}{{text}}{{/link-to}}
+  {{/link-to}}
+{{else}}
+  {{#link-to route tagName='li' href=false}}
+    {{#link-to route bubbles=false}}{{text}}{{/link-to}}
+  {{/link-to}}
+{{/if}}

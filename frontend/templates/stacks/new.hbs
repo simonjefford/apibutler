@@ -1,10 +1,9 @@
 <div class="col-md-6 stack_pane new_stack">
-  <h2 class="title">New stack</h2>
   {{input value=name class="form-control field" placeholder="Stack Name"}}
 
   {{#each mw in selectedMiddlewares itemController="middleware-item"}}
     <div class="stack_item">
-      <button {{bind-attr class=":remove-btn :btn :btn-default mw.id"}}{{action "removeFromStack" mw}}>Remove</button>
+      <button {{bind-attr class=":remove-btn :btn :btn-default mw.id"}}{{action "removeFromStack" mw}}>x</button>
       {{mw.friendlyName}}
       {{#if canBeConfigured}}
         <button {{bind-attr class=":btn :btn-primary :configure_btn mw.id"}} {{action "configure" mw}}>Configure</button>
@@ -36,8 +35,6 @@
 </div>
 
 <div class="available stack_pane col-md-6">
-  <h2 class="title">Available middleware</h2>
-
   {{#if middlewareRemaining}}
     {{input value=middlewareQuery placeholder="Search" type="search" class="form-control field"}}
   {{else}}

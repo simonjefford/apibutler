@@ -12,6 +12,7 @@ Router.map(function() {
     this.resource('middlewares');
     this.resource('stacks', function() {
         this.route('new');
+        this.resource('stack', { path: ':stack_id' });
     });
 });
 
