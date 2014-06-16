@@ -5,8 +5,9 @@ import "labix.org/v2/mgo/bson"
 type Api struct {
 	Path      string        `json:"path"`
 	App       string        `json:"app"`
-	NeedsAuth bool          `json:"needsAuth"`
+	NeedsAuth bool          `json:"-"`
 	ID        bson.ObjectId `bson:"_id" json:"id"`
+	Stack     string        `json:"stack"`
 }
 
 type ApiStore interface {

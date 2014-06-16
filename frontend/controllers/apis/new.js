@@ -1,7 +1,9 @@
 var ApisNewController = Ember.ObjectController.extend({
     appsReady: Ember.computed.alias('apps.isFulfilled'),
 
-    saveEnabled: Ember.computed.and('appsReady', 'valid'),
+    stacksReady: Ember.computed.alias('stacks.isFulfilled'),
+
+    saveEnabled: Ember.computed.and('appsReady', 'valid', 'stacksReady'),
 
     saveDisabled: Ember.computed.not('saveEnabled'),
 

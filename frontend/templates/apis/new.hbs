@@ -13,6 +13,17 @@
   {{else}}
     <span>Loading Apps</span>
   {{/if}}
+  {{#if stacksReady}}
+    {{input stack as='select'
+      collection='stacks'
+      optionValuePath='content.id'
+      optionLabelPath='content.name'
+      prompt='Select Stack'
+      selection='stack'
+    }}
+  {{else}}
+    <span>Loading Stacks</span>
+  {{/if}}
 {{/form-for}}
 
 {{#if showSuccessAlert}}
