@@ -20,6 +20,10 @@ var ApisNewRoute = Ember.Route.extend({
         controller.set('stacks', this.get('stacks'));
     },
 
+    renderTemplate: function() {
+        this.render('apis/api');
+    },
+
     actions: {
         willTransition: function() {
             var controller = this.controllerFor('apis.new');
