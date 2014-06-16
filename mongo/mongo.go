@@ -1,6 +1,9 @@
 package mongo
 
-import "labix.org/v2/mgo"
+import (
+	"labix.org/v2/mgo"
+	"labix.org/v2/mgo/bson"
+)
 
 type MongoStore struct {
 	MongoUrl       string
@@ -39,6 +42,19 @@ func (m *MongoStore) Add(i interface{}) error {
 	}
 
 	return nil
+}
+
+func (m *MongoStore) Update(id bson.ObjectId, i interface{}) error {
+	sess, err := m.openSession()
+	if err != nil {
+		return err
+	}
+
+	defer sess.Close()
+
+	c := m.collection(sess)
+
+	return c.UpdateId(id, i)
 }
 
 func (m *MongoStore) ItemIter() (chan interface{}, error) {
