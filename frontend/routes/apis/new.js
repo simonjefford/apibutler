@@ -1,27 +1,8 @@
-var ApisNewRoute = Ember.Route.extend({
+import ApiRouteMixin from 'apibutler/mixins/api_route';
+
+export default Ember.Route.extend(ApiRouteMixin, {
     model: function() {
         return this.store.createRecord('api');
-    },
-
-    apps: null,
-
-    stacks: null,
-
-    setupController: function(controller, model) {
-        this._super(controller, model);
-        if(!this.get('apps')) {
-            this.set('apps', this.store.find('app'));
-        }
-
-        if(!this.get('stacks')) {
-            this.set('stacks', this.store.find('stack'));
-        }
-        controller.set('apps', this.get('apps'));
-        controller.set('stacks', this.get('stacks'));
-    },
-
-    renderTemplate: function() {
-        this.render('apis/api');
     },
 
     actions: {
@@ -31,10 +12,6 @@ var ApisNewRoute = Ember.Route.extend({
                 controller.content.deleteRecord();
             }
             controller.set('saveSucceeded', false);
-        },
-
-        cancel: function() {
-            this.transitionTo('apis');
         },
 
         save: function(model) {
@@ -47,5 +24,3 @@ var ApisNewRoute = Ember.Route.extend({
         }
     }
 });
-
-export default ApisNewRoute;
