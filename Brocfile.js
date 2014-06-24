@@ -22,6 +22,7 @@ app.import('vendor/spin/index.js');
 app.import('vendor/ember-easyForm/index.js');
 app.import('vendor/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/collapse.js');
 app.import('vendor/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/modal.js');
+app.import('vendor/html5sortable/jquery.sortable.js');
 // Use `app.import` to add additional libraries to the generated
 // output files.
 //

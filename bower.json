@@ -16,6 +16,7 @@
     "ember-qunit-notifications": "^0.0.1",
     "ember-easyForm": "http://builds.dockyard.com/ember-easyForm/latest/ember-easyForm.js",
     "spin": "http://fgnass.github.io/spin.js/spin.min.js",
-    "ember-cli-test-loader": "rjackson/ember-cli-test-loader#0.0.2"
+    "ember-cli-test-loader": "rjackson/ember-cli-test-loader#0.0.2",
+    "html5sortable": "farhadi/html5sortable"
   }
 }
