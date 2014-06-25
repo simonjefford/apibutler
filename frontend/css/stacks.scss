@@ -1,0 +1,33 @@
+@mixin stack_item {
+  list-style-type: none;
+  margin-bottom: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 15px;
+  background-color: #439cff;
+  color: white;
+  border-radius: 10px;
+}
+
+.stack_pane {
+  .field {
+    margin-bottom: 15px;
+  }
+
+  .stack_item {
+    @include stack_item
+  }
+
+  .configure_btn {
+    float: right;
+    margin-right: 20px;
+  }
+}
+
+ul.sortable {
+  padding-left: 0px;
+
+  .item {
+    @include stack_item
+  }
+}
