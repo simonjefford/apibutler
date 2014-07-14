@@ -1,3 +1,4 @@
+import Ember from 'ember';
 import Resolver from 'ember/resolver';
 import loadInitializers from 'ember/load-initializers';
 
@@ -8,6 +9,6 @@ var App = Ember.Application.extend({
     Resolver: Resolver
 });
 
-loadInitializers(App, 'apibuilder');
+loadInitializers(App, 'apibutler');
 
 export default App;

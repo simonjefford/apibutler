@@ -2,6 +2,7 @@
 
 var Application = require('apibutler/app')['default'];
 var Router = require('apibutler/router')['default'];
+import Ember from 'ember';
 
 export default function startApp(attrs) {
   var App;

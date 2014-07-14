@@ -5,6 +5,7 @@ var EmberApp = require('ember-cli/lib/broccoli/ember-app');
 var app = new EmberApp({
     trees: {
         app: 'frontend',
+        templates: 'frontend/templates',
         styles: 'frontend/css'
     }
 });
