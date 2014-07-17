@@ -5,11 +5,11 @@
     <div class="stack_item">
       <button {{bind-attr class=":remove-btn :btn :btn-default mw.id"}}{{action "removeFromStack" mw}}>x</button>
       {{mw.friendlyName}}
-      {{#if canBeConfigured}}
+      {{#if mw.canBeConfigured}}
         <button {{bind-attr class=":btn :btn-primary :configure_btn mw.id"}} {{action "configure" mw}}>Configure</button>
       {{/if}}
     </div>
-    {{#if configurationToggled}}
+    {{#if mw.configurationToggled}}
       {{#modal-dialog title=mw.friendlyName cancel="finishConfiguration" saveDisabled=true}}
       {{#each schemaItem in mw.schema}}
         <div>
