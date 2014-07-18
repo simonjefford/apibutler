@@ -32,6 +32,11 @@ func (m *MongoStackStore) AddStack(s *Stack) error {
 	return m.store.Add(s)
 }
 
+func (m *MongoStackStore) Stack(id string) (*Stack, error) {
+	res, err := m.store.ItemById(id)
+	return res.(*Stack), err
+}
+
 func (m *MongoStackStore) Stacks() ([]*Stack, error) {
 	items, err := m.store.ItemIter()
 

@@ -25,6 +25,7 @@ type Stack struct {
 type StackStore interface {
 	AddStack(*Stack) error
 	Stacks() ([]*Stack, error)
+	Stack(id string) (*Stack, error)
 }
 
 const (

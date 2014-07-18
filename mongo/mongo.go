@@ -1,6 +1,8 @@
 package mongo
 
 import (
+	"log"
+
 	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
 )
@@ -55,6 +57,23 @@ func (m *MongoStore) Update(id bson.ObjectId, i interface{}) error {
 	c := m.collection(sess)
 
 	return c.UpdateId(id, i)
+}
+
+func (m *MongoStore) ItemById(id string) (interface{}, error) {
+	sess, err := m.openSession()
+	if err != nil {
+		return nil, err
+	}
+	c := m.collection(sess)
+	res := m.NewItemCtor()
+	err = c.FindId(bson.ObjectIdHex(id)).One(res)
+
+	log.Println(id, res, err)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
 }
 
 func (m *MongoStore) ItemIter() (chan interface{}, error) {
