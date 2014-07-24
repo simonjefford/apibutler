@@ -50,6 +50,10 @@ func (s *dummyStackStore) Stacks() ([]*middleware.Stack, error) {
 	return nil, nil
 }
 
+func (s *dummyStackStore) Stack(id string) (*middleware.Stack, error) {
+	return nil, nil
+}
+
 func TestRouter(t *testing.T) {
 	apiserver := &dummyApiServer{}
 	apistore := &dummyApiStore{}
