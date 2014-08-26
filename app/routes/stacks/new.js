@@ -19,7 +19,7 @@ var StacksNewRoute = Ember.Route.extend({
         willTransition: function() {
             var controller = this.controllerFor('stacks.new');
             if (controller.get('isNew')) {
-                controller.content.deleteRecord();
+                controller.get('model').deleteRecord();
             }
             controller.resetSelected();
         },
