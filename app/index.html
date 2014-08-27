@@ -14,13 +14,11 @@
     <link rel="stylesheet" href="assets/apibutler.css">
   </head>
   <body>
-    <script>
-      window.ApibutlerENV = {{ENV}};
-      window.EmberENV = window.ApibutlerENV.EmberENV;
-    </script>
     <script src="assets/vendor.js"></script>
     <script src="assets/apibutler.js"></script>
     <script>
+      window.ApibutlerENV = require('apibutler/config/environment')['default'];
+      window.EmberENV = window.ApibutlerENV.EmberENV;
       window.Apibutler = require('apibutler/app')['default'].create(ApibutlerENV.APP);
     </script>
   </body>

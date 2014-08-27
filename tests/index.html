@@ -33,15 +33,14 @@
     <div id="qunit"></div>
     <div id="qunit-fixture"></div>
 
-    <script>
-      window.ApibutlerENV = {{ENV}};
-      window.EmberENV = window.ApibutlerENV.EmberENV;
-    </script>
     <script src="assets/vendor.js"></script>
     <script src="assets/test-support.js"></script>
     <script src="assets/apibutler.js"></script>
     <script src="testem.js"></script>
     <script>
+      window.ApibutlerENV = require('apibutler/config/environment')['default'];
+      window.EmberENV = window.ApibutlerENV.EmberENV;
+
       require('apibutler/tests/test-helper');
     </script>
     <script src="assets/test-loader.js"></script>
