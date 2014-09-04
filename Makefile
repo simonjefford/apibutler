@@ -1,4 +1,4 @@
-GOPATH := $(CURDIR)/_vendor:$(GOPATH)
+GOPATH := $(CURDIR)/Godeps/_workspace:$(GOPATH)
 
 default: buildbin
 
